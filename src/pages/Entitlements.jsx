@@ -1,0 +1,841 @@
+import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import {
+  Award,
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Eye,
+  RefreshCw,
+  Menu,
+  Calendar,
+  User,
+  FileText,
+  CheckCircle,
+  Clock,
+  XCircle,
+} from "lucide-react";
+import { entitlementsAPI } from "../services/api";
+import Sidebar from "../components/Sidebar";
+
+const Entitlements = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [entitlements, setEntitlements] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filters, setFilters] = useState({
+    status: "all",
+    entitlementType: "all",
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    pages: 0,
+  });
+  const [selectedEntitlement, setSelectedEntitlement] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    beneficiaryId: "",
+    beneficiaryName: "",
+    age: "",
+    gender: "",
+    wardNo: "",
+    habitation: "",
+    entitlementType: "",
+    entitlementDetails: "",
+    applicationDate: "",
+    documentsSubmitted: "",
+    verificationStatus: "",
+    approvalDate: "",
+    disbursementDate: "",
+    amountDisbursed: "",
+    status: "Applied",
+    remarks: "",
+    followUpRequired: false,
+    nextFollowUpDate: "",
+    contactNumber: "",
+    address: "",
+  });
+
+  const entitlementTypes = [
+    "Pension Scheme",
+    "Housing Scheme",
+    "Health Insurance",
+    "Education Scholarship",
+    "Employment Guarantee",
+    "Food Security",
+    "Financial Assistance",
+    "Social Security",
+    "Disability Benefits",
+    "Senior Citizen Benefits",
+    "Women Welfare",
+    "Child Welfare",
+  ];
+
+  const statusOptions = [
+    "Applied",
+    "Under Verification",
+    "Approved",
+    "Disbursed",
+    "Rejected",
+    "On Hold",
+  ];
+
+  const verificationStatuses = [
+    "Pending",
+    "In Progress",
+    "Completed",
+    "Additional Documents Required",
+  ];
+
+  const genderOptions = ["Male", "Female", "Other"];
+
+  // Fetch entitlements
+  const fetchEntitlements = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        page: pagination.page,
+        limit: pagination.limit,
+        search: searchTerm,
+        ...filters,
+      };
+
+      const response = await entitlementsAPI.getAll(params);
+
+      // Handle response data with fallbacks
+      const entitlementsData =
+        response.data.entitlements || response.data.data || response.data || [];
+      setEntitlements(Array.isArray(entitlementsData) ? entitlementsData : []);
+
+      // Handle pagination data - if not provided by API, create default pagination
+      if (response.data.pagination) {
+        setPagination(response.data.pagination);
+      } else {
+        // Create default pagination based on data length
+        setPagination({
+          page: 1,
+          limit: 10,
+          total: entitlementsData.length,
+          pages: Math.ceil(entitlementsData.length / 10),
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to fetch entitlements");
+      console.error("Error fetching entitlements:", error);
+      // Set empty array on error to prevent undefined errors
+      setEntitlements([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial data load
+  useEffect(() => {
+    fetchEntitlements();
+  }, []);
+
+  // Refetch when search or filters change
+  useEffect(() => {
+    fetchEntitlements();
+  }, [searchTerm, filters]);
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (selectedEntitlement) {
+        await entitlementsAPI.update(selectedEntitlement._id, formData);
+        toast.success("Entitlement updated successfully");
+        setIsEditModalOpen(false);
+      } else {
+        await entitlementsAPI.create(formData);
+        toast.success("Entitlement created successfully");
+        setIsCreateModalOpen(false);
+      }
+      fetchEntitlements();
+      resetForm();
+    } catch (error) {
+      toast.error(
+        selectedEntitlement
+          ? "Failed to update entitlement"
+          : "Failed to create entitlement"
+      );
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setFormData({
+      beneficiaryId: "",
+      beneficiaryName: "",
+      age: "",
+      gender: "",
+      wardNo: "",
+      habitation: "",
+      entitlementType: "",
+      entitlementDetails: "",
+      applicationDate: "",
+      documentsSubmitted: "",
+      verificationStatus: "",
+      approvalDate: "",
+      disbursementDate: "",
+      amountDisbursed: "",
+      status: "Applied",
+      remarks: "",
+      followUpRequired: false,
+      nextFollowUpDate: "",
+      contactNumber: "",
+      address: "",
+    });
+    setSelectedEntitlement(null);
+  };
+
+  // Handle delete
+  const handleDelete = async (id) => {
+    try {
+      await entitlementsAPI.delete(id);
+      toast.success("Entitlement deleted successfully");
+      fetchEntitlements();
+    } catch (error) {
+      toast.error("Failed to delete entitlement");
+      console.error("Error deleting entitlement:", error);
+    }
+  };
+
+  // Get status badge color
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Disbursed":
+        return "bg-green-100 text-green-800 hover:bg-green-200";
+      case "Approved":
+        return "bg-blue-100 text-blue-800 hover:bg-blue-200";
+      case "Applied":
+        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
+      case "Under Verification":
+        return "bg-purple-100 text-purple-800 hover:bg-purple-200";
+      case "Rejected":
+        return "bg-red-100 text-red-800 hover:bg-red-200";
+      case "On Hold":
+        return "bg-gray-100 text-gray-800 hover:bg-gray-200";
+      default:
+        return "bg-gray-100 text-gray-800 hover:bg-gray-200";
+    }
+  };
+
+  // Get status icon
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "Disbursed":
+        return <CheckCircle className="h-3 w-3" />;
+      case "Approved":
+        return <CheckCircle className="h-3 w-3" />;
+      case "Applied":
+        return <Clock className="h-3 w-3" />;
+      case "Under Verification":
+        return <Clock className="h-3 w-3" />;
+      case "Rejected":
+        return <XCircle className="h-3 w-3" />;
+      case "On Hold":
+        return <Clock className="h-3 w-3" />;
+      default:
+        return <Clock className="h-3 w-3" />;
+    }
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        activeItem="entitlements"
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
+        {/* Mobile Header */}
+        <div className="lg:hidden bg-white shadow-sm p-4 flex items-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSidebarOpen(true)}
+            className="mr-2"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          <h1 className="text-lg font-semibold">Entitlements</h1>
+        </div>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="container mx-auto p-6 space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  Entitlements
+                </h1>
+                <p className="text-gray-600">
+                  Manage government entitlements and benefits for beneficiaries
+                </p>
+              </div>
+              <Button onClick={() => setIsCreateModalOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Entitlement
+              </Button>
+            </div>
+
+            {/* Search and Filters */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Filter className="h-5 w-5" />
+                  Search & Filters
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search beneficiaries..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  {/* <Select
+                    value={filters.status}
+                    onValueChange={(value) =>
+                      setFilters({ ...filters, status: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Statuses</SelectItem>
+                      {statusOptions.map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={filters.entitlementType}
+                    onValueChange={(value) =>
+                      setFilters({ ...filters, entitlementType: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      {entitlementTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select> */}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Entitlements Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Entitlements ({pagination.total})</CardTitle>
+                <CardDescription>
+                  Track and manage government entitlements and benefits
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="flex justify-center items-center h-64">
+                    <RefreshCw className="h-8 w-8 animate-spin" />
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Beneficiary ID</TableHead>
+                        <TableHead>Beneficiary Name</TableHead>
+                        <TableHead>Entitlement Type</TableHead>
+                        <TableHead>Application Date</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {entitlements.map((entitlement) => (
+                        <TableRow key={entitlement._id}>
+                          <TableCell className="font-medium">
+                            {entitlement.beneficiaryId}
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">
+                                {entitlement.beneficiaryName}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {entitlement.age} years, {entitlement.gender}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {entitlement.entitlementType}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center text-sm">
+                              <Calendar className="mr-1 h-3 w-3" />
+                              {entitlement.applicationDate
+                                ? new Date(
+                                    entitlement.applicationDate
+                                  ).toLocaleDateString()
+                                : "N/A"}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">
+                              ₹{entitlement.amountDisbursed || "0"}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={getStatusColor(entitlement.status)}
+                            >
+                              {getStatusIcon(entitlement.status)}
+                              <span className="ml-1">{entitlement.status}</span>
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedEntitlement(entitlement);
+                                  setIsViewModalOpen(true);
+                                }}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedEntitlement(entitlement);
+                                  setFormData({
+                                    beneficiaryId:
+                                      entitlement.beneficiaryId || "",
+                                    beneficiaryName:
+                                      entitlement.beneficiaryName || "",
+                                    age: entitlement.age || "",
+                                    gender: entitlement.gender || "",
+                                    wardNo: entitlement.wardNo || "",
+                                    habitation: entitlement.habitation || "",
+                                    entitlementType:
+                                      entitlement.entitlementType || "",
+                                    entitlementDetails:
+                                      entitlement.entitlementDetails || "",
+                                    applicationDate: entitlement.applicationDate
+                                      ? entitlement.applicationDate.split(
+                                          "T"
+                                        )[0]
+                                      : "",
+                                    documentsSubmitted:
+                                      entitlement.documentsSubmitted || "",
+                                    verificationStatus:
+                                      entitlement.verificationStatus || "",
+                                    approvalDate: entitlement.approvalDate
+                                      ? entitlement.approvalDate.split("T")[0]
+                                      : "",
+                                    disbursementDate:
+                                      entitlement.disbursementDate
+                                        ? entitlement.disbursementDate.split(
+                                            "T"
+                                          )[0]
+                                        : "",
+                                    amountDisbursed:
+                                      entitlement.amountDisbursed || "",
+                                    status: entitlement.status || "Applied",
+                                    remarks: entitlement.remarks || "",
+                                    followUpRequired:
+                                      entitlement.followUpRequired || false,
+                                    nextFollowUpDate:
+                                      entitlement.nextFollowUpDate
+                                        ? entitlement.nextFollowUpDate.split(
+                                            "T"
+                                          )[0]
+                                        : "",
+                                    contactNumber:
+                                      entitlement.contactNumber || "",
+                                    address: entitlement.address || "",
+                                  });
+                                  setIsEditModalOpen(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-600 hover:text-red-700"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Are you sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This action cannot be undone. This will
+                                      permanently delete the entitlement record.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() =>
+                                        handleDelete(entitlement._id)
+                                      }
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+
+                {/* Pagination */}
+                {pagination.pages > 1 && (
+                  <div className="flex items-center justify-between space-x-2 py-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setPagination((prev) => ({
+                          ...prev,
+                          page: Math.max(prev.page - 1, 1),
+                        }))
+                      }
+                      disabled={pagination.page === 1}
+                    >
+                      Previous
+                    </Button>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm text-muted-foreground">
+                        Page {pagination.page} of {pagination.pages}
+                      </span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setPagination((prev) => ({
+                          ...prev,
+                          page: Math.min(prev.page + 1, prev.pages),
+                        }))
+                      }
+                      disabled={pagination.page === pagination.pages}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Create Modal */}
+            <Dialog
+              open={isCreateModalOpen}
+              onOpenChange={setIsCreateModalOpen}
+            >
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Add New Entitlement</DialogTitle>
+                  <DialogDescription>
+                    Fill in the details to create a new entitlement record
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="beneficiaryId">Beneficiary ID *</Label>
+                      <Input
+                        id="beneficiaryId"
+                        value={formData.beneficiaryId}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            beneficiaryId: e.target.value,
+                          })
+                        }
+                        placeholder="Enter beneficiary ID"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="beneficiaryName">
+                        Beneficiary Name *
+                      </Label>
+                      <Input
+                        id="beneficiaryName"
+                        value={formData.beneficiaryName}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            beneficiaryName: e.target.value,
+                          })
+                        }
+                        placeholder="Enter beneficiary name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="entitlementType">
+                        Entitlement Type *
+                      </Label>
+                      <Select
+                        value={formData.entitlementType}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, entitlementType: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select entitlement type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {entitlementTypes.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="applicationDate">Application Date</Label>
+                      <Input
+                        id="applicationDate"
+                        type="date"
+                        value={formData.applicationDate}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            applicationDate: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsCreateModalOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">Create Entitlement</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+
+            {/* Edit Modal */}
+            <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Edit Entitlement</DialogTitle>
+                  <DialogDescription>
+                    Update the entitlement information
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit-beneficiaryId">
+                        Beneficiary ID *
+                      </Label>
+                      <Input
+                        id="edit-beneficiaryId"
+                        value={formData.beneficiaryId}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            beneficiaryId: e.target.value,
+                          })
+                        }
+                        placeholder="Enter beneficiary ID"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-status">Status</Label>
+                      <Select
+                        value={formData.status}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, status: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statusOptions.map((status) => (
+                            <SelectItem key={status} value={status}>
+                              {status}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setIsEditModalOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit">Update Entitlement</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+
+            {/* View Modal */}
+            <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Entitlement Details</DialogTitle>
+                  <DialogDescription>
+                    View detailed information about this entitlement
+                  </DialogDescription>
+                </DialogHeader>
+                {selectedEntitlement && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label>Beneficiary ID</Label>
+                        <p className="text-sm font-medium">
+                          {selectedEntitlement.beneficiaryId}
+                        </p>
+                      </div>
+                      <div>
+                        <Label>Beneficiary Name</Label>
+                        <p className="text-sm font-medium">
+                          {selectedEntitlement.beneficiaryName}
+                        </p>
+                      </div>
+                      <div>
+                        <Label>Entitlement Type</Label>
+                        <p className="text-sm font-medium">
+                          {selectedEntitlement.entitlementType}
+                        </p>
+                      </div>
+                      <div>
+                        <Label>Status</Label>
+                        <Badge
+                          className={getStatusColor(selectedEntitlement.status)}
+                        >
+                          {getStatusIcon(selectedEntitlement.status)}
+                          <span className="ml-1">
+                            {selectedEntitlement.status}
+                          </span>
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <DialogFooter>
+                  <Button onClick={() => setIsViewModalOpen(false)}>
+                    Close
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Entitlements;
