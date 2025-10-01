@@ -97,6 +97,7 @@ const PWD = () => {
     projectResponsible: "",
     disabilityType: "",
     disabilitySeverity: "",
+    percentageOfDisability: "",
     disabilityCertificate: "",
     dateOfReporting: "",
     reportedBy: "",
@@ -186,6 +187,7 @@ const PWD = () => {
       projectResponsible: "",
       disabilityType: "",
       disabilitySeverity: "",
+      percentageOfDisability: "",
       disabilityCertificate: "",
       dateOfReporting: "",
       reportedBy: "",
@@ -217,6 +219,7 @@ const PWD = () => {
       projectResponsible: record.projectResponsible || "",
       disabilityType: record.disabilityType || "",
       disabilitySeverity: record.disabilitySeverity || "",
+      percentageOfDisability: record.percentageOfDisability || "",
       disabilityCertificate: record.disabilityCertificate || "",
       dateOfReporting: record.dateOfReporting
         ? new Date(record.dateOfReporting).toISOString().split("T")[0]
@@ -608,12 +611,13 @@ const PWD = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="uniqueId">Unique ID</Label>
+                <Label htmlFor="uniqueId">Unique ID *</Label>
                 <Input
                   id="uniqueId"
                   name="uniqueId"
                   value={formData.uniqueId}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
               <div>
@@ -659,6 +663,16 @@ const PWD = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="headOfHousehold">Head of Household *</Label>
+                <Input
+                  id="headOfHousehold"
+                  name="headOfHousehold"
+                  value={formData.headOfHousehold}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
                 <Input
                   id="wardNo"
@@ -674,6 +688,18 @@ const PWD = () => {
                   id="habitation"
                   name="habitation"
                   value={formData.habitation}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="projectResponsible">
+                  Project Responsible *
+                </Label>
+                <Input
+                  id="projectResponsible"
+                  name="projectResponsible"
+                  value={formData.projectResponsible}
                   onChange={handleInputChange}
                   required
                 />
@@ -723,6 +749,22 @@ const PWD = () => {
                 </Select>
               </div>
               <div>
+                <Label htmlFor="percentageOfDisability">
+                  Percentage of Disability *
+                </Label>
+                <Input
+                  id="percentageOfDisability"
+                  name="percentageOfDisability"
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={formData.percentageOfDisability}
+                  onChange={handleInputChange}
+                  placeholder="Enter percentage (1-100)"
+                  required
+                />
+              </div>
+              <div>
                 <Label htmlFor="disabilityCertificate">
                   Disability Certificate
                 </Label>
@@ -739,20 +781,32 @@ const PWD = () => {
                     <SelectValue placeholder="Certificate status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Yes">Yes</SelectItem>
-                    <SelectItem value="No">No</SelectItem>
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Not Available">Not Available</SelectItem>
                     <SelectItem value="Applied">Applied</SelectItem>
+                    <SelectItem value="In Process">In Process</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="dateOfReporting">Date of Reporting</Label>
+                <Label htmlFor="dateOfReporting">Date of Reporting *</Label>
                 <Input
                   id="dateOfReporting"
                   name="dateOfReporting"
                   type="date"
                   value={formData.dateOfReporting}
                   onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="reportedBy">Reported By *</Label>
+                <Input
+                  id="reportedBy"
+                  name="reportedBy"
+                  value={formData.reportedBy}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
             </div>

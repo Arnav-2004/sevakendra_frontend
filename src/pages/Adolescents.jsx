@@ -605,12 +605,13 @@ const Adolescents = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="uniqueId">Unique ID</Label>
+                <Label htmlFor="uniqueId">Unique ID *</Label>
                 <Input
                   id="uniqueId"
                   name="uniqueId"
                   value={formData.uniqueId}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
               <div>
@@ -656,6 +657,16 @@ const Adolescents = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="headOfHousehold">Head of Household *</Label>
+                <Input
+                  id="headOfHousehold"
+                  name="headOfHousehold"
+                  value={formData.headOfHousehold}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
                 <Input
                   id="wardNo"
@@ -671,6 +682,39 @@ const Adolescents = () => {
                   id="habitation"
                   name="habitation"
                   value={formData.habitation}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="projectResponsible">
+                  Project Responsible *
+                </Label>
+                <Input
+                  id="projectResponsible"
+                  name="projectResponsible"
+                  value={formData.projectResponsible}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="dateOfReporting">Date of Reporting *</Label>
+                <Input
+                  id="dateOfReporting"
+                  name="dateOfReporting"
+                  type="date"
+                  value={formData.dateOfReporting}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="reportedBy">Reported By *</Label>
+                <Input
+                  id="reportedBy"
+                  name="reportedBy"
+                  value={formData.reportedBy}
                   onChange={handleInputChange}
                   required
                 />
@@ -730,6 +774,57 @@ const Adolescents = () => {
                     <SelectItem value="At Risk">At Risk</SelectItem>
                     <SelectItem value="Needs Attention">
                       Needs Attention
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="nutritionalStatus">Nutritional Status</Label>
+                <Select
+                  value={formData.nutritionalStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      nutritionalStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="Underweight">Underweight</SelectItem>
+                    <SelectItem value="Overweight">Overweight</SelectItem>
+                    <SelectItem value="Malnourished">Malnourished</SelectItem>
+                    <SelectItem value="Severely Malnourished">
+                      Severely Malnourished
+                    </SelectItem>
+                    <SelectItem value="Stunted">Stunted</SelectItem>
+                    <SelectItem value="Wasted">Wasted</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="mentalHealthStatus">Mental Health Status</Label>
+                <Select
+                  value={formData.mentalHealthStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      mentalHealthStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Good">Good</SelectItem>
+                    <SelectItem value="At Risk">At Risk</SelectItem>
+                    <SelectItem value="Needs Support">Needs Support</SelectItem>
+                    <SelectItem value="Under Treatment">
+                      Under Treatment
                     </SelectItem>
                   </SelectContent>
                 </Select>

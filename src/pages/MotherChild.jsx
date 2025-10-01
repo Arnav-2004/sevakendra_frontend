@@ -646,6 +646,37 @@ const MotherChild = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="uniqueId">Unique ID *</Label>
+                <Input
+                  id="uniqueId"
+                  name="uniqueId"
+                  value={formData.uniqueId}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="gender">Gender *</Label>
+                <Select
+                  value={formData.gender}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      gender: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label htmlFor="contactNo">Contact Number *</Label>
                 <Input
                   id="contactNo"
@@ -653,6 +684,16 @@ const MotherChild = () => {
                   value={formData.contactNo}
                   onChange={handleInputChange}
                   pattern="[6-9][0-9]{9}"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="headOfHousehold">Head of Household *</Label>
+                <Input
+                  id="headOfHousehold"
+                  name="headOfHousehold"
+                  value={formData.headOfHousehold}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -677,6 +718,39 @@ const MotherChild = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="projectResponsible">
+                  Project Responsible *
+                </Label>
+                <Input
+                  id="projectResponsible"
+                  name="projectResponsible"
+                  value={formData.projectResponsible}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="dateOfReporting">Date of Reporting *</Label>
+                <Input
+                  id="dateOfReporting"
+                  name="dateOfReporting"
+                  type="date"
+                  value={formData.dateOfReporting}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="reportedBy">Reported By *</Label>
+                <Input
+                  id="reportedBy"
+                  name="reportedBy"
+                  value={formData.reportedBy}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
                 <Label htmlFor="immunizationStatus">Immunization Status</Label>
                 <Select
                   value={formData.immunizationStatus}
@@ -695,6 +769,86 @@ const MotherChild = () => {
                     <SelectItem value="Incomplete">Incomplete</SelectItem>
                     <SelectItem value="Not Started">Not Started</SelectItem>
                     <SelectItem value="In Progress">In Progress</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="nutritionalStatus">Nutritional Status</Label>
+                <Select
+                  value={formData.nutritionalStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      nutritionalStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="Underweight">Underweight</SelectItem>
+                    <SelectItem value="Overweight">Overweight</SelectItem>
+                    <SelectItem value="Malnourished">Malnourished</SelectItem>
+                    <SelectItem value="Severely Malnourished">
+                      Severely Malnourished
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="childImmunizationStatus">
+                  Child Immunization Status
+                </Label>
+                <Select
+                  value={formData.childImmunizationStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      childImmunizationStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Complete">Complete</SelectItem>
+                    <SelectItem value="Incomplete">Incomplete</SelectItem>
+                    <SelectItem value="Not Started">Not Started</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                    <SelectItem value="Age Appropriate">
+                      Age Appropriate
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="childNutritionalStatus">
+                  Child Nutritional Status
+                </Label>
+                <Select
+                  value={formData.childNutritionalStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      childNutritionalStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="Underweight">Underweight</SelectItem>
+                    <SelectItem value="Overweight">Overweight</SelectItem>
+                    <SelectItem value="Stunted">Stunted</SelectItem>
+                    <SelectItem value="Wasted">Wasted</SelectItem>
+                    <SelectItem value="Severely Malnourished">
+                      Severely Malnourished
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

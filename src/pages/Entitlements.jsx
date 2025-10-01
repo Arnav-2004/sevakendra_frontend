@@ -86,12 +86,20 @@ const Entitlements = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [formData, setFormData] = useState({
+    householdCode: "",
+    idCode: "",
+    name: "",
     beneficiaryId: "",
     beneficiaryName: "",
     age: "",
     gender: "",
+    headOfHousehold: "",
+    contactNo: "",
     wardNo: "",
     habitation: "",
+    projectResponsible: "",
+    dateOfReporting: "",
+    reportedBy: "",
     entitlementType: "",
     entitlementDetails: "",
     applicationDate: "",
@@ -219,12 +227,20 @@ const Entitlements = () => {
   // Reset form
   const resetForm = () => {
     setFormData({
+      householdCode: "",
+      idCode: "",
+      name: "",
       beneficiaryId: "",
       beneficiaryName: "",
       age: "",
       gender: "",
+      headOfHousehold: "",
+      contactNo: "",
       wardNo: "",
       habitation: "",
+      projectResponsible: "",
+      dateOfReporting: "",
+      reportedBy: "",
       entitlementType: "",
       entitlementDetails: "",
       applicationDate: "",
@@ -485,6 +501,21 @@ const Entitlements = () => {
                                 onClick={() => {
                                   setSelectedEntitlement(entitlement);
                                   setFormData({
+                                    householdCode:
+                                      entitlement.householdCode || "",
+                                    idCode: entitlement.idCode || "",
+                                    name: entitlement.name || "",
+                                    headOfHousehold:
+                                      entitlement.headOfHousehold || "",
+                                    contactNo: entitlement.contactNo || "",
+                                    projectResponsible:
+                                      entitlement.projectResponsible || "",
+                                    dateOfReporting: entitlement.dateOfReporting
+                                      ? entitlement.dateOfReporting.split(
+                                          "T"
+                                        )[0]
+                                      : "",
+                                    reportedBy: entitlement.reportedBy || "",
                                     beneficiaryId:
                                       entitlement.beneficiaryId || "",
                                     beneficiaryName:
@@ -633,7 +664,202 @@ const Entitlements = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="beneficiaryId">Beneficiary ID *</Label>
+                      <Label htmlFor="householdCode">Household Code *</Label>
+                      <Input
+                        id="householdCode"
+                        value={formData.householdCode}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            householdCode: e.target.value,
+                          })
+                        }
+                        placeholder="Enter household code"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="idCode">ID Code *</Label>
+                      <Input
+                        id="idCode"
+                        value={formData.idCode}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            idCode: e.target.value,
+                          })
+                        }
+                        placeholder="Enter ID code"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="name">Name *</Label>
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            name: e.target.value,
+                          })
+                        }
+                        placeholder="Enter name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="gender">Gender *</Label>
+                      <Select
+                        value={formData.gender}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, gender: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {genderOptions.map((gender) => (
+                            <SelectItem key={gender} value={gender}>
+                              {gender}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="age">Age *</Label>
+                      <Input
+                        id="age"
+                        type="number"
+                        min="0"
+                        max="120"
+                        value={formData.age}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            age: e.target.value,
+                          })
+                        }
+                        placeholder="Enter age"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="headOfHousehold">
+                        Head of Household *
+                      </Label>
+                      <Input
+                        id="headOfHousehold"
+                        value={formData.headOfHousehold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            headOfHousehold: e.target.value,
+                          })
+                        }
+                        placeholder="Enter head of household"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="contactNo">Contact Number *</Label>
+                      <Input
+                        id="contactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        placeholder="Enter contact number"
+                        pattern="[6-9][0-9]{9}"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="wardNo">Ward Number *</Label>
+                      <Input
+                        id="wardNo"
+                        value={formData.wardNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            wardNo: e.target.value,
+                          })
+                        }
+                        placeholder="Enter ward number"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="habitation">Habitation *</Label>
+                      <Input
+                        id="habitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        placeholder="Enter habitation"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="projectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="projectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        placeholder="Enter project responsible"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="dateOfReporting">
+                        Date of Reporting *
+                      </Label>
+                      <Input
+                        id="dateOfReporting"
+                        type="date"
+                        value={formData.dateOfReporting}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfReporting: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="reportedBy">Reported By *</Label>
+                      <Input
+                        id="reportedBy"
+                        value={formData.reportedBy}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            reportedBy: e.target.value,
+                          })
+                        }
+                        placeholder="Enter reported by"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="beneficiaryId">Beneficiary ID</Label>
                       <Input
                         id="beneficiaryId"
                         value={formData.beneficiaryId}
@@ -644,13 +870,10 @@ const Entitlements = () => {
                           })
                         }
                         placeholder="Enter beneficiary ID"
-                        required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="beneficiaryName">
-                        Beneficiary Name *
-                      </Label>
+                      <Label htmlFor="beneficiaryName">Beneficiary Name</Label>
                       <Input
                         id="beneficiaryName"
                         value={formData.beneficiaryName}
@@ -661,13 +884,10 @@ const Entitlements = () => {
                           })
                         }
                         placeholder="Enter beneficiary name"
-                        required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="entitlementType">
-                        Entitlement Type *
-                      </Label>
+                      <Label htmlFor="entitlementType">Entitlement Type</Label>
                       <Select
                         value={formData.entitlementType}
                         onValueChange={(value) =>

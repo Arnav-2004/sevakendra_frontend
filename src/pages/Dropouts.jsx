@@ -519,15 +519,150 @@ const Dropouts = () => {
                       />
                     </div>
                     <div>
+                      <Label htmlFor="contactNo">Contact Number *</Label>
+                      <Input
+                        id="contactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="headOfHousehold">
+                        Head of Household *
+                      </Label>
+                      <Input
+                        id="headOfHousehold"
+                        value={formData.headOfHousehold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            headOfHousehold: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="wardNo">Ward Number *</Label>
+                      <Input
+                        id="wardNo"
+                        value={formData.wardNo}
+                        onChange={(e) =>
+                          setFormData({ ...formData, wardNo: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="habitation">Habitation *</Label>
+                      <Input
+                        id="habitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="projectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="projectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="dateOfReporting">
+                        Date of Reporting *
+                      </Label>
+                      <Input
+                        id="dateOfReporting"
+                        type="date"
+                        value={formData.dateOfReporting}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfReporting: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="reportedBy">Reported By *</Label>
+                      <Input
+                        id="reportedBy"
+                        value={formData.reportedBy}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            reportedBy: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
                       <Label htmlFor="yearOfDropout">Year of Dropout *</Label>
                       <Input
                         id="yearOfDropout"
                         type="number"
+                        min={1990}
                         value={formData.yearOfDropout}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
                             yearOfDropout: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="educationLevelWhenDropout">
+                        Education Level When Dropout *
+                      </Label>
+                      <Input
+                        id="educationLevelWhenDropout"
+                        value={formData.educationLevelWhenDropout}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            educationLevelWhenDropout: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="schoolNameWhenDropout">
+                        School Name When Dropout *
+                      </Label>
+                      <Input
+                        id="schoolNameWhenDropout"
+                        value={formData.schoolNameWhenDropout}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            schoolNameWhenDropout: e.target.value,
                           })
                         }
                         required

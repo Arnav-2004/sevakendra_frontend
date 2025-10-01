@@ -590,6 +590,77 @@ const CompetitiveExams = () => {
                       />
                     </div>
                     <div>
+                      <Label htmlFor="contactNo">Contact Number *</Label>
+                      <Input
+                        id="contactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="headOfHousehold">
+                        Head of Household *
+                      </Label>
+                      <Input
+                        id="headOfHousehold"
+                        value={formData.headOfHousehold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            headOfHousehold: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="wardNo">Ward Number *</Label>
+                      <Input
+                        id="wardNo"
+                        value={formData.wardNo}
+                        onChange={(e) =>
+                          setFormData({ ...formData, wardNo: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="habitation">Habitation *</Label>
+                      <Input
+                        id="habitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="projectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="projectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
                       <Label htmlFor="typeOfExam">Type of Exam *</Label>
                       <Select
                         value={formData.typeOfExam}

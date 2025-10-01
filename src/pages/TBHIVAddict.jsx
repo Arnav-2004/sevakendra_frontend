@@ -621,12 +621,13 @@ const TBHIVAddict = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="uniqueId">Unique ID</Label>
+                <Label htmlFor="uniqueId">Unique ID *</Label>
                 <Input
                   id="uniqueId"
                   name="uniqueId"
                   value={formData.uniqueId}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
               <div>
@@ -672,6 +673,16 @@ const TBHIVAddict = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="headOfHousehold">Head of Household *</Label>
+                <Input
+                  id="headOfHousehold"
+                  name="headOfHousehold"
+                  value={formData.headOfHousehold}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
                 <Input
                   id="wardNo"
@@ -687,6 +698,18 @@ const TBHIVAddict = () => {
                   id="habitation"
                   name="habitation"
                   value={formData.habitation}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="projectResponsible">
+                  Project Responsible *
+                </Label>
+                <Input
+                  id="projectResponsible"
+                  name="projectResponsible"
+                  value={formData.projectResponsible}
                   onChange={handleInputChange}
                   required
                 />
@@ -750,6 +773,27 @@ const TBHIVAddict = () => {
                   type="date"
                   value={formData.diagnosisDate}
                   onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="dateOfReporting">Date of Reporting *</Label>
+                <Input
+                  id="dateOfReporting"
+                  name="dateOfReporting"
+                  type="date"
+                  value={formData.dateOfReporting}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="reportedBy">Reported By *</Label>
+                <Input
+                  id="reportedBy"
+                  name="reportedBy"
+                  value={formData.reportedBy}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
             </div>

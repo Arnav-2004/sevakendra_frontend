@@ -86,11 +86,14 @@ const CBUCBODetails = () => {
     groupId: "",
     groupName: "",
     groupType: "",
+    functionalArea: "",
     wardNo: "",
     habitation: "",
     projectResponsible: "",
     dateOfFormation: "",
     totalMembers: "",
+    groupLeader: "",
+    contactNo: "",
     president: {
       name: "",
       contactNo: "",
@@ -124,13 +127,12 @@ const CBUCBODetails = () => {
   });
 
   const groupTypes = [
-    "Self Help Group",
-    "Women's Group",
+    "CBUCBO",
+    "SHG",
     "Youth Group",
-    "Farmers Group",
-    "Micro Finance Group",
-    "Community Organization",
-    "Cooperative Society",
+    "Women Group",
+    "Farmer Producer Group",
+    "Other",
   ];
 
   const statusOptions = ["Active", "Inactive", "Dissolved", "Merged"];
@@ -221,11 +223,14 @@ const CBUCBODetails = () => {
       groupId: "",
       groupName: "",
       groupType: "",
+      functionalArea: "",
       wardNo: "",
       habitation: "",
       projectResponsible: "",
       dateOfFormation: "",
       totalMembers: "",
+      groupLeader: "",
+      contactNo: "",
       president: {
         name: "",
         contactNo: "",
@@ -475,6 +480,7 @@ const CBUCBODetails = () => {
                                     groupId: group.groupId || "",
                                     groupName: group.groupName || "",
                                     groupType: group.groupType || "",
+                                    functionalArea: group.functionalArea || "",
                                     wardNo: group.wardNo || "",
                                     habitation: group.habitation || "",
                                     projectResponsible:
@@ -483,6 +489,8 @@ const CBUCBODetails = () => {
                                       ? group.dateOfFormation.split("T")[0]
                                       : "",
                                     totalMembers: group.totalMembers || "",
+                                    groupLeader: group.groupLeader || "",
+                                    contactNo: group.contactNo || "",
                                     president: group.president || {
                                       name: "",
                                       contactNo: "",
@@ -665,6 +673,21 @@ const CBUCBODetails = () => {
                       </Select>
                     </div>
                     <div>
+                      <Label htmlFor="functionalArea">Functional Area *</Label>
+                      <Input
+                        id="functionalArea"
+                        value={formData.functionalArea}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            functionalArea: e.target.value,
+                          })
+                        }
+                        placeholder="Enter functional area"
+                        required
+                      />
+                    </div>
+                    <div>
                       <Label htmlFor="wardNo">Ward No *</Label>
                       <Input
                         id="wardNo"
@@ -692,10 +715,45 @@ const CBUCBODetails = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="totalMembers">Total Members</Label>
+                      <Label htmlFor="projectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="projectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        placeholder="Enter project responsible"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="dateOfFormation">
+                        Date of Formation *
+                      </Label>
+                      <Input
+                        id="dateOfFormation"
+                        type="date"
+                        value={formData.dateOfFormation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfFormation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="totalMembers">Total Members *</Label>
                       <Input
                         id="totalMembers"
                         type="number"
+                        min="1"
                         value={formData.totalMembers}
                         onChange={(e) =>
                           setFormData({
@@ -704,6 +762,38 @@ const CBUCBODetails = () => {
                           })
                         }
                         placeholder="Enter total members"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="groupLeader">Group Leader *</Label>
+                      <Input
+                        id="groupLeader"
+                        value={formData.groupLeader}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            groupLeader: e.target.value,
+                          })
+                        }
+                        placeholder="Enter group leader name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="contactNo">Contact Number *</Label>
+                      <Input
+                        id="contactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        placeholder="Enter contact number"
+                        pattern="[6-9][0-9]{9}"
+                        required
                       />
                     </div>
                   </div>
