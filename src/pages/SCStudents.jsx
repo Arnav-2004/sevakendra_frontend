@@ -95,6 +95,7 @@ const SCStudents = () => {
     wardNo: "",
     habitation: "",
     projectResponsible: "",
+    category: "",
     dateOfReporting: "",
     reportedBy: "",
     natureOfIssue: "",
@@ -211,6 +212,8 @@ const SCStudents = () => {
       photoDocumentation: {},
     });
     setSelectedStudent(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Open edit modal
@@ -501,8 +504,8 @@ const SCStudents = () => {
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Male">Male</SelectItem>
-                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Boy">Boy</SelectItem>
+                          <SelectItem value="Girl">Girl</SelectItem>
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
@@ -551,14 +554,28 @@ const SCStudents = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward No *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="habitation">Habitation *</Label>
@@ -589,6 +606,28 @@ const SCStudents = () => {
                         }
                         required
                       />
+                    </div>
+                    <div>
+                      <Label htmlFor="category">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="category">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="dateOfReporting">
@@ -657,7 +696,6 @@ const SCStudents = () => {
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Same form fields as create modal */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="editHouseholdCode">
@@ -686,6 +724,190 @@ const SCStudents = () => {
                         required
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="editGender">Gender *</Label>
+                      <Select
+                        value={formData.gender}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, gender: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Boy">Boy</SelectItem>
+                          <SelectItem value="Girl">Girl</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editAge">Age *</Label>
+                      <Input
+                        id="editAge"
+                        type="number"
+                        value={formData.age}
+                        onChange={(e) =>
+                          setFormData({ ...formData, age: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editContactNo">Contact Number *</Label>
+                      <Input
+                        id="editContactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editHeadOfHousehold">
+                        Head of Household *
+                      </Label>
+                      <Input
+                        id="editHeadOfHousehold"
+                        value={formData.headOfHousehold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            headOfHousehold: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editWardNo">Ward No *</Label>
+                      <Select
+                        value={formData.wardNo}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
+                        }
+                      >
+                        <SelectTrigger id="editWardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editHabitation">Habitation *</Label>
+                      <Input
+                        id="editHabitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editProjectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="editProjectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editCategory">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="editCategory">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editDateOfReporting">
+                        Date of Reporting *
+                      </Label>
+                      <Input
+                        id="editDateOfReporting"
+                        type="date"
+                        value={formData.dateOfReporting}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfReporting: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editReportedBy">Reported By *</Label>
+                      <Input
+                        id="editReportedBy"
+                        value={formData.reportedBy}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            reportedBy: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editNatureOfIssue">
+                        Nature of Issue *
+                      </Label>
+                      <Textarea
+                        id="editNatureOfIssue"
+                        value={formData.natureOfIssue}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            natureOfIssue: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
                   </div>
 
                   <DialogFooter>
@@ -708,44 +930,206 @@ const SCStudents = () => {
                   </DialogDescription>
                 </DialogHeader>
                 {selectedStudent && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Household Code</Label>
-                        <p className="text-sm font-medium">
-                          {selectedStudent.householdCode}
-                        </p>
+                  <div className="space-y-6">
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Household Code
+                          </Label>
+                          <p>{selectedStudent.householdCode}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Name</Label>
+                          <p>{selectedStudent.name}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Gender</Label>
+                          <Badge variant="outline">
+                            {selectedStudent.gender}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Age</Label>
+                          <p>{selectedStudent.age} years</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Contact Number
+                          </Label>
+                          <p>{selectedStudent.contactNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Head of Household
+                          </Label>
+                          <p>{selectedStudent.headOfHousehold}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedStudent.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedStudent.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedStudent.projectResponsible}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Category</Label>
+                          <p>{selectedStudent.category}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Name</Label>
-                        <p className="text-sm font-medium">
-                          {selectedStudent.name}
-                        </p>
+                    </div>
+
+                    {/* Reporting Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Reporting Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Reporting
+                          </Label>
+                          <p>
+                            {selectedStudent.dateOfReporting
+                              ? new Date(
+                                  selectedStudent.dateOfReporting
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Reported By</Label>
+                          <p>{selectedStudent.reportedBy}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Gender</Label>
-                        <p className="text-sm font-medium">
-                          {selectedStudent.gender}
-                        </p>
+                      {selectedStudent.natureOfIssue && (
+                        <div>
+                          <Label className="font-semibold">
+                            Nature of Issue
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedStudent.natureOfIssue}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Assessments */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Assessments
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Medical Screening
+                          </Label>
+                          <p>
+                            {selectedStudent.dateOfMedicalScreening
+                              ? new Date(
+                                  selectedStudent.dateOfMedicalScreening
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Psychological Assessment
+                          </Label>
+                          <p>
+                            {selectedStudent.dateOfPsychologicalAssessment
+                              ? new Date(
+                                  selectedStudent.dateOfPsychologicalAssessment
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Educational Assessment
+                          </Label>
+                          <p>
+                            {selectedStudent.dateOfEducationalAssessment
+                              ? new Date(
+                                  selectedStudent.dateOfEducationalAssessment
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Career Counselling
+                          </Label>
+                          <p>
+                            {selectedStudent.dateOfCareerCounselling
+                              ? new Date(
+                                  selectedStudent.dateOfCareerCounselling
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Age</Label>
-                        <p className="text-sm font-medium">
-                          {selectedStudent.age}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Contact Number</Label>
-                        <p className="text-sm font-medium">
-                          {selectedStudent.contactNo}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Head of Household</Label>
-                        <p className="text-sm font-medium">
-                          {selectedStudent.headOfHousehold}
-                        </p>
-                      </div>
+                      {selectedStudent.medicalScreeningResults && (
+                        <div>
+                          <Label className="font-semibold">
+                            Medical Screening Results
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedStudent.medicalScreeningResults}
+                          </p>
+                        </div>
+                      )}
+                      {selectedStudent.psychologicalScreeningResults && (
+                        <div>
+                          <Label className="font-semibold">
+                            Psychological Screening Results
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedStudent.psychologicalScreeningResults}
+                          </p>
+                        </div>
+                      )}
+                      {selectedStudent.educationalScreeningResults && (
+                        <div>
+                          <Label className="font-semibold">
+                            Educational Screening Results
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedStudent.educationalScreeningResults}
+                          </p>
+                        </div>
+                      )}
+                      {selectedStudent.counselingReport && (
+                        <div>
+                          <Label className="font-semibold">
+                            Counseling Report
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedStudent.counselingReport}
+                          </p>
+                        </div>
+                      )}
+                      {selectedStudent.individualCarePlan && (
+                        <div>
+                          <Label className="font-semibold">
+                            Individual Care Plan
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedStudent.individualCarePlan}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

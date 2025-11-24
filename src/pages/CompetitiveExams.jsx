@@ -90,6 +90,8 @@ const CompetitiveExams = () => {
     wardNo: "",
     habitation: "",
     projectResponsible: "",
+    category: "",
+    socialStatus: "",
     educationalStatus: "",
     typeOfExam: "",
     status: "Preparing",
@@ -178,6 +180,8 @@ const CompetitiveExams = () => {
       wardNo: "",
       habitation: "",
       projectResponsible: "",
+      category: "",
+      socialStatus: "",
       educationalStatus: "",
       typeOfExam: "",
       status: "Preparing",
@@ -194,6 +198,8 @@ const CompetitiveExams = () => {
       progressReporting: {},
     });
     setSelectedExam(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Open edit modal
@@ -621,14 +627,28 @@ const CompetitiveExams = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward Number *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="habitation">Habitation *</Label>
@@ -659,6 +679,56 @@ const CompetitiveExams = () => {
                         }
                         required
                       />
+                    </div>
+                    <div>
+                      <Label htmlFor="category">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="category">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="socialStatus">Social Status *</Label>
+                      <Select
+                        value={formData.socialStatus}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, socialStatus: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select social status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">
+                            SC (Scheduled Caste)
+                          </SelectItem>
+                          <SelectItem value="ST">
+                            ST (Scheduled Tribe)
+                          </SelectItem>
+                          <SelectItem value="OBC">
+                            OBC (Other Backward Class)
+                          </SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="EWS">
+                            EWS (Economically Weaker Section)
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="typeOfExam">Type of Exam *</Label>
@@ -810,6 +880,259 @@ const CompetitiveExams = () => {
                         required
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="editGender">Gender *</Label>
+                      <Select
+                        value={formData.gender}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, gender: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editAge">Age *</Label>
+                      <Input
+                        id="editAge"
+                        type="number"
+                        value={formData.age}
+                        onChange={(e) =>
+                          setFormData({ ...formData, age: e.target.value })
+                        }
+                        min="0"
+                        max="120"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editContactNo">Contact Number *</Label>
+                      <Input
+                        id="editContactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editHeadOfHousehold">
+                        Head of Household *
+                      </Label>
+                      <Input
+                        id="editHeadOfHousehold"
+                        value={formData.headOfHousehold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            headOfHousehold: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editWardNo">Ward Number *</Label>
+                      <Input
+                        id="editWardNo"
+                        value={formData.wardNo}
+                        onChange={(e) =>
+                          setFormData({ ...formData, wardNo: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editHabitation">Habitation *</Label>
+                      <Input
+                        id="editHabitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editProjectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="editProjectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editCategory">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="editCategory">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editSocialStatus">Social Status *</Label>
+                      <Select
+                        value={formData.socialStatus}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, socialStatus: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select social status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">
+                            SC (Scheduled Caste)
+                          </SelectItem>
+                          <SelectItem value="ST">
+                            ST (Scheduled Tribe)
+                          </SelectItem>
+                          <SelectItem value="OBC">
+                            OBC (Other Backward Class)
+                          </SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="EWS">
+                            EWS (Economically Weaker Section)
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editTypeOfExam">Type of Exam *</Label>
+                      <Select
+                        value={formData.typeOfExam}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, typeOfExam: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select exam type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="JEE Main">JEE Main</SelectItem>
+                          <SelectItem value="JEE Advanced">
+                            JEE Advanced
+                          </SelectItem>
+                          <SelectItem value="NEET">NEET</SelectItem>
+                          <SelectItem value="UPSC">UPSC</SelectItem>
+                          <SelectItem value="SSC">SSC</SelectItem>
+                          <SelectItem value="Bank PO">Bank PO</SelectItem>
+                          <SelectItem value="Bank Clerk">Bank Clerk</SelectItem>
+                          <SelectItem value="Railway">Railway</SelectItem>
+                          <SelectItem value="Police">Police</SelectItem>
+                          <SelectItem value="Teaching">Teaching</SelectItem>
+                          <SelectItem value="State PSC">State PSC</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editStatus">Status</Label>
+                      <Select
+                        value={formData.status}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, status: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Preparing">Preparing</SelectItem>
+                          <SelectItem value="Appeared">Appeared</SelectItem>
+                          <SelectItem value="Qualified">Qualified</SelectItem>
+                          <SelectItem value="Not Qualified">
+                            Not Qualified
+                          </SelectItem>
+                          <SelectItem value="Discontinued">
+                            Discontinued
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editDateOfEnrollment">
+                        Date of Enrollment *
+                      </Label>
+                      <Input
+                        id="editDateOfEnrollment"
+                        type="date"
+                        value={formData.dateOfEnrollment}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfEnrollment: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editEnrolledBy">Enrolled By *</Label>
+                      <Input
+                        id="editEnrolledBy"
+                        value={formData.enrolledBy}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            enrolledBy: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editEducationalStatus">
+                        Educational Status *
+                      </Label>
+                      <Input
+                        id="editEducationalStatus"
+                        value={formData.educationalStatus}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            educationalStatus: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
                   </div>
 
                   <DialogFooter>
@@ -833,56 +1156,194 @@ const CompetitiveExams = () => {
                   </DialogDescription>
                 </DialogHeader>
                 {selectedExam && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Household Code</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.householdCode}
-                        </p>
+                  <div className="space-y-6">
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Household Code
+                          </Label>
+                          <p>{selectedExam.householdCode}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Name</Label>
+                          <p>{selectedExam.name}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Gender</Label>
+                          <Badge variant="outline">{selectedExam.gender}</Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Age</Label>
+                          <p>{selectedExam.age} years</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Contact Number
+                          </Label>
+                          <p>{selectedExam.contactNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Head of Household
+                          </Label>
+                          <p>{selectedExam.headOfHousehold}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedExam.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedExam.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedExam.projectResponsible}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Category</Label>
+                          <p>{selectedExam.category}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Social Status</Label>
+                          <p>{selectedExam.socialStatus || "N/A"}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Educational Status
+                          </Label>
+                          <p>{selectedExam.educationalStatus}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Name</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.name}
-                        </p>
+                    </div>
+
+                    {/* Exam Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Exam Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">Type of Exam</Label>
+                          <Badge>{selectedExam.typeOfExam}</Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Status</Label>
+                          <Badge>{selectedExam.status}</Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Enrollment
+                          </Label>
+                          <p>
+                            {selectedExam.dateOfEnrollment
+                              ? new Date(
+                                  selectedExam.dateOfEnrollment
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Enrolled By</Label>
+                          <p>{selectedExam.enrolledBy}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Application Date
+                          </Label>
+                          <p>
+                            {selectedExam.applicationDate
+                              ? new Date(
+                                  selectedExam.applicationDate
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Exam Date</Label>
+                          <p>
+                            {selectedExam.examDate
+                              ? new Date(
+                                  selectedExam.examDate
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Result</Label>
+                          <Badge>{selectedExam.result}</Badge>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Gender</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.gender}
-                        </p>
+                    </div>
+
+                    {/* Assessment & Counseling */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Assessment & Counseling
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Educational Assessment
+                          </Label>
+                          <p>
+                            {selectedExam.dateOfEducationalAssessment
+                              ? new Date(
+                                  selectedExam.dateOfEducationalAssessment
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Career Counselling
+                          </Label>
+                          <p>
+                            {selectedExam.dateOfCareerCounselling
+                              ? new Date(
+                                  selectedExam.dateOfCareerCounselling
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Age</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.age}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Type of Exam</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.typeOfExam}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Status</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.status}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Educational Status</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.educationalStatus}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Enrolled By</Label>
-                        <p className="text-sm font-medium">
-                          {selectedExam.enrolledBy}
-                        </p>
-                      </div>
+                      {selectedExam.educationalScreeningResults && (
+                        <div>
+                          <Label className="font-semibold">
+                            Educational Screening Results
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedExam.educationalScreeningResults}
+                          </p>
+                        </div>
+                      )}
+                      {selectedExam.counselingReport && (
+                        <div>
+                          <Label className="font-semibold">
+                            Counseling Report
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedExam.counselingReport}
+                          </p>
+                        </div>
+                      )}
+                      {selectedExam.individualCarePlan && (
+                        <div>
+                          <Label className="font-semibold">
+                            Individual Care Plan
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedExam.individualCarePlan}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

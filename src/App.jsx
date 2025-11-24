@@ -4,6 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { Toaster } from "sonner";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SignIn from "./pages/SignIn";
@@ -24,13 +25,19 @@ import Elderly from "./pages/Elderly";
 import MotherChild from "./pages/MotherChild";
 import PWD from "./pages/PWD";
 import Adolescents from "./pages/Adolescents";
-import TBHIVAddict from "./pages/TBHIVAddict";
+import Tuberculosis from "./pages/Tuberculosis";
+import HIV from "./pages/HIV";
+import Leprosy from "./pages/Leprosy";
+import Addiction from "./pages/Addiction";
+import OtherDiseases from "./pages/OtherDiseases";
 import CBUCBODetails from "./pages/CBUCBODetails";
 import Entitlements from "./pages/Entitlements";
+import TrackingDashboard from "./pages/TrackingDashboard";
 
 function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" richColors expand={true} closeButton />
       <Router>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
@@ -71,6 +78,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Reports />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tracking"
+            element={
+              <ProtectedRoute>
+                <TrackingDashboard />
               </ProtectedRoute>
             }
           />
@@ -163,10 +178,42 @@ function App() {
             }
           />
           <Route
-            path="/health/tb-hiv-addict"
+            path="/health/tuberculosis"
             element={
               <ProtectedRoute>
-                <TBHIVAddict />
+                <Tuberculosis />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/health/hiv"
+            element={
+              <ProtectedRoute>
+                <HIV />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/health/leprosy"
+            element={
+              <ProtectedRoute>
+                <Leprosy />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/health/addiction"
+            element={
+              <ProtectedRoute>
+                <Addiction />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/health/other-diseases"
+            element={
+              <ProtectedRoute>
+                <OtherDiseases />
               </ProtectedRoute>
             }
           />

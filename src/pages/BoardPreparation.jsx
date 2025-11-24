@@ -90,6 +90,7 @@ const BoardPreparation = () => {
     wardNo: "",
     habitation: "",
     projectResponsible: "",
+    category: "",
     educationalStandard: "",
     status: "Preparing",
     dateOfReporting: "",
@@ -176,6 +177,7 @@ const BoardPreparation = () => {
       wardNo: "",
       habitation: "",
       projectResponsible: "",
+      category: "",
       educationalStandard: "",
       status: "Preparing",
       dateOfReporting: "",
@@ -188,6 +190,8 @@ const BoardPreparation = () => {
       progressReporting: {},
     });
     setSelectedBoardPrep(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Open edit modal
@@ -596,14 +600,50 @@ const BoardPreparation = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward Number *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
+                        }
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="category">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
                         }
                         required
-                      />
+                      >
+                        <SelectTrigger id="category">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="educationalStandard">
@@ -778,6 +818,214 @@ const BoardPreparation = () => {
                         value={formData.name}
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editGender">Gender *</Label>
+                      <Select
+                        value={formData.gender}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, gender: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Male">Male</SelectItem>
+                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editAge">Age *</Label>
+                      <Input
+                        id="editAge"
+                        type="number"
+                        value={formData.age}
+                        onChange={(e) =>
+                          setFormData({ ...formData, age: e.target.value })
+                        }
+                        min="0"
+                        max="120"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editContactNo">Contact Number *</Label>
+                      <Input
+                        id="editContactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        placeholder="10-digit mobile number"
+                        pattern="[6-9][0-9]{9}"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editWardNo">Ward Number *</Label>
+                      <Input
+                        id="editWardNo"
+                        value={formData.wardNo}
+                        onChange={(e) =>
+                          setFormData({ ...formData, wardNo: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editCategory">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="editCategory">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editEducationalStandard">
+                        Educational Standard *
+                      </Label>
+                      <Select
+                        value={formData.educationalStandard}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            educationalStandard: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select standard" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Class 10">Class 10</SelectItem>
+                          <SelectItem value="Class 12">Class 12</SelectItem>
+                          <SelectItem value="Graduation">Graduation</SelectItem>
+                          <SelectItem value="Post Graduation">
+                            Post Graduation
+                          </SelectItem>
+                          <SelectItem value="Diploma">Diploma</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editStatus">Status</Label>
+                      <Select
+                        value={formData.status}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, status: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Preparing">Preparing</SelectItem>
+                          <SelectItem value="Appeared">Appeared</SelectItem>
+                          <SelectItem value="Passed">Passed</SelectItem>
+                          <SelectItem value="Failed">Failed</SelectItem>
+                          <SelectItem value="Discontinued">
+                            Discontinued
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editDateOfReporting">
+                        Date of Reporting *
+                      </Label>
+                      <Input
+                        id="editDateOfReporting"
+                        type="date"
+                        value={formData.dateOfReporting}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfReporting: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editReportedBy">Reported By *</Label>
+                      <Input
+                        id="editReportedBy"
+                        value={formData.reportedBy}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            reportedBy: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editHeadOfHousehold">
+                        Head of Household *
+                      </Label>
+                      <Input
+                        id="editHeadOfHousehold"
+                        value={formData.headOfHousehold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            headOfHousehold: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editHabitation">Habitation *</Label>
+                      <Input
+                        id="editHabitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editProjectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="editProjectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
                         }
                         required
                       />

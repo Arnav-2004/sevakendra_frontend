@@ -47,6 +47,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Building2,
   Plus,
@@ -87,11 +88,12 @@ const StudyCenters = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [formData, setFormData] = useState({
+    centreCode: "",
     centreName: "",
     sourceOfFunding: "",
     infrastructure: "",
     timing: "",
-    studentsLevelOfEducation: "",
+    studentsLevelOfEducation: [],
     wardNo: "",
     habitation: "",
     projectResponsible: "",
@@ -101,6 +103,13 @@ const StudyCenters = () => {
     groupLeaderContact: "",
     teacherNames: [""],
     teacherContacts: [""],
+    functionalAspects: {
+      infrastructureQuality: "",
+      teacherAttendance: "",
+      studentEngagement: "",
+      learningOutcome: "",
+      communityParticipation: "",
+    },
     progressReporting: {},
   });
 
@@ -179,11 +188,12 @@ const StudyCenters = () => {
   // Reset form
   const resetForm = () => {
     setFormData({
+      centreCode: "",
       centreName: "",
       sourceOfFunding: "",
       infrastructure: "",
       timing: "",
-      studentsLevelOfEducation: "",
+      studentsLevelOfEducation: [],
       wardNo: "",
       habitation: "",
       projectResponsible: "",
@@ -193,9 +203,18 @@ const StudyCenters = () => {
       groupLeaderContact: "",
       teacherNames: [""],
       teacherContacts: [""],
+      functionalAspects: {
+        infrastructureQuality: "",
+        teacherAttendance: "",
+        studentEngagement: "",
+        learningOutcome: "",
+        communityParticipation: "",
+      },
       progressReporting: {},
     });
     setSelectedCenter(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Open edit modal
@@ -206,6 +225,15 @@ const StudyCenters = () => {
       dateOfEstablishment: center.dateOfEstablishment
         ? new Date(center.dateOfEstablishment).toISOString().split("T")[0]
         : "",
+      functionalAspects: center.functionalAspects || {
+        infrastructureQuality: "",
+        teacherAttendance: "",
+        studentEngagement: "",
+        learningOutcome: "",
+        communityParticipation: "",
+      },
+      teacherNames: center.teacherNames || [""],
+      teacherContacts: center.teacherContacts || [""],
     });
     setIsEditModalOpen(true);
   };
@@ -508,6 +536,20 @@ const StudyCenters = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
+                      <Label htmlFor="centreCode">Centre Code *</Label>
+                      <Input
+                        id="centreCode"
+                        value={formData.centreCode}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            centreCode: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
                       <Label htmlFor="centreName">Center Name *</Label>
                       <Input
                         id="centreName"
@@ -539,17 +581,32 @@ const StudyCenters = () => {
                     </div>
                     <div>
                       <Label htmlFor="infrastructure">Infrastructure *</Label>
-                      <Textarea
-                        id="infrastructure"
+                      <Select
                         value={formData.infrastructure}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            infrastructure: e.target.value,
-                          })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, infrastructure: value })
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select infrastructure" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Own Building">
+                            Own Building
+                          </SelectItem>
+                          <SelectItem value="Rented">Rented</SelectItem>
+                          <SelectItem value="Community Hall">
+                            Community Hall
+                          </SelectItem>
+                          <SelectItem value="School Premises">
+                            School Premises
+                          </SelectItem>
+                          <SelectItem value="Temple/Church">
+                            Temple/Church
+                          </SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="timing">Timing *</Label>
@@ -563,31 +620,85 @@ const StudyCenters = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="studentsLevelOfEducation">
-                        Students Level of Education *
-                      </Label>
-                      <Input
-                        id="studentsLevelOfEducation"
-                        value={formData.studentsLevelOfEducation}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            studentsLevelOfEducation: e.target.value,
-                          })
-                        }
-                        required
-                      />
+                      <Label>Students Level of Education *</Label>
+                      <div className="grid grid-cols-2 gap-2 mt-2 p-3 border rounded-md">
+                        {[
+                          "Class 1-5",
+                          "Class 6-8",
+                          "Class 9-10",
+                          "Class 11-12",
+                          "College",
+                          "Other",
+                        ].map((level) => (
+                          <div
+                            key={level}
+                            className="flex items-center space-x-2"
+                          >
+                            <Checkbox
+                              id={`level-${level}`}
+                              checked={formData.studentsLevelOfEducation.includes(
+                                level
+                              )}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setFormData({
+                                    ...formData,
+                                    studentsLevelOfEducation: [
+                                      ...formData.studentsLevelOfEducation,
+                                      level,
+                                    ],
+                                  });
+                                } else {
+                                  setFormData({
+                                    ...formData,
+                                    studentsLevelOfEducation:
+                                      formData.studentsLevelOfEducation.filter(
+                                        (l) => l !== level
+                                      ),
+                                  });
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor={`level-${level}`}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                            >
+                              {level}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward No *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
                         }
                         required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                          <SelectItem value="Ward 11">Ward 11</SelectItem>
+                          <SelectItem value="Ward 12">Ward 12</SelectItem>
+                          <SelectItem value="Ward 13">Ward 13</SelectItem>
+                          <SelectItem value="Ward 14">Ward 14</SelectItem>
+                          <SelectItem value="Ward 15">Ward 15</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="habitation">Habitation *</Label>
@@ -746,6 +857,160 @@ const StudyCenters = () => {
                     ))}
                   </div>
 
+                  {/* Functional Aspects Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                      Functional Aspects
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="infrastructureQuality">
+                          Infrastructure Quality
+                        </Label>
+                        <Select
+                          value={
+                            formData.functionalAspects.infrastructureQuality
+                          }
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                infrastructureQuality: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="infrastructureQuality">
+                            <SelectValue placeholder="Select quality" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Excellent">Excellent</SelectItem>
+                            <SelectItem value="Good">Good</SelectItem>
+                            <SelectItem value="Average">Average</SelectItem>
+                            <SelectItem value="Poor">Poor</SelectItem>
+                            <SelectItem value="Needs Improvement">
+                              Needs Improvement
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="teacherAttendance">
+                          Teacher Attendance
+                        </Label>
+                        <Select
+                          value={formData.functionalAspects.teacherAttendance}
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                teacherAttendance: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="teacherAttendance">
+                            <SelectValue placeholder="Select attendance" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Regular">Regular</SelectItem>
+                            <SelectItem value="Irregular">Irregular</SelectItem>
+                            <SelectItem value="Needs Monitoring">
+                              Needs Monitoring
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="studentEngagement">
+                          Student Engagement
+                        </Label>
+                        <Select
+                          value={formData.functionalAspects.studentEngagement}
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                studentEngagement: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="studentEngagement">
+                            <SelectValue placeholder="Select engagement" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="High">High</SelectItem>
+                            <SelectItem value="Medium">Medium</SelectItem>
+                            <SelectItem value="Low">Low</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="learningOutcome">
+                          Learning Outcome
+                        </Label>
+                        <Select
+                          value={formData.functionalAspects.learningOutcome}
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                learningOutcome: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="learningOutcome">
+                            <SelectValue placeholder="Select outcome" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Excellent">Excellent</SelectItem>
+                            <SelectItem value="Good">Good</SelectItem>
+                            <SelectItem value="Satisfactory">
+                              Satisfactory
+                            </SelectItem>
+                            <SelectItem value="Needs Improvement">
+                              Needs Improvement
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="communityParticipation">
+                          Community Participation
+                        </Label>
+                        <Select
+                          value={
+                            formData.functionalAspects.communityParticipation
+                          }
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                communityParticipation: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="communityParticipation">
+                            <SelectValue placeholder="Select participation" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Active">Active</SelectItem>
+                            <SelectItem value="Moderate">Moderate</SelectItem>
+                            <SelectItem value="Low">Low</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
                   <DialogFooter>
                     <Button type="button" variant="outline" onClick={resetForm}>
                       Cancel
@@ -766,8 +1031,21 @@ const StudyCenters = () => {
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Same form fields as create modal */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="editCentreCode">Centre Code *</Label>
+                      <Input
+                        id="editCentreCode"
+                        value={formData.centreCode}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            centreCode: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
                     <div>
                       <Label htmlFor="editCentreName">Center Name *</Label>
                       <Input
@@ -798,7 +1076,440 @@ const StudyCenters = () => {
                         required
                       />
                     </div>
-                    {/* Add rest of the form fields similar to create modal */}
+                    <div>
+                      <Label htmlFor="editInfrastructure">
+                        Infrastructure *
+                      </Label>
+                      <Select
+                        value={formData.infrastructure}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, infrastructure: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select infrastructure" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Own Building">
+                            Own Building
+                          </SelectItem>
+                          <SelectItem value="Rented">Rented</SelectItem>
+                          <SelectItem value="Community Hall">
+                            Community Hall
+                          </SelectItem>
+                          <SelectItem value="School Premises">
+                            School Premises
+                          </SelectItem>
+                          <SelectItem value="Temple/Church">
+                            Temple/Church
+                          </SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editTiming">Timing *</Label>
+                      <Input
+                        id="editTiming"
+                        value={formData.timing}
+                        onChange={(e) =>
+                          setFormData({ ...formData, timing: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label>Students Level of Education *</Label>
+                      <div className="grid grid-cols-2 gap-2 mt-2 p-3 border rounded-md">
+                        {[
+                          "Class 1-5",
+                          "Class 6-8",
+                          "Class 9-10",
+                          "Class 11-12",
+                          "College",
+                          "Other",
+                        ].map((level) => (
+                          <div
+                            key={level}
+                            className="flex items-center space-x-2"
+                          >
+                            <Checkbox
+                              id={`edit-level-${level}`}
+                              checked={formData.studentsLevelOfEducation.includes(
+                                level
+                              )}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setFormData({
+                                    ...formData,
+                                    studentsLevelOfEducation: [
+                                      ...formData.studentsLevelOfEducation,
+                                      level,
+                                    ],
+                                  });
+                                } else {
+                                  setFormData({
+                                    ...formData,
+                                    studentsLevelOfEducation:
+                                      formData.studentsLevelOfEducation.filter(
+                                        (l) => l !== level
+                                      ),
+                                  });
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor={`edit-level-${level}`}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                            >
+                              {level}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="editWardNo">Ward No *</Label>
+                      <Select
+                        value={formData.wardNo}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="editWardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                          <SelectItem value="Ward 11">Ward 11</SelectItem>
+                          <SelectItem value="Ward 12">Ward 12</SelectItem>
+                          <SelectItem value="Ward 13">Ward 13</SelectItem>
+                          <SelectItem value="Ward 14">Ward 14</SelectItem>
+                          <SelectItem value="Ward 15">Ward 15</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editHabitation">Habitation *</Label>
+                      <Input
+                        id="editHabitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editProjectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="editProjectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editDateOfEstablishment">
+                        Date of Establishment *
+                      </Label>
+                      <Input
+                        id="editDateOfEstablishment"
+                        type="date"
+                        value={formData.dateOfEstablishment}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfEstablishment: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editTotalStudents">
+                        Total Students *
+                      </Label>
+                      <Input
+                        id="editTotalStudents"
+                        type="number"
+                        value={formData.totalStudents}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            totalStudents: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editGroupLeader">Group Leader *</Label>
+                      <Input
+                        id="editGroupLeader"
+                        value={formData.groupLeader}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            groupLeader: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editGroupLeaderContact">
+                        Group Leader Contact *
+                      </Label>
+                      <Input
+                        id="editGroupLeaderContact"
+                        value={formData.groupLeaderContact}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            groupLeaderContact: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Teachers Section */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <Label>Teachers *</Label>
+                      <Button type="button" onClick={addTeacherField} size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Teacher
+                      </Button>
+                    </div>
+                    {formData.teacherNames.map((name, index) => (
+                      <div
+                        key={index}
+                        className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end"
+                      >
+                        <div>
+                          <Label htmlFor={`editTeacherName-${index}`}>
+                            Teacher Name
+                          </Label>
+                          <Input
+                            id={`editTeacherName-${index}`}
+                            value={name}
+                            onChange={(e) => {
+                              const newNames = [...formData.teacherNames];
+                              newNames[index] = e.target.value;
+                              setFormData({
+                                ...formData,
+                                teacherNames: newNames,
+                              });
+                            }}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor={`editTeacherContact-${index}`}>
+                            Teacher Contact
+                          </Label>
+                          <Input
+                            id={`editTeacherContact-${index}`}
+                            value={formData.teacherContacts[index]}
+                            onChange={(e) => {
+                              const newContacts = [...formData.teacherContacts];
+                              newContacts[index] = e.target.value;
+                              setFormData({
+                                ...formData,
+                                teacherContacts: newContacts,
+                              });
+                            }}
+                            required
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => removeTeacherField(index)}
+                          disabled={formData.teacherNames.length === 1}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Functional Aspects Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">
+                      Functional Aspects
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="editInfrastructureQuality">
+                          Infrastructure Quality
+                        </Label>
+                        <Select
+                          value={
+                            formData.functionalAspects.infrastructureQuality
+                          }
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                infrastructureQuality: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="editInfrastructureQuality">
+                            <SelectValue placeholder="Select quality" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Excellent">Excellent</SelectItem>
+                            <SelectItem value="Good">Good</SelectItem>
+                            <SelectItem value="Average">Average</SelectItem>
+                            <SelectItem value="Poor">Poor</SelectItem>
+                            <SelectItem value="Needs Improvement">
+                              Needs Improvement
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="editTeacherAttendance">
+                          Teacher Attendance
+                        </Label>
+                        <Select
+                          value={formData.functionalAspects.teacherAttendance}
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                teacherAttendance: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="editTeacherAttendance">
+                            <SelectValue placeholder="Select attendance" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Regular">Regular</SelectItem>
+                            <SelectItem value="Irregular">Irregular</SelectItem>
+                            <SelectItem value="Needs Monitoring">
+                              Needs Monitoring
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="editStudentEngagement">
+                          Student Engagement
+                        </Label>
+                        <Select
+                          value={formData.functionalAspects.studentEngagement}
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                studentEngagement: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="editStudentEngagement">
+                            <SelectValue placeholder="Select engagement" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="High">High</SelectItem>
+                            <SelectItem value="Medium">Medium</SelectItem>
+                            <SelectItem value="Low">Low</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="editLearningOutcome">
+                          Learning Outcome
+                        </Label>
+                        <Select
+                          value={formData.functionalAspects.learningOutcome}
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                learningOutcome: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="editLearningOutcome">
+                            <SelectValue placeholder="Select outcome" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Excellent">Excellent</SelectItem>
+                            <SelectItem value="Good">Good</SelectItem>
+                            <SelectItem value="Satisfactory">
+                              Satisfactory
+                            </SelectItem>
+                            <SelectItem value="Needs Improvement">
+                              Needs Improvement
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="editCommunityParticipation">
+                          Community Participation
+                        </Label>
+                        <Select
+                          value={
+                            formData.functionalAspects.communityParticipation
+                          }
+                          onValueChange={(value) =>
+                            setFormData({
+                              ...formData,
+                              functionalAspects: {
+                                ...formData.functionalAspects,
+                                communityParticipation: value,
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger id="editCommunityParticipation">
+                            <SelectValue placeholder="Select participation" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Active">Active</SelectItem>
+                            <SelectItem value="Moderate">Moderate</SelectItem>
+                            <SelectItem value="Low">Low</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
                   </div>
 
                   <DialogFooter>
@@ -821,75 +1532,215 @@ const StudyCenters = () => {
                   </DialogDescription>
                 </DialogHeader>
                 {selectedCenter && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Center Name</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.centreName}
-                        </p>
+                  <div className="space-y-6">
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">Centre Code</Label>
+                          <p>{selectedCenter.centreCode}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Centre Name</Label>
+                          <p>{selectedCenter.centreName}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Source of Funding
+                          </Label>
+                          <Badge>{selectedCenter.sourceOfFunding}</Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Infrastructure
+                          </Label>
+                          <p>{selectedCenter.infrastructure || "N/A"}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Timing</Label>
+                          <p>{selectedCenter.timing || "N/A"}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Establishment
+                          </Label>
+                          <p>
+                            {selectedCenter.dateOfEstablishment
+                              ? new Date(
+                                  selectedCenter.dateOfEstablishment
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedCenter.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedCenter.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedCenter.projectResponsible}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Total Students
+                          </Label>
+                          <p>{selectedCenter.totalStudents}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Source of Funding</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.sourceOfFunding}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Ward No</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.wardNo}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Habitation</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.habitation}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Total Students</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.totalStudents}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Group Leader</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.groupLeader}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Group Leader Contact</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.groupLeaderContact}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Project Responsible</Label>
-                        <p className="text-sm font-medium">
-                          {selectedCenter.projectResponsible}
-                        </p>
+                      {selectedCenter.studentsLevelOfEducation &&
+                        selectedCenter.studentsLevelOfEducation.length > 0 && (
+                          <div>
+                            <Label className="font-semibold">
+                              Students Level of Education
+                            </Label>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {selectedCenter.studentsLevelOfEducation.map(
+                                (level, index) => (
+                                  <Badge key={index} variant="outline">
+                                    {level}
+                                  </Badge>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        )}
+                    </div>
+
+                    {/* Leadership */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Leadership
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">Group Leader</Label>
+                          <p>{selectedCenter.groupLeader}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Group Leader Contact
+                          </Label>
+                          <p>{selectedCenter.groupLeaderContact}</p>
+                        </div>
                       </div>
                     </div>
 
                     {/* Teachers */}
-                    <div>
-                      <Label>Teachers</Label>
-                      <div className="mt-2 space-y-2">
-                        {selectedCenter.teacherNames?.map((name, index) => (
-                          <div
-                            key={index}
-                            className="flex justify-between items-center p-2 bg-gray-50 rounded"
-                          >
-                            <span className="font-medium">{name}</span>
-                            <span className="text-sm text-gray-600">
-                              {selectedCenter.teacherContacts?.[index]}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Teachers
+                      </h3>
+                      {selectedCenter.teacherNames &&
+                      selectedCenter.teacherNames.length > 0 ? (
+                        <div className="space-y-2">
+                          {selectedCenter.teacherNames.map((name, index) => (
+                            <div
+                              key={index}
+                              className="flex justify-between items-center p-3 bg-gray-50 rounded"
+                            >
+                              <span className="font-medium">{name}</span>
+                              <span className="text-sm text-gray-600">
+                                {selectedCenter.teacherContacts?.[index] ||
+                                  "N/A"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500">
+                          No teachers listed
+                        </p>
+                      )}
                     </div>
+
+                    {/* Functional Aspects */}
+                    {selectedCenter.functionalAspects && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          Functional Aspects
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {selectedCenter.functionalAspects
+                            .infrastructureQuality && (
+                            <div>
+                              <Label className="font-semibold">
+                                Infrastructure Quality
+                              </Label>
+                              <p>
+                                {
+                                  selectedCenter.functionalAspects
+                                    .infrastructureQuality
+                                }
+                              </p>
+                            </div>
+                          )}
+                          {selectedCenter.functionalAspects
+                            .teacherAttendance && (
+                            <div>
+                              <Label className="font-semibold">
+                                Teacher Attendance
+                              </Label>
+                              <p>
+                                {
+                                  selectedCenter.functionalAspects
+                                    .teacherAttendance
+                                }
+                              </p>
+                            </div>
+                          )}
+                          {selectedCenter.functionalAspects
+                            .studentEngagement && (
+                            <div>
+                              <Label className="font-semibold">
+                                Student Engagement
+                              </Label>
+                              <p>
+                                {
+                                  selectedCenter.functionalAspects
+                                    .studentEngagement
+                                }
+                              </p>
+                            </div>
+                          )}
+                          {selectedCenter.functionalAspects.learningOutcome && (
+                            <div>
+                              <Label className="font-semibold">
+                                Learning Outcome
+                              </Label>
+                              <p>
+                                {
+                                  selectedCenter.functionalAspects
+                                    .learningOutcome
+                                }
+                              </p>
+                            </div>
+                          )}
+                          {selectedCenter.functionalAspects
+                            .communityParticipation && (
+                            <div>
+                              <Label className="font-semibold">
+                                Community Participation
+                              </Label>
+                              <p>
+                                {
+                                  selectedCenter.functionalAspects
+                                    .communityParticipation
+                                }
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
                 <DialogFooter>

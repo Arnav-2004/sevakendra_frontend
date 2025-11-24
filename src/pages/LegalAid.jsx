@@ -101,30 +101,12 @@ const LegalAid = () => {
     dateOfReporting: "",
     reportedBy: "",
     natureOfIssue: "",
-    issueDescription: "",
     actionPlan: "",
-    caseId: "",
-    clientName: "",
-    contactNumber: "",
-    address: "",
-    caseType: "",
-    caseDescription: "",
-    dateRegistered: "",
-    lawyerAssigned: "",
-    lawyerContact: "",
-    courtName: "",
-    caseNumber: "",
-    nextHearingDate: "",
-    caseStatus: "Open",
-    documentsRequired: "",
-    documentsSubmitted: "",
-    legalAdviceGiven: "",
-    serviceCharges: "",
-    paymentStatus: "Pending",
-    outcome: "",
+    progressReporting: {},
+    photoDocumentation: [],
     remarks: "",
     followUpRequired: false,
-    nextFollowUpDate: "",
+    followUpDate: "",
   });
 
   const natureOfIssueOptions = [
@@ -139,43 +121,6 @@ const LegalAid = () => {
     "Criminal Case",
     "Civil Case",
     "Other",
-  ];
-
-  const caseTypes = [
-    "Civil Case",
-    "Criminal Case",
-    "Family Dispute",
-    "Property Dispute",
-    "Consumer Case",
-    "Labor Dispute",
-    "Domestic Violence",
-    "Child Custody",
-    "Divorce Proceedings",
-    "Maintenance Case",
-    "Adoption",
-    "Legal Documentation",
-    "RTI Application",
-    "Compensation Claim",
-    "Other",
-  ];
-
-  const statusOptions = [
-    "Open",
-    "In Progress",
-    "Hearing Scheduled",
-    "Under Review",
-    "Resolved",
-    "Closed",
-    "Dismissed",
-    "Settled",
-  ];
-
-  const paymentStatuses = [
-    "Pending",
-    "Partial Payment",
-    "Paid",
-    "Waived",
-    "Pro Bono",
   ];
 
   const genderOptions = ["Male", "Female", "Other"];
@@ -279,30 +224,12 @@ const LegalAid = () => {
       dateOfReporting: "",
       reportedBy: "",
       natureOfIssue: "",
-      issueDescription: "",
       actionPlan: "",
-      caseId: "",
-      clientName: "",
-      contactNumber: "",
-      address: "",
-      caseType: "",
-      caseDescription: "",
-      dateRegistered: "",
-      lawyerAssigned: "",
-      lawyerContact: "",
-      courtName: "",
-      caseNumber: "",
-      nextHearingDate: "",
-      caseStatus: "Open",
-      documentsRequired: "",
-      documentsSubmitted: "",
-      legalAdviceGiven: "",
-      serviceCharges: "",
-      paymentStatus: "Pending",
-      outcome: "",
+      progressReporting: {},
+      photoDocumentation: [],
       remarks: "",
       followUpRequired: false,
-      nextFollowUpDate: "",
+      followUpDate: "",
     });
     setSelectedService(null);
   };
@@ -848,15 +775,28 @@ const LegalAid = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward Number *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
                         }
-                        placeholder="Enter ward number"
-                        required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="habitation">Habitation *</Label>
@@ -1119,35 +1059,155 @@ const LegalAid = () => {
                 </DialogHeader>
                 {selectedService && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Case ID</Label>
-                        <p className="text-sm font-medium">
-                          {selectedService.caseId}
-                        </p>
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Household Code
+                          </Label>
+                          <p>{selectedService.householdCode}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Unique ID</Label>
+                          <p>{selectedService.uniqueId}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Name</Label>
+                          <p>{selectedService.name}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Gender</Label>
+                          <Badge variant="outline">
+                            {selectedService.gender}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Age</Label>
+                          <p>{selectedService.age} years</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Contact Number
+                          </Label>
+                          <p>{selectedService.contactNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Head of Household
+                          </Label>
+                          <p>{selectedService.headOfHousehold}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedService.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedService.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedService.projectResponsible}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Client Name</Label>
-                        <p className="text-sm font-medium">
-                          {selectedService.clientName}
-                        </p>
+                    </div>
+
+                    {/* Reporting Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Reporting Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Reporting
+                          </Label>
+                          <p>
+                            {selectedService.dateOfReporting
+                              ? new Date(
+                                  selectedService.dateOfReporting
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Reported By</Label>
+                          <p>{selectedService.reportedBy}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Case Type</Label>
-                        <p className="text-sm font-medium">
-                          {selectedService.caseType}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Case Status</Label>
-                        <Badge
-                          className={getStatusColor(selectedService.caseStatus)}
-                        >
-                          {getStatusIcon(selectedService.caseStatus)}
-                          <span className="ml-1">
-                            {selectedService.caseStatus}
-                          </span>
-                        </Badge>
+                    </div>
+
+                    {/* Case Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Case Details
+                      </h3>
+                      {selectedService.natureOfIssue && (
+                        <div>
+                          <Label className="font-semibold">
+                            Nature of Issue
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedService.natureOfIssue}
+                          </p>
+                        </div>
+                      )}
+                      {selectedService.actionPlan && (
+                        <div>
+                          <Label className="font-semibold">Action Plan</Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedService.actionPlan}
+                          </p>
+                        </div>
+                      )}
+                      {selectedService.remarks && (
+                        <div>
+                          <Label className="font-semibold">Remarks</Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedService.remarks}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Follow-up */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Follow-up
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Follow-up Required
+                          </Label>
+                          <Badge
+                            variant={
+                              selectedService.followUpRequired
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
+                            {selectedService.followUpRequired ? "Yes" : "No"}
+                          </Badge>
+                        </div>
+                        {selectedService.followUpDate && (
+                          <div>
+                            <Label className="font-semibold">
+                              Follow-up Date
+                            </Label>
+                            <p>
+                              {new Date(
+                                selectedService.followUpDate
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

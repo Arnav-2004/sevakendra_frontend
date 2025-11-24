@@ -94,6 +94,7 @@ const Schools = () => {
     projectResponsible: "",
     keyIssueIdentified: "",
     actionPlan: "",
+    statusOfActionPlanImplementation: "Not Started",
     progressReporting: {},
   });
 
@@ -177,9 +178,12 @@ const Schools = () => {
       projectResponsible: "",
       keyIssueIdentified: "",
       actionPlan: "",
+      statusOfActionPlanImplementation: "Not Started",
       progressReporting: {},
     });
     setSelectedSchool(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Open edit modal
@@ -501,14 +505,28 @@ const Schools = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward Number *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="md:col-span-2">
                       <Label htmlFor="schoolName">School Name *</Label>
@@ -694,6 +712,37 @@ const Schools = () => {
                         required
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="statusOfActionPlanImplementation">
+                        Status of Action Plan Implementation
+                      </Label>
+                      <Select
+                        value={formData.statusOfActionPlanImplementation}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            statusOfActionPlanImplementation: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Not Started">
+                            Not Started
+                          </SelectItem>
+                          <SelectItem value="In Progress">
+                            In Progress
+                          </SelectItem>
+                          <SelectItem value="Partially Completed">
+                            Partially Completed
+                          </SelectItem>
+                          <SelectItem value="Completed">Completed</SelectItem>
+                          <SelectItem value="On Hold">On Hold</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   <DialogFooter>
@@ -755,6 +804,217 @@ const Schools = () => {
                         }
                         required
                       />
+                    </div>
+                    <div>
+                      <Label htmlFor="editEducationLevel">
+                        Education Level *
+                      </Label>
+                      <Select
+                        value={formData.educationLevel}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, educationLevel: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select education level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Primary">Primary</SelectItem>
+                          <SelectItem value="Upper Primary">
+                            Upper Primary
+                          </SelectItem>
+                          <SelectItem value="Secondary">Secondary</SelectItem>
+                          <SelectItem value="Higher Secondary">
+                            Higher Secondary
+                          </SelectItem>
+                          <SelectItem value="All Levels">All Levels</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editTypeOfStudents">
+                        Type of Students *
+                      </Label>
+                      <Select
+                        value={formData.typeOfStudents}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, typeOfStudents: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Boys">Boys</SelectItem>
+                          <SelectItem value="Girls">Girls</SelectItem>
+                          <SelectItem value="Co-educational">
+                            Co-educational
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editSchoolTimings">
+                        School Timings *
+                      </Label>
+                      <Input
+                        id="editSchoolTimings"
+                        value={formData.schoolTimings}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            schoolTimings: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., 9:00 AM - 3:00 PM"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editMediumOfInstruction">
+                        Medium of Instruction *
+                      </Label>
+                      <Input
+                        id="editMediumOfInstruction"
+                        value={formData.mediumOfInstruction}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            mediumOfInstruction: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., English, Hindi"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editTotalStudents">
+                        Total Students *
+                      </Label>
+                      <Input
+                        id="editTotalStudents"
+                        type="number"
+                        value={formData.totalStudents}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            totalStudents: e.target.value,
+                          })
+                        }
+                        min="0"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editPrincipalName">
+                        Principal Name *
+                      </Label>
+                      <Input
+                        id="editPrincipalName"
+                        value={formData.principalName}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            principalName: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editPrincipalContact">
+                        Principal Contact *
+                      </Label>
+                      <Input
+                        id="editPrincipalContact"
+                        value={formData.principalContact}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            principalContact: e.target.value,
+                          })
+                        }
+                        placeholder="10-digit mobile number"
+                        pattern="[6-9][0-9]{9}"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editProjectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="editProjectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editKeyIssueIdentified">
+                        Key Issue Identified *
+                      </Label>
+                      <Textarea
+                        id="editKeyIssueIdentified"
+                        value={formData.keyIssueIdentified}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            keyIssueIdentified: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editActionPlan">Action Plan *</Label>
+                      <Textarea
+                        id="editActionPlan"
+                        value={formData.actionPlan}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            actionPlan: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editStatusOfActionPlanImplementation">
+                        Status of Action Plan Implementation
+                      </Label>
+                      <Select
+                        value={formData.statusOfActionPlanImplementation}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            statusOfActionPlanImplementation: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Not Started">
+                            Not Started
+                          </SelectItem>
+                          <SelectItem value="In Progress">
+                            In Progress
+                          </SelectItem>
+                          <SelectItem value="Partially Completed">
+                            Partially Completed
+                          </SelectItem>
+                          <SelectItem value="Completed">Completed</SelectItem>
+                          <SelectItem value="On Hold">On Hold</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 

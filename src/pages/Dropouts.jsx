@@ -91,6 +91,7 @@ const Dropouts = () => {
     wardNo: "",
     habitation: "",
     projectResponsible: "",
+    category: "",
     dateOfReporting: "",
     reportedBy: "",
     yearOfDropout: "",
@@ -211,6 +212,8 @@ const Dropouts = () => {
       photoDocumentation: {},
     });
     setSelectedDropout(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Open edit modal
@@ -500,8 +503,8 @@ const Dropouts = () => {
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Male">Male</SelectItem>
-                          <SelectItem value="Female">Female</SelectItem>
+                          <SelectItem value="Boy">Boy</SelectItem>
+                          <SelectItem value="Girl">Girl</SelectItem>
                           <SelectItem value="Other">Other</SelectItem>
                         </SelectContent>
                       </Select>
@@ -550,14 +553,28 @@ const Dropouts = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward Number *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="habitation">Habitation *</Label>
@@ -588,6 +605,28 @@ const Dropouts = () => {
                         }
                         required
                       />
+                    </div>
+                    <div>
+                      <Label htmlFor="category">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="category">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="dateOfReporting">
@@ -759,6 +798,251 @@ const Dropouts = () => {
                         required
                       />
                     </div>
+                    <div>
+                      <Label htmlFor="editGender">Gender *</Label>
+                      <Select
+                        value={formData.gender}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, gender: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Boy">Boy</SelectItem>
+                          <SelectItem value="Girl">Girl</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editAge">Age *</Label>
+                      <Input
+                        id="editAge"
+                        type="number"
+                        value={formData.age}
+                        onChange={(e) =>
+                          setFormData({ ...formData, age: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editContactNo">Contact Number *</Label>
+                      <Input
+                        id="editContactNo"
+                        value={formData.contactNo}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactNo: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editHeadOfHousehold">
+                        Head of Household *
+                      </Label>
+                      <Input
+                        id="editHeadOfHousehold"
+                        value={formData.headOfHousehold}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            headOfHousehold: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editWardNo">Ward Number *</Label>
+                      <Input
+                        id="editWardNo"
+                        value={formData.wardNo}
+                        onChange={(e) =>
+                          setFormData({ ...formData, wardNo: e.target.value })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editHabitation">Habitation *</Label>
+                      <Input
+                        id="editHabitation"
+                        value={formData.habitation}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            habitation: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editProjectResponsible">
+                        Project Responsible *
+                      </Label>
+                      <Input
+                        id="editProjectResponsible"
+                        value={formData.projectResponsible}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editCategory">Category *</Label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, category: value })
+                        }
+                        required
+                      >
+                        <SelectTrigger id="editCategory">
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="SC">SC</SelectItem>
+                          <SelectItem value="ST">ST</SelectItem>
+                          <SelectItem value="OBC">OBC</SelectItem>
+                          <SelectItem value="Muslim">Muslim</SelectItem>
+                          <SelectItem value="General">General</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="editDateOfReporting">
+                        Date of Reporting *
+                      </Label>
+                      <Input
+                        id="editDateOfReporting"
+                        type="date"
+                        value={formData.dateOfReporting}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfReporting: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editReportedBy">Reported By *</Label>
+                      <Input
+                        id="editReportedBy"
+                        value={formData.reportedBy}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            reportedBy: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editYearOfDropout">
+                        Year of Dropout *
+                      </Label>
+                      <Input
+                        id="editYearOfDropout"
+                        type="number"
+                        min={1990}
+                        value={formData.yearOfDropout}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            yearOfDropout: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editEducationLevelWhenDropout">
+                        Education Level When Dropout *
+                      </Label>
+                      <Input
+                        id="editEducationLevelWhenDropout"
+                        value={formData.educationLevelWhenDropout}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            educationLevelWhenDropout: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editSchoolNameWhenDropout">
+                        School Name When Dropout *
+                      </Label>
+                      <Input
+                        id="editSchoolNameWhenDropout"
+                        value={formData.schoolNameWhenDropout}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            schoolNameWhenDropout: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="editEnrollmentStatus">
+                        Enrollment Status
+                      </Label>
+                      <Select
+                        value={formData.enrollmentStatus}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, enrollmentStatus: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Enrolled">Enrolled</SelectItem>
+                          <SelectItem value="Not Enrolled">
+                            Not Enrolled
+                          </SelectItem>
+                          <SelectItem value="In Progress">
+                            In Progress
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="editReasonForDropout">
+                        Reason for Dropout *
+                      </Label>
+                      <Textarea
+                        id="editReasonForDropout"
+                        value={formData.reasonForDropout}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            reasonForDropout: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
                   </div>
 
                   <DialogFooter>
@@ -781,43 +1065,300 @@ const Dropouts = () => {
                   </DialogDescription>
                 </DialogHeader>
                 {selectedDropout && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Household Code</Label>
-                        <p className="text-sm font-medium">
-                          {selectedDropout.householdCode}
-                        </p>
+                  <div className="space-y-6">
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Household Code
+                          </Label>
+                          <p>{selectedDropout.householdCode}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Name</Label>
+                          <p>{selectedDropout.name}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Gender</Label>
+                          <Badge variant="outline">
+                            {selectedDropout.gender}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Age</Label>
+                          <p>{selectedDropout.age} years</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Contact Number
+                          </Label>
+                          <p>{selectedDropout.contactNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Head of Household
+                          </Label>
+                          <p>{selectedDropout.headOfHousehold}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedDropout.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedDropout.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedDropout.projectResponsible}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Category</Label>
+                          <p>{selectedDropout.category}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Name</Label>
-                        <p className="text-sm font-medium">
-                          {selectedDropout.name}
-                        </p>
+                    </div>
+
+                    {/* Reporting Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Reporting Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Reporting
+                          </Label>
+                          <p>
+                            {selectedDropout.dateOfReporting
+                              ? new Date(
+                                  selectedDropout.dateOfReporting
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Reported By</Label>
+                          <p>{selectedDropout.reportedBy}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Gender</Label>
-                        <p className="text-sm font-medium">
-                          {selectedDropout.gender}
-                        </p>
+                    </div>
+
+                    {/* Dropout Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Dropout Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Year of Dropout
+                          </Label>
+                          <p>{selectedDropout.yearOfDropout}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Education Level When Dropout
+                          </Label>
+                          <p>
+                            {selectedDropout.educationLevelWhenDropout || "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            School Name When Dropout
+                          </Label>
+                          <p>
+                            {selectedDropout.schoolNameWhenDropout || "N/A"}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Age</Label>
-                        <p className="text-sm font-medium">
-                          {selectedDropout.age}
-                        </p>
+                      {selectedDropout.reasonForDropout && (
+                        <div>
+                          <Label className="font-semibold">
+                            Reason for Dropout
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedDropout.reasonForDropout}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Documents */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Documents Check
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Birth Certificate
+                          </Label>
+                          <Badge
+                            variant={
+                              selectedDropout.documentsCheck?.birthCertificate
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
+                            {selectedDropout.documentsCheck?.birthCertificate
+                              ? "Available"
+                              : "Not Available"}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Polio Card</Label>
+                          <Badge
+                            variant={
+                              selectedDropout.documentsCheck?.polioCard
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
+                            {selectedDropout.documentsCheck?.polioCard
+                              ? "Available"
+                              : "Not Available"}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Adhar Card</Label>
+                          <Badge
+                            variant={
+                              selectedDropout.documentsCheck?.adharCard
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
+                            {selectedDropout.documentsCheck?.adharCard
+                              ? "Available"
+                              : "Not Available"}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Transfer Certificate
+                          </Label>
+                          <Badge
+                            variant={
+                              selectedDropout.documentsCheck
+                                ?.transferCertificate
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
+                            {selectedDropout.documentsCheck?.transferCertificate
+                              ? "Available"
+                              : "Not Available"}
+                          </Badge>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Year of Dropout</Label>
-                        <p className="text-sm font-medium">
-                          {selectedDropout.yearOfDropout}
-                        </p>
+                    </div>
+
+                    {/* Assessment & Counseling */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Assessment & Counseling
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Educational Assessment
+                          </Label>
+                          <p>
+                            {selectedDropout.dateOfEducationalAssessment
+                              ? new Date(
+                                  selectedDropout.dateOfEducationalAssessment
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Career Counselling
+                          </Label>
+                          <p>{selectedDropout.careerCounselling || "N/A"}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Enrollment Status</Label>
-                        <p className="text-sm font-medium">
-                          {selectedDropout.enrollmentStatus}
-                        </p>
+                      {selectedDropout.educationalScreeningResults && (
+                        <div>
+                          <Label className="font-semibold">
+                            Educational Screening Results
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedDropout.educationalScreeningResults}
+                          </p>
+                        </div>
+                      )}
+                      {selectedDropout.counselingReport && (
+                        <div>
+                          <Label className="font-semibold">
+                            Counseling Report
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedDropout.counselingReport}
+                          </p>
+                        </div>
+                      )}
+                      {selectedDropout.individualCarePlan && (
+                        <div>
+                          <Label className="font-semibold">
+                            Individual Care Plan
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedDropout.individualCarePlan}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Re-Admission Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Re-Admission Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Enrollment Status
+                          </Label>
+                          <Badge>{selectedDropout.enrollmentStatus}</Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Re-Admission
+                          </Label>
+                          <p>
+                            {selectedDropout.dateOfReAdmission
+                              ? new Date(
+                                  selectedDropout.dateOfReAdmission
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Education Level When Re-Admission
+                          </Label>
+                          <p>
+                            {selectedDropout.educationLevelWhenReAdmission ||
+                              "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            School Name When Re-Admission
+                          </Label>
+                          <p>
+                            {selectedDropout.schoolNameWhenReAdmission || "N/A"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>

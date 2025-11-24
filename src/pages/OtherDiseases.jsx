@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,11 +23,9 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -50,109 +42,98 @@ import { Badge } from "@/components/ui/badge";
 import {
   Activity,
   Plus,
-  Search,
   Filter,
   Edit,
   Trash2,
   Eye,
-  Download,
   RefreshCw,
   Menu,
 } from "lucide-react";
-import { tbhivAddictAPI } from "../services/api";
+import { otherDiseasesAPI } from "../services/api";
 import Sidebar from "../components/Sidebar";
 
-const TBHIVAddict = () => {
+const OtherDiseases = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [tbhivAddict, setTbhivAddict] = useState([]);
+  const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     gender: "",
-    conditionType: "",
-    treatmentStatus: "",
-    wardNo: "",
-    habitation: "",
+    overallStatus: "",
   });
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
     total: 0,
-    pages: 0,
+    totalPages: 0,
   });
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    householdCode: "",
-    nameOfPatient: "",
-    uniqueId: "",
+    name: "",
     gender: "",
     age: "",
     contactNo: "",
+    occupation: "",
     headOfHousehold: "",
     wardNo: "",
     habitation: "",
     projectResponsible: "",
-    conditionType: "",
-    diagnosisDate: "",
-    treatmentStatus: "",
-    treatmentStartDate: "",
-    treatmentCentre: "",
     dateOfReporting: "",
     reportedBy: "",
-    medicalHistory: "",
-    currentMedication: "",
-    adherenceStatus: "",
-    sideEffects: "",
-    socialSupport: "",
-    counselingProvided: "",
-    servicesProvided: "",
-    referralsGiven: "",
-    progressReporting: {},
+    natureOfIssue: "",
+    dateOfMedicalScreening: "",
+    screeningResults: "",
+    individualCarePlan: "",
+    nameOfInstitution: "",
+    dateOfAdmission: "",
+    overallStatus: "",
   });
 
-  // Fetch TBHIVAddict records
-  const fetchTbhivAddict = async () => {
+  const fetchRecords = async () => {
     setLoading(true);
     try {
       const params = {
         page: pagination.page,
         limit: pagination.limit,
-        search: searchTerm,
+        name: searchTerm,
         ...filters,
       };
-
-      const response = await tbhivAddictAPI.getAll(params);
-      setTbhivAddict(response.data.tbhivAddict);
-      setPagination(response.data.pagination);
+      const response = await otherDiseasesAPI.getAll(params);
+      setRecords(response.data.otherDiseases);
+      setPagination({
+        page: response.data.page,
+        limit: pagination.limit,
+        total: response.data.total,
+        totalPages: response.data.totalPages,
+      });
     } catch (error) {
-      toast.error("Failed to fetch TB/HIV/Addict records");
-      console.error("Error fetching TB/HIV/Addict records:", error);
+      toast.error("Failed to fetch other diseases records");
+      console.error("Error fetching records:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchTbhivAddict();
-  }, [pagination.page, pagination.limit, searchTerm, filters]);
+    fetchRecords();
+  }, [pagination.page, searchTerm, filters]);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (selectedRecord) {
-        await tbhivAddictAPI.update(selectedRecord._id, formData);
-        toast.success("TB/HIV/Addict record updated successfully");
+        await otherDiseasesAPI.update(selectedRecord._id, formData);
+        toast.success("Other diseases record updated successfully");
         setIsEditModalOpen(false);
       } else {
-        await tbhivAddictAPI.create(formData);
-        toast.success("TB/HIV/Addict record created successfully");
+        await otherDiseasesAPI.create(formData);
+        toast.success("Other diseases record created successfully");
         setIsCreateModalOpen(false);
       }
-      fetchTbhivAddict();
+      fetchRecords();
       resetForm();
     } catch (error) {
       toast.error(
@@ -162,125 +143,85 @@ const TBHIVAddict = () => {
     }
   };
 
-  // Handle delete
   const handleDelete = async (id) => {
     try {
-      await tbhivAddictAPI.delete(id);
-      toast.success("TB/HIV/Addict record deleted successfully");
-      fetchTbhivAddict();
+      await otherDiseasesAPI.delete(id);
+      toast.success("Other diseases record deleted successfully");
+      fetchRecords();
     } catch (error) {
       toast.error("Failed to delete record");
       console.error("Error deleting record:", error);
     }
   };
 
-  // Reset form
   const resetForm = () => {
     setFormData({
-      householdCode: "",
-      nameOfPatient: "",
-      uniqueId: "",
+      name: "",
       gender: "",
       age: "",
       contactNo: "",
+      occupation: "",
       headOfHousehold: "",
       wardNo: "",
       habitation: "",
       projectResponsible: "",
-      conditionType: "",
-      diagnosisDate: "",
-      treatmentStatus: "",
-      treatmentStartDate: "",
-      treatmentCentre: "",
       dateOfReporting: "",
       reportedBy: "",
-      medicalHistory: "",
-      currentMedication: "",
-      adherenceStatus: "",
-      sideEffects: "",
-      socialSupport: "",
-      counselingProvided: "",
-      servicesProvided: "",
-      referralsGiven: "",
-      progressReporting: {},
+      natureOfIssue: "",
+      dateOfMedicalScreening: "",
+      screeningResults: "",
+      individualCarePlan: "",
+      nameOfInstitution: "",
+      dateOfAdmission: "",
+      overallStatus: "",
     });
     setSelectedRecord(null);
   };
 
-  // Handle edit
   const handleEdit = (record) => {
     setSelectedRecord(record);
     setFormData({
-      householdCode: record.householdCode || "",
-      nameOfPatient: record.nameOfPatient || "",
-      uniqueId: record.uniqueId || "",
+      name: record.name || "",
       gender: record.gender || "",
       age: record.age || "",
       contactNo: record.contactNo || "",
+      occupation: record.occupation || "",
       headOfHousehold: record.headOfHousehold || "",
       wardNo: record.wardNo || "",
       habitation: record.habitation || "",
       projectResponsible: record.projectResponsible || "",
-      conditionType: record.conditionType || "",
-      diagnosisDate: record.diagnosisDate
-        ? new Date(record.diagnosisDate).toISOString().split("T")[0]
-        : "",
-      treatmentStatus: record.treatmentStatus || "",
-      treatmentStartDate: record.treatmentStartDate
-        ? new Date(record.treatmentStartDate).toISOString().split("T")[0]
-        : "",
-      treatmentCentre: record.treatmentCentre || "",
       dateOfReporting: record.dateOfReporting
         ? new Date(record.dateOfReporting).toISOString().split("T")[0]
         : "",
       reportedBy: record.reportedBy || "",
-      medicalHistory: record.medicalHistory || "",
-      currentMedication: record.currentMedication || "",
-      adherenceStatus: record.adherenceStatus || "",
-      sideEffects: record.sideEffects || "",
-      socialSupport: record.socialSupport || "",
-      counselingProvided: record.counselingProvided || "",
-      servicesProvided: record.servicesProvided || "",
-      referralsGiven: record.referralsGiven || "",
-      progressReporting: record.progressReporting || {},
+      natureOfIssue: record.natureOfIssue || "",
+      dateOfMedicalScreening: record.dateOfMedicalScreening
+        ? new Date(record.dateOfMedicalScreening).toISOString().split("T")[0]
+        : "",
+      screeningResults: record.screeningResults || "",
+      individualCarePlan: record.individualCarePlan || "",
+      nameOfInstitution: record.nameOfInstitution || "",
+      dateOfAdmission: record.dateOfAdmission
+        ? new Date(record.dateOfAdmission).toISOString().split("T")[0]
+        : "",
+      overallStatus: record.overallStatus || "",
     });
     setIsEditModalOpen(true);
   };
 
-  // Handle view
   const handleView = (record) => {
     setSelectedRecord(record);
     setIsViewModalOpen(true);
   };
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle filter change
   const handleFilterChange = (name, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFilters((prev) => ({ ...prev, [name]: value }));
     setPagination((prev) => ({ ...prev, page: 1 }));
-  };
-
-  // Clear filters
-  const clearFilters = () => {
-    setFilters({
-      gender: "",
-      conditionType: "",
-      treatmentStatus: "",
-      wardNo: "",
-      habitation: "",
-    });
-    setSearchTerm("");
   };
 
   return (
@@ -288,7 +229,6 @@ const TBHIVAddict = () => {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center space-x-4">
@@ -301,22 +241,20 @@ const TBHIVAddict = () => {
                 <Menu className="h-6 w-6" />
               </Button>
               <div className="flex items-center space-x-2">
-                <Activity className="h-6 w-6 text-red-600" />
+                <Activity className="h-6 w-6 text-teal-600" />
                 <h1 className="text-2xl font-bold text-gray-900">
-                  TB/HIV/Addiction
+                  Other Diseases
                 </h1>
               </div>
             </div>
             <Button onClick={() => setIsCreateModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add TB/HIV/Addict Record
+              Add Other Diseases Record
             </Button>
           </div>
         </header>
 
-        {/* Main Content */}
         <main className="flex-1 overflow-auto p-6">
-          {/* Filters */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
@@ -325,19 +263,24 @@ const TBHIVAddict = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
-                  <Label htmlFor="search">Search</Label>
+                  <Label htmlFor="search">Search by Name</Label>
                   <Input
                     id="search"
-                    placeholder="Search records..."
+                    placeholder="Search..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <div>
-                  {/* <Label htmlFor="gender">Gender</Label>
-                  <Select value={filters.gender} onValueChange={(value) => handleFilterChange("gender", value)}>
+                  <Label htmlFor="gender">Gender</Label>
+                  <Select
+                    value={filters.gender}
+                    onValueChange={(value) =>
+                      handleFilterChange("gender", value === "all" ? "" : value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="All Genders" />
                     </SelectTrigger>
@@ -347,66 +290,62 @@ const TBHIVAddict = () => {
                       <SelectItem value="Female">Female</SelectItem>
                       <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
-                  </Select> */}
+                  </Select>
                 </div>
                 <div>
-                  {/* <Label htmlFor="conditionType">Condition Type</Label>
-                  <Select value={filters.conditionType} onValueChange={(value) => handleFilterChange("conditionType", value)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="All Conditions" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Conditions</SelectItem>
-                      <SelectItem value="TB">Tuberculosis</SelectItem>
-                      <SelectItem value="HIV">HIV/AIDS</SelectItem>
-                      <SelectItem value="Addiction">Addiction</SelectItem>
-                      <SelectItem value="TB-HIV">TB-HIV Co-infection</SelectItem>
-                    </SelectContent>
-                  </Select> */}
-                </div>
-                <div>
-                  {/* <Label htmlFor="treatmentStatus">Treatment Status</Label>
-                  <Select value={filters.treatmentStatus} onValueChange={(value) => handleFilterChange("treatmentStatus", value)}>
+                  <Label htmlFor="overallStatus">Overall Status</Label>
+                  <Select
+                    value={filters.overallStatus}
+                    onValueChange={(value) =>
+                      handleFilterChange(
+                        "overallStatus",
+                        value === "all" ? "" : value
+                      )
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="All Statuses" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="Active">Active</SelectItem>
                       <SelectItem value="On Treatment">On Treatment</SelectItem>
-                      <SelectItem value="Treatment Completed">Treatment Completed</SelectItem>
-                      <SelectItem value="Treatment Defaulted">Treatment Defaulted</SelectItem>
-                      <SelectItem value="Not Started">Not Started</SelectItem>
+                      <SelectItem value="Treatment Completed">
+                        Treatment Completed
+                      </SelectItem>
+                      <SelectItem value="Lost to Follow-up">
+                        Lost to Follow-up
+                      </SelectItem>
+                      <SelectItem value="Died">Died</SelectItem>
+                      <SelectItem value="Unknown">Unknown</SelectItem>
                     </SelectContent>
-                  </Select> */}
-                </div>
-                <div>
-                  {/* <Label htmlFor="wardNo">Ward No</Label>
-                  <Input
-                    id="wardNo"
-                    placeholder="Filter by ward"
-                    value={filters.wardNo}
-                    onChange={(e) => handleFilterChange("wardNo", e.target.value)}
-                  /> */}
+                  </Select>
                 </div>
                 <div className="flex items-end">
-                  {/* <Button variant="outline" onClick={clearFilters} className="w-full">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setFilters({ gender: "", overallStatus: "" });
+                      setSearchTerm("");
+                    }}
+                    className="w-full"
+                  >
                     Clear Filters
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Records Table */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>
-                  TB/HIV/Addiction Records ({pagination.totalItems || 0})
+                  Other Diseases Records ({pagination.total || 0})
                 </CardTitle>
                 <Button
                   variant="outline"
-                  onClick={fetchTbhivAddict}
+                  onClick={fetchRecords}
                   disabled={loading}
                 >
                   <RefreshCw
@@ -421,73 +360,54 @@ const TBHIVAddict = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Patient Name</TableHead>
+                      <TableHead>Name</TableHead>
                       <TableHead>Age/Gender</TableHead>
-                      <TableHead>Condition</TableHead>
-                      <TableHead>Treatment Status</TableHead>
-                      <TableHead>Treatment Centre</TableHead>
+                      <TableHead>Nature of Issue</TableHead>
+                      <TableHead>Overall Status</TableHead>
                       <TableHead>Ward/Habitation</TableHead>
-                      <TableHead>Contact</TableHead>
+                      <TableHead>Screening Date</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {loading ? (
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-4">
+                        <TableCell colSpan={7} className="text-center py-4">
                           <RefreshCw className="h-4 w-4 animate-spin mx-auto" />
                         </TableCell>
                       </TableRow>
-                    ) : tbhivAddict.length === 0 ? (
+                    ) : records.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={8}
+                          colSpan={7}
                           className="text-center py-4 text-gray-500"
                         >
-                          No TB/HIV/Addiction records found
+                          No other diseases records found
                         </TableCell>
                       </TableRow>
                     ) : (
-                      tbhivAddict.map((record) => (
+                      records.map((record) => (
                         <TableRow key={record._id}>
                           <TableCell className="font-medium">
-                            {record.nameOfPatient}
+                            {record.name}
                           </TableCell>
                           <TableCell>
                             {record.age}, {record.gender}
                           </TableCell>
+                          <TableCell>{record.natureOfIssue || "N/A"}</TableCell>
                           <TableCell>
-                            <Badge
-                              variant={
-                                record.conditionType === "TB"
-                                  ? "destructive"
-                                  : record.conditionType === "HIV"
-                                  ? "default"
-                                  : "secondary"
-                              }
-                            >
-                              {record.conditionType}
-                            </Badge>
+                            <Badge>{record.overallStatus || "N/A"}</Badge>
                           </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant={
-                                record.treatmentStatus === "On Treatment"
-                                  ? "default"
-                                  : record.treatmentStatus ===
-                                    "Treatment Completed"
-                                  ? "secondary"
-                                  : "destructive"
-                              }
-                            >
-                              {record.treatmentStatus}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{record.treatmentCentre}</TableCell>
                           <TableCell>
                             Ward {record.wardNo}, {record.habitation}
                           </TableCell>
-                          <TableCell>{record.contactNo}</TableCell>
+                          <TableCell>
+                            {record.dateOfMedicalScreening
+                              ? new Date(
+                                  record.dateOfMedicalScreening
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-2">
                               <Button
@@ -541,18 +461,15 @@ const TBHIVAddict = () => {
                 </Table>
               </div>
 
-              {/* Pagination */}
               {pagination.totalPages > 1 && (
                 <div className="flex items-center justify-between mt-4">
                   <div className="text-sm text-gray-500">
-                    Showing{" "}
-                    {(pagination.currentPage - 1) * pagination.itemsPerPage + 1}{" "}
-                    to{" "}
+                    Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
                     {Math.min(
-                      pagination.currentPage * pagination.itemsPerPage,
-                      pagination.totalItems
+                      pagination.page * pagination.limit,
+                      pagination.total
                     )}{" "}
-                    of {pagination.totalItems} entries
+                    of {pagination.total} entries
                   </div>
                   <div className="flex items-center space-x-2">
                     <Button
@@ -564,12 +481,12 @@ const TBHIVAddict = () => {
                           page: prev.page - 1,
                         }))
                       }
-                      disabled={!pagination.hasPrevPage}
+                      disabled={pagination.page === 1}
                     >
                       Previous
                     </Button>
                     <span className="text-sm">
-                      Page {pagination.currentPage} of {pagination.totalPages}
+                      Page {pagination.page} of {pagination.totalPages}
                     </span>
                     <Button
                       variant="outline"
@@ -580,7 +497,7 @@ const TBHIVAddict = () => {
                           page: prev.page + 1,
                         }))
                       }
-                      disabled={!pagination.hasNextPage}
+                      disabled={pagination.page === pagination.totalPages}
                     >
                       Next
                     </Button>
@@ -592,40 +509,31 @@ const TBHIVAddict = () => {
         </main>
       </div>
 
-      {/* Create Modal */}
-      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+      {/* Create/Edit Modal */}
+      <Dialog
+        open={isCreateModalOpen || isEditModalOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsCreateModalOpen(false);
+            setIsEditModalOpen(false);
+            resetForm();
+          }
+        }}
+      >
         <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add New TB/HIV/Addiction Record</DialogTitle>
+            <DialogTitle>
+              {selectedRecord ? "Edit" : "Add New"} Other Diseases Record
+            </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <Label htmlFor="householdCode">Household Code *</Label>
+                <Label htmlFor="name">Name *</Label>
                 <Input
-                  id="householdCode"
-                  name="householdCode"
-                  value={formData.householdCode}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="nameOfPatient">Patient Name *</Label>
-                <Input
-                  id="nameOfPatient"
-                  name="nameOfPatient"
-                  value={formData.nameOfPatient}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="uniqueId">Unique ID *</Label>
-                <Input
-                  id="uniqueId"
-                  name="uniqueId"
-                  value={formData.uniqueId}
+                  id="name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
                   required
                 />
@@ -670,6 +578,15 @@ const TBHIVAddict = () => {
                   onChange={handleInputChange}
                   pattern="[6-9][0-9]{9}"
                   required
+                />
+              </div>
+              <div>
+                <Label htmlFor="occupation">Occupation</Label>
+                <Input
+                  id="occupation"
+                  name="occupation"
+                  value={formData.occupation}
+                  onChange={handleInputChange}
                 />
               </div>
               <div>
@@ -730,67 +647,6 @@ const TBHIVAddict = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="conditionType">Condition Type *</Label>
-                <Select
-                  value={formData.conditionType}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, conditionType: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select condition" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="TB">Tuberculosis</SelectItem>
-                    <SelectItem value="HIV">HIV/AIDS</SelectItem>
-                    <SelectItem value="Addiction">Addiction</SelectItem>
-                    <SelectItem value="TB-HIV">TB-HIV Co-infection</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="treatmentStatus">Treatment Status</Label>
-                <Select
-                  value={formData.treatmentStatus}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, treatmentStatus: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="On Treatment">On Treatment</SelectItem>
-                    <SelectItem value="Treatment Completed">
-                      Treatment Completed
-                    </SelectItem>
-                    <SelectItem value="Treatment Defaulted">
-                      Treatment Defaulted
-                    </SelectItem>
-                    <SelectItem value="Not Started">Not Started</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="treatmentCentre">Treatment Centre</Label>
-                <Input
-                  id="treatmentCentre"
-                  name="treatmentCentre"
-                  value={formData.treatmentCentre}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <Label htmlFor="diagnosisDate">Diagnosis Date</Label>
-                <Input
-                  id="diagnosisDate"
-                  name="diagnosisDate"
-                  type="date"
-                  value={formData.diagnosisDate}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
                 <Label htmlFor="dateOfReporting">Date of Reporting *</Label>
                 <Input
                   id="dateOfReporting"
@@ -811,49 +667,248 @@ const TBHIVAddict = () => {
                   required
                 />
               </div>
+              <div>
+                <Label htmlFor="dateOfMedicalScreening">
+                  Date of Medical Screening
+                </Label>
+                <Input
+                  id="dateOfMedicalScreening"
+                  name="dateOfMedicalScreening"
+                  type="date"
+                  value={formData.dateOfMedicalScreening}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="nameOfInstitution">Name of Institution</Label>
+                <Input
+                  id="nameOfInstitution"
+                  name="nameOfInstitution"
+                  value={formData.nameOfInstitution}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="dateOfAdmission">Date of Admission</Label>
+                <Input
+                  id="dateOfAdmission"
+                  name="dateOfAdmission"
+                  type="date"
+                  value={formData.dateOfAdmission}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="overallStatus">Overall Status</Label>
+                <Select
+                  value={formData.overallStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, overallStatus: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="On Treatment">On Treatment</SelectItem>
+                    <SelectItem value="Treatment Completed">
+                      Treatment Completed
+                    </SelectItem>
+                    <SelectItem value="Lost to Follow-up">
+                      Lost to Follow-up
+                    </SelectItem>
+                    <SelectItem value="Died">Died</SelectItem>
+                    <SelectItem value="Unknown">Unknown</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="natureOfIssue">Nature of Issue</Label>
+                <Textarea
+                  id="natureOfIssue"
+                  name="natureOfIssue"
+                  value={formData.natureOfIssue}
+                  onChange={handleInputChange}
+                  rows={2}
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="screeningResults">Screening Results</Label>
+                <Textarea
+                  id="screeningResults"
+                  name="screeningResults"
+                  value={formData.screeningResults}
+                  onChange={handleInputChange}
+                  rows={2}
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="individualCarePlan">Individual Care Plan</Label>
+                <Textarea
+                  id="individualCarePlan"
+                  name="individualCarePlan"
+                  value={formData.individualCarePlan}
+                  onChange={handleInputChange}
+                  rows={2}
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setIsCreateModalOpen(false)}
+                onClick={() => {
+                  setIsCreateModalOpen(false);
+                  setIsEditModalOpen(false);
+                  resetForm();
+                }}
               >
                 Cancel
               </Button>
-              <Button type="submit">Create Record</Button>
+              <Button type="submit">
+                {selectedRecord ? "Update" : "Create"} Record
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
 
-      {/* Edit and View modals similar to create */}
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit TB/HIV/Addiction Record</DialogTitle>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setIsEditModalOpen(false)}>Close</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
+      {/* View Modal */}
       <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>TB/HIV/Addiction Record Details</DialogTitle>
+            <DialogTitle>Other Diseases Record Details</DialogTitle>
           </DialogHeader>
           {selectedRecord && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="font-semibold">Patient Name</Label>
-                  <p>{selectedRecord.nameOfPatient}</p>
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Basic Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Name</Label>
+                    <p>{selectedRecord.name}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Gender</Label>
+                    <Badge variant="outline">{selectedRecord.gender}</Badge>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Age</Label>
+                    <p>{selectedRecord.age} years</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Contact Number</Label>
+                    <p>{selectedRecord.contactNo}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Occupation</Label>
+                    <p>{selectedRecord.occupation || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Head of Household</Label>
+                    <p>{selectedRecord.headOfHousehold}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Ward No</Label>
+                    <p>{selectedRecord.wardNo}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Habitation</Label>
+                    <p>{selectedRecord.habitation}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Project Responsible</Label>
+                    <p>{selectedRecord.projectResponsible}</p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="font-semibold">Condition Type</Label>
-                  <Badge>{selectedRecord.conditionType}</Badge>
+              </div>
+
+              {/* Reporting Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Reporting Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Date of Reporting</Label>
+                    <p>
+                      {selectedRecord.dateOfReporting
+                        ? new Date(
+                            selectedRecord.dateOfReporting
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Reported By</Label>
+                    <p>{selectedRecord.reportedBy}</p>
+                  </div>
                 </div>
+              </div>
+
+              {/* Medical Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Medical Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Nature of Issue</Label>
+                    <p>{selectedRecord.natureOfIssue || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">
+                      Date of Medical Screening
+                    </Label>
+                    <p>
+                      {selectedRecord.dateOfMedicalScreening
+                        ? new Date(
+                            selectedRecord.dateOfMedicalScreening
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Name of Institution</Label>
+                    <p>{selectedRecord.nameOfInstitution || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Date of Admission</Label>
+                    <p>
+                      {selectedRecord.dateOfAdmission
+                        ? new Date(
+                            selectedRecord.dateOfAdmission
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Overall Status</Label>
+                    <Badge>{selectedRecord.overallStatus || "N/A"}</Badge>
+                  </div>
+                </div>
+                {selectedRecord.screeningResults && (
+                  <div>
+                    <Label className="font-semibold">Screening Results</Label>
+                    <p className="mt-1 text-sm text-gray-600">
+                      {selectedRecord.screeningResults}
+                    </p>
+                  </div>
+                )}
+                {selectedRecord.individualCarePlan && (
+                  <div>
+                    <Label className="font-semibold">
+                      Individual Care Plan
+                    </Label>
+                    <p className="mt-1 text-sm text-gray-600">
+                      {selectedRecord.individualCarePlan}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -866,4 +921,4 @@ const TBHIVAddict = () => {
   );
 };
 
-export default TBHIVAddict;
+export default OtherDiseases;

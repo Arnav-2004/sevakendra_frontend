@@ -71,7 +71,11 @@ import {
   elderlyAPI,
   motherChildAPI,
   adolescentsAPI,
-  tbhivAddictAPI,
+  tuberculosisAPI,
+  hivAPI,
+  leprosyAPI,
+  addictionAPI,
+  otherDiseasesAPI,
   pwdAPI,
   studyCenterAPI,
   scStudentAPI,
@@ -109,7 +113,11 @@ const Dashboard = () => {
       elderlySupport: 0,
       motherChildCare: 0,
       adolescentPrograms: 0,
-      tbhivAddictSupport: 0,
+      tuberculosis: 0,
+      hiv: 0,
+      leprosy: 0,
+      addiction: 0,
+      otherDiseases: 0,
       pwdSupport: 0,
     },
     education: {
@@ -167,9 +175,7 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Fetch overview stats
-      const overviewResponse = await dashboardAPI.getOverview();
-      setOverviewStats(overviewResponse.data);
+      // We'll calculate overview stats from actual module data
 
       // Fetch module-specific stats (these will return mock data or actual data)
       const [
@@ -178,7 +184,11 @@ const Dashboard = () => {
         elderlyData,
         motherChildData,
         adolescentsData,
-        tbhivAddictData,
+        tuberculosisData,
+        hivData,
+        leprosyData,
+        addictionData,
+        otherDiseasesData,
         pwdData,
 
         // Education module stats
@@ -200,179 +210,201 @@ const Dashboard = () => {
         reportsData,
         activitiesData,
       ] = await Promise.allSettled([
-        healthCampAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        elderlyAPI.getAll({ limit: 1 }).catch(() => ({ data: { total: 0 } })),
-        motherChildAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        adolescentsAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        tbhivAddictAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        pwdAPI.getAll({ limit: 1 }).catch(() => ({ data: { total: 0 } })),
+        healthCampAPI.getAll({ limit: 1 }),
+        elderlyAPI.getAll({ limit: 1 }),
+        motherChildAPI.getAll({ limit: 1 }),
+        adolescentsAPI.getAll({ limit: 1 }),
+        tuberculosisAPI.getAll({ limit: 1 }),
+        hivAPI.getAll({ limit: 1 }),
+        leprosyAPI.getAll({ limit: 1 }),
+        addictionAPI.getAll({ limit: 1 }),
+        otherDiseasesAPI.getAll({ limit: 1 }),
+        pwdAPI.getAll({ limit: 1 }),
 
-        studyCenterAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        scStudentAPI.getAll({ limit: 1 }).catch(() => ({ data: { total: 0 } })),
-        dropoutAPI.getAll({ limit: 1 }).catch(() => ({ data: { total: 0 } })),
-        schoolAPI.getAll({ limit: 1 }).catch(() => ({ data: { total: 0 } })),
-        competitiveExamAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        boardPreparationAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
+        studyCenterAPI.getAll({ limit: 1 }),
+        scStudentAPI.getAll({ limit: 1 }),
+        dropoutAPI.getAll({ limit: 1 }),
+        schoolAPI.getAll({ limit: 1 }),
+        competitiveExamAPI.getAll({ limit: 1 }),
+        boardPreparationAPI.getAll({ limit: 1 }),
 
-        cbucboDetailsAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        entitlementsAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        legalAidServiceAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        workshopAndAwarenessAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
+        cbucboDetailsAPI.getAll({ limit: 1 }),
+        entitlementsAPI.getAll({ limit: 1 }),
+        legalAidServiceAPI.getAll({ limit: 1 }),
+        workshopAndAwarenessAPI.getAll({ limit: 1 }),
 
-        beneficiaryAPI
-          .getAll({ limit: 1 })
-          .catch(() => ({ data: { total: 0 } })),
-        reportsAPI
-          .getOverviewReport(dateRange)
-          .catch(() => ({ data: { summary: {}, demographics: {} } })),
-        dashboardAPI
-          .getRecentActivity()
-          .catch(() => ({ data: { activities: [] } })),
+        beneficiaryAPI.getAll({ limit: 1 }),
+        reportsAPI.getOverviewReport(dateRange),
+        dashboardAPI.getRecentActivity(),
       ]);
+
+      // Debug logging
+      console.log("Health Camps Response:", healthCampsData);
+      if (healthCampsData.status === "fulfilled") {
+        console.log("Health Camps Data:", healthCampsData.value?.data);
+        console.log(
+          "Health Camps Pagination:",
+          healthCampsData.value?.data?.pagination
+        );
+        console.log(
+          "Health Camps Total:",
+          healthCampsData.value?.data?.pagination?.total
+        );
+      }
 
       // Process module stats
       const healthStats = {
         totalCases: [
           healthCampsData.status === "fulfilled"
-            ? healthCampsData.value?.data?.total || 0
+            ? healthCampsData.value?.data?.pagination?.total || 0
             : 0,
           elderlyData.status === "fulfilled"
-            ? elderlyData.value?.data?.total || 0
+            ? elderlyData.value?.data?.pagination?.total || 0
             : 0,
           motherChildData.status === "fulfilled"
-            ? motherChildData.value?.data?.total || 0
+            ? motherChildData.value?.data?.pagination?.total || 0
             : 0,
           adolescentsData.status === "fulfilled"
-            ? adolescentsData.value?.data?.total || 0
+            ? adolescentsData.value?.data?.pagination?.total || 0
             : 0,
-          tbhivAddictData.status === "fulfilled"
-            ? tbhivAddictData.value?.data?.total || 0
+          tuberculosisData.status === "fulfilled"
+            ? tuberculosisData.value?.data?.pagination?.total || 0
             : 0,
-          pwdData.status === "fulfilled" ? pwdData.value?.data?.total || 0 : 0,
+          hivData.status === "fulfilled"
+            ? hivData.value?.data?.pagination?.total || 0
+            : 0,
+          leprosyData.status === "fulfilled"
+            ? leprosyData.value?.data?.pagination?.total || 0
+            : 0,
+          addictionData.status === "fulfilled"
+            ? addictionData.value?.data?.pagination?.total || 0
+            : 0,
+          otherDiseasesData.status === "fulfilled"
+            ? otherDiseasesData.value?.data?.pagination?.total || 0
+            : 0,
+          pwdData.status === "fulfilled"
+            ? pwdData.value?.data?.pagination?.total || 0
+            : 0,
         ].reduce((a, b) => a + b, 0),
         healthCamps:
           healthCampsData.status === "fulfilled"
-            ? healthCampsData.value?.data?.total || 0
+            ? healthCampsData.value?.data?.pagination?.total || 0
             : 0,
         elderlySupport:
           elderlyData.status === "fulfilled"
-            ? elderlyData.value?.data?.total || 0
+            ? elderlyData.value?.data?.pagination?.total || 0
             : 0,
         motherChildCare:
           motherChildData.status === "fulfilled"
-            ? motherChildData.value?.data?.total || 0
+            ? motherChildData.value?.data?.pagination?.total || 0
             : 0,
         adolescentPrograms:
           adolescentsData.status === "fulfilled"
-            ? adolescentsData.value?.data?.total || 0
+            ? adolescentsData.value?.data?.pagination?.total || 0
             : 0,
-        tbhivAddictSupport:
-          tbhivAddictData.status === "fulfilled"
-            ? tbhivAddictData.value?.data?.total || 0
+        tuberculosis:
+          tuberculosisData.status === "fulfilled"
+            ? tuberculosisData.value?.data?.pagination?.total || 0
+            : 0,
+        hiv:
+          hivData.status === "fulfilled"
+            ? hivData.value?.data?.pagination?.total || 0
+            : 0,
+        leprosy:
+          leprosyData.status === "fulfilled"
+            ? leprosyData.value?.data?.pagination?.total || 0
+            : 0,
+        addiction:
+          addictionData.status === "fulfilled"
+            ? addictionData.value?.data?.pagination?.total || 0
+            : 0,
+        otherDiseases:
+          otherDiseasesData.status === "fulfilled"
+            ? otherDiseasesData.value?.data?.pagination?.total || 0
             : 0,
         pwdSupport:
-          pwdData.status === "fulfilled" ? pwdData.value?.data?.total || 0 : 0,
+          pwdData.status === "fulfilled"
+            ? pwdData.value?.data?.pagination?.total || 0
+            : 0,
       };
 
       const educationStats = {
         totalStudents: [
           studyCentersData.status === "fulfilled"
-            ? studyCentersData.value?.data?.total || 0
+            ? studyCentersData.value?.data?.pagination?.total || 0
             : 0,
           scStudentsData.status === "fulfilled"
-            ? scStudentsData.value?.data?.total || 0
+            ? scStudentsData.value?.data?.pagination?.total || 0
             : 0,
           dropoutsData.status === "fulfilled"
-            ? dropoutsData.value?.data?.total || 0
+            ? dropoutsData.value?.data?.pagination?.total || 0
             : 0,
           schoolsData.status === "fulfilled"
-            ? schoolsData.value?.data?.total || 0
+            ? schoolsData.value?.data?.pagination?.total || 0
             : 0,
           competitiveExamsData.status === "fulfilled"
-            ? competitiveExamsData.value?.data?.total || 0
+            ? competitiveExamsData.value?.data?.pagination?.total || 0
             : 0,
           boardPrepData.status === "fulfilled"
-            ? boardPrepData.value?.data?.total || 0
+            ? boardPrepData.value?.data?.pagination?.total || 0
             : 0,
         ].reduce((a, b) => a + b, 0),
         studyCenters:
           studyCentersData.status === "fulfilled"
-            ? studyCentersData.value?.data?.total || 0
+            ? studyCentersData.value?.data?.pagination?.total || 0
             : 0,
         scStudents:
           scStudentsData.status === "fulfilled"
-            ? scStudentsData.value?.data?.total || 0
+            ? scStudentsData.value?.data?.pagination?.total || 0
             : 0,
         dropoutRecovery:
           dropoutsData.status === "fulfilled"
-            ? dropoutsData.value?.data?.total || 0
+            ? dropoutsData.value?.data?.pagination?.total || 0
             : 0,
         schools:
           schoolsData.status === "fulfilled"
-            ? schoolsData.value?.data?.total || 0
+            ? schoolsData.value?.data?.pagination?.total || 0
             : 0,
         competitiveExams:
           competitiveExamsData.status === "fulfilled"
-            ? competitiveExamsData.value?.data?.total || 0
+            ? competitiveExamsData.value?.data?.pagination?.total || 0
             : 0,
         boardPreparation:
           boardPrepData.status === "fulfilled"
-            ? boardPrepData.value?.data?.total || 0
+            ? boardPrepData.value?.data?.pagination?.total || 0
             : 0,
       };
 
       const socialJusticeStats = {
         totalCases: [
           cbucboData.status === "fulfilled"
-            ? cbucboData.value?.data?.total || 0
+            ? cbucboData.value?.data?.pagination?.total || 0
             : 0,
           entitlementsData.status === "fulfilled"
-            ? entitlementsData.value?.data?.total || 0
+            ? entitlementsData.value?.data?.pagination?.total || 0
             : 0,
           legalAidData.status === "fulfilled"
-            ? legalAidData.value?.data?.total || 0
+            ? legalAidData.value?.data?.pagination?.total || 0
             : 0,
           workshopsData.status === "fulfilled"
-            ? workshopsData.value?.data?.total || 0
+            ? workshopsData.value?.data?.pagination?.total || 0
             : 0,
         ].reduce((a, b) => a + b, 0),
         cbucboDetails:
           cbucboData.status === "fulfilled"
-            ? cbucboData.value?.data?.total || 0
+            ? cbucboData.value?.data?.pagination?.total || 0
             : 0,
         entitlements:
           entitlementsData.status === "fulfilled"
-            ? entitlementsData.value?.data?.total || 0
+            ? entitlementsData.value?.data?.pagination?.total || 0
             : 0,
         legalAidServices:
           legalAidData.status === "fulfilled"
-            ? legalAidData.value?.data?.total || 0
+            ? legalAidData.value?.data?.pagination?.total || 0
             : 0,
         workshops:
           workshopsData.status === "fulfilled"
-            ? workshopsData.value?.data?.total || 0
+            ? workshopsData.value?.data?.pagination?.total || 0
             : 0,
       };
 
@@ -382,20 +414,53 @@ const Dashboard = () => {
         socialJustice: socialJusticeStats,
       });
 
-      // Set chart data
+      // Calculate real overview stats
+      const totalBeneficiaries =
+        healthStats.totalCases +
+        educationStats.totalStudents +
+        socialJusticeStats.totalCases;
+
+      // Calculate active cases (this is a simplified calculation - you can enhance based on status)
+      const activeCases = Math.floor(totalBeneficiaries * 0.6); // Estimate 60% active
+      const completedCases = Math.floor(totalBeneficiaries * 0.25); // Estimate 25% completed
+      const urgentCases = Math.floor(totalBeneficiaries * 0.08); // Estimate 8% urgent
+
+      setOverviewStats({
+        totalBeneficiaries,
+        activeCases,
+        pendingLegalAid: socialJusticeStats.legalAidServices,
+        completedThisMonth: completedCases,
+        recentBeneficiaries: Math.min(totalBeneficiaries, 12), // Last 12 as recent
+        urgentCases,
+      });
+
+      // Set chart data with real module distribution
       const moduleDistribution = [
-        { name: "Health", value: healthStats.totalCases, color: COLORS.danger },
+        {
+          name: "Health",
+          value: healthStats.totalCases,
+          color: COLORS.danger,
+          percentage: Math.round(
+            (healthStats.totalCases / (totalBeneficiaries || 1)) * 100
+          ),
+        },
         {
           name: "Education",
           value: educationStats.totalStudents,
           color: COLORS.secondary,
+          percentage: Math.round(
+            (educationStats.totalStudents / (totalBeneficiaries || 1)) * 100
+          ),
         },
         {
           name: "Social Justice",
           value: socialJusticeStats.totalCases,
           color: COLORS.primary,
+          percentage: Math.round(
+            (socialJusticeStats.totalCases / (totalBeneficiaries || 1)) * 100
+          ),
         },
-      ];
+      ].filter((item) => item.value > 0); // Only show modules with data
 
       const monthlyTrends = [
         { month: "Jan", health: 45, education: 32, socialJustice: 28 },
@@ -421,10 +486,14 @@ const Dashboard = () => {
           { name: "55+", value: 3 },
         ],
         statusDistribution: [
-          { name: "Active", value: 85, color: COLORS.secondary },
-          { name: "Pending", value: 28, color: COLORS.accent },
-          { name: "Completed", value: 42, color: COLORS.primary },
-          { name: "On Hold", value: 15, color: COLORS.purple },
+          { name: "Active", value: activeCases, color: COLORS.secondary },
+          {
+            name: "Pending",
+            value: socialJusticeStats.legalAidServices,
+            color: COLORS.accent,
+          },
+          { name: "Completed", value: completedCases, color: COLORS.primary },
+          { name: "On Hold", value: urgentCases, color: COLORS.purple },
         ],
       });
 
@@ -689,6 +758,30 @@ const Dashboard = () => {
                         </span>
                         <span>{moduleStats.health.adolescentPrograms}</span>
                       </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Tuberculosis</span>
+                        <span>{moduleStats.health.tuberculosis}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">HIV</span>
+                        <span>{moduleStats.health.hiv}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Leprosy</span>
+                        <span>{moduleStats.health.leprosy}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Addiction</span>
+                        <span>{moduleStats.health.addiction}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Other Diseases</span>
+                        <span>{moduleStats.health.otherDiseases}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">PWD Support</span>
+                        <span>{moduleStats.health.pwdSupport}</span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -730,6 +823,14 @@ const Dashboard = () => {
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Schools</span>
                         <span>{moduleStats.education.schools}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Competitive Exams</span>
+                        <span>{moduleStats.education.competitiveExams}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Board Preparation</span>
+                        <span>{moduleStats.education.boardPreparation}</span>
                       </div>
                     </div>
                   </div>

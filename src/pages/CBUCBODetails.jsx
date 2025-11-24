@@ -94,36 +94,18 @@ const CBUCBODetails = () => {
     totalMembers: "",
     groupLeader: "",
     contactNo: "",
-    president: {
-      name: "",
-      contactNo: "",
-      education: "",
-      occupation: "",
-      experience: "",
-    },
-    secretary: {
-      name: "",
-      contactNo: "",
-      education: "",
-      occupation: "",
-      experience: "",
-    },
-    treasurer: {
-      name: "",
-      contactNo: "",
-      education: "",
-      occupation: "",
-      experience: "",
-    },
-    meetingFrequency: "",
-    lastMeetingDate: "",
-    bankAccountDetails: "",
-    savingsAmount: "",
-    loanAmount: "",
-    status: "Active",
-    achievements: "",
-    challenges: "",
+    groupMentor: "",
+    listOfCapacityBuildingTrainings: "",
+    trainingOutcomes: "",
+    actionPlanForGroup: "",
     remarks: "",
+    progressReporting: {},
+    majorAchievements: "",
+    photoDocumentation: {
+      before: "",
+      intermediate: "",
+      after: "",
+    },
   });
 
   const groupTypes = [
@@ -134,10 +116,6 @@ const CBUCBODetails = () => {
     "Farmer Producer Group",
     "Other",
   ];
-
-  const statusOptions = ["Active", "Inactive", "Dissolved", "Merged"];
-
-  const meetingFrequencies = ["Weekly", "Bi-weekly", "Monthly", "Quarterly"];
 
   // Fetch CBUCBO details
   const fetchCBUCBODetails = async () => {
@@ -231,36 +209,18 @@ const CBUCBODetails = () => {
       totalMembers: "",
       groupLeader: "",
       contactNo: "",
-      president: {
-        name: "",
-        contactNo: "",
-        education: "",
-        occupation: "",
-        experience: "",
-      },
-      secretary: {
-        name: "",
-        contactNo: "",
-        education: "",
-        occupation: "",
-        experience: "",
-      },
-      treasurer: {
-        name: "",
-        contactNo: "",
-        education: "",
-        occupation: "",
-        experience: "",
-      },
-      meetingFrequency: "",
-      lastMeetingDate: "",
-      bankAccountDetails: "",
-      savingsAmount: "",
-      loanAmount: "",
-      status: "Active",
-      achievements: "",
-      challenges: "",
+      groupMentor: "",
+      listOfCapacityBuildingTrainings: "",
+      trainingOutcomes: "",
+      actionPlanForGroup: "",
       remarks: "",
+      progressReporting: {},
+      majorAchievements: "",
+      photoDocumentation: {
+        before: "",
+        intermediate: "",
+        after: "",
+      },
     });
     setSelectedGroup(null);
   };
@@ -689,15 +649,28 @@ const CBUCBODetails = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward No *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
-                          setFormData({ ...formData, wardNo: e.target.value })
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, wardNo: value })
                         }
-                        placeholder="Enter ward number"
-                        required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="habitation">Habitation *</Label>
@@ -897,31 +870,147 @@ const CBUCBODetails = () => {
                 </DialogHeader>
                 {selectedGroup && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Group ID</Label>
-                        <p className="text-sm font-medium">
-                          {selectedGroup.groupId}
-                        </p>
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">Group ID</Label>
+                          <p>{selectedGroup.groupId}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Group Name</Label>
+                          <p>{selectedGroup.groupName}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Group Type</Label>
+                          <Badge>{selectedGroup.groupType}</Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Functional Area
+                          </Label>
+                          <p>{selectedGroup.functionalArea || "N/A"}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedGroup.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedGroup.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedGroup.projectResponsible}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Formation
+                          </Label>
+                          <p>
+                            {selectedGroup.dateOfFormation
+                              ? new Date(
+                                  selectedGroup.dateOfFormation
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Total Members</Label>
+                          <p>{selectedGroup.totalMembers}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Status</Label>
+                          <Badge
+                            className={getStatusColor(selectedGroup.status)}
+                          >
+                            {selectedGroup.status}
+                          </Badge>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Group Name</Label>
-                        <p className="text-sm font-medium">
-                          {selectedGroup.groupName}
-                        </p>
+                    </div>
+
+                    {/* Leadership */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Leadership
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">Group Leader</Label>
+                          <p>{selectedGroup.groupLeader}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Contact Number
+                          </Label>
+                          <p>{selectedGroup.contactNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Group Mentor</Label>
+                          <p>{selectedGroup.groupMentor || "N/A"}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Group Type</Label>
-                        <p className="text-sm font-medium">
-                          {selectedGroup.groupType}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Status</Label>
-                        <Badge className={getStatusColor(selectedGroup.status)}>
-                          {selectedGroup.status}
-                        </Badge>
-                      </div>
+                    </div>
+
+                    {/* Capacity Building & Plans */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Capacity Building & Plans
+                      </h3>
+                      {selectedGroup.listOfCapacityBuildingTrainings && (
+                        <div>
+                          <Label className="font-semibold">
+                            List of Capacity Building Trainings
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedGroup.listOfCapacityBuildingTrainings}
+                          </p>
+                        </div>
+                      )}
+                      {selectedGroup.trainingOutcomes && (
+                        <div>
+                          <Label className="font-semibold">
+                            Training Outcomes
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedGroup.trainingOutcomes}
+                          </p>
+                        </div>
+                      )}
+                      {selectedGroup.actionPlanForGroup && (
+                        <div>
+                          <Label className="font-semibold">
+                            Action Plan for Group
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedGroup.actionPlanForGroup}
+                          </p>
+                        </div>
+                      )}
+                      {selectedGroup.majorAchievements && (
+                        <div>
+                          <Label className="font-semibold">
+                            Major Achievements
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedGroup.majorAchievements}
+                          </p>
+                        </div>
+                      )}
+                      {selectedGroup.remarks && (
+                        <div>
+                          <Label className="font-semibold">Remarks</Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedGroup.remarks}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

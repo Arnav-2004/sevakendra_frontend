@@ -1252,15 +1252,54 @@ export const adolescentsAPI = {
   getFilterOptions: () => api.get("/health/adolescents/filter-options"),
 };
 
-// TB HIV Addict API
-export const tbhivAddictAPI = {
-  getAll: (params) => api.get("/health/tb-hiv-addict", { params }),
-  getById: (id) => api.get(`/health/tb-hiv-addict/${id}`),
-  create: (data) => api.post("/health/tb-hiv-addict", data),
-  update: (id, data) => api.put(`/health/tb-hiv-addict/${id}`, data),
-  delete: (id) => api.delete(`/health/tb-hiv-addict/${id}`),
-  getStats: () => api.get("/health/tb-hiv-addict/stats"),
-  getFilterOptions: () => api.get("/health/tb-hiv-addict/filter-options"),
+// Tuberculosis API
+export const tuberculosisAPI = {
+  getAll: (params) => api.get("/health/tuberculosis", { params }),
+  getById: (id) => api.get(`/health/tuberculosis/${id}`),
+  create: (data) => api.post("/health/tuberculosis", data),
+  update: (id, data) => api.put(`/health/tuberculosis/${id}`, data),
+  delete: (id) => api.delete(`/health/tuberculosis/${id}`),
+  getStats: () => api.get("/health/tuberculosis/stats"),
+};
+
+// HIV API
+export const hivAPI = {
+  getAll: (params) => api.get("/health/hiv", { params }),
+  getById: (id) => api.get(`/health/hiv/${id}`),
+  create: (data) => api.post("/health/hiv", data),
+  update: (id, data) => api.put(`/health/hiv/${id}`, data),
+  delete: (id) => api.delete(`/health/hiv/${id}`),
+  getStats: () => api.get("/health/hiv/stats"),
+};
+
+// Leprosy API
+export const leprosyAPI = {
+  getAll: (params) => api.get("/health/leprosy", { params }),
+  getById: (id) => api.get(`/health/leprosy/${id}`),
+  create: (data) => api.post("/health/leprosy", data),
+  update: (id, data) => api.put(`/health/leprosy/${id}`, data),
+  delete: (id) => api.delete(`/health/leprosy/${id}`),
+  getStats: () => api.get("/health/leprosy/stats"),
+};
+
+// Addiction API
+export const addictionAPI = {
+  getAll: (params) => api.get("/health/addiction", { params }),
+  getById: (id) => api.get(`/health/addiction/${id}`),
+  create: (data) => api.post("/health/addiction", data),
+  update: (id, data) => api.put(`/health/addiction/${id}`, data),
+  delete: (id) => api.delete(`/health/addiction/${id}`),
+  getStats: () => api.get("/health/addiction/stats"),
+};
+
+// Other Diseases API
+export const otherDiseasesAPI = {
+  getAll: (params) => api.get("/health/other-diseases", { params }),
+  getById: (id) => api.get(`/health/other-diseases/${id}`),
+  create: (data) => api.post("/health/other-diseases", data),
+  update: (id, data) => api.put(`/health/other-diseases/${id}`, data),
+  delete: (id) => api.delete(`/health/other-diseases/${id}`),
+  getStats: () => api.get("/health/other-diseases/stats"),
 };
 
 // Social Justice Module APIs
@@ -1418,4 +1457,50 @@ export const workshopsAwarenessAPI = {
       `/social-justice/workshops-awareness/${id}/follow-up/${actionId}/status`,
       { status }
     ),
+};
+
+// Tracking System API
+export const trackingAPI = {
+  // Create new tracking record
+  create: (data) => api.post("/tracking", data),
+
+  // Get all tracking records with filters and pagination
+  getAll: (params) => api.get("/tracking", { params }),
+
+  // Get tracking record by ID
+  getById: (id) => api.get(`/tracking/${id}`),
+
+  // Get all tracking records for a specific record (by recordType and recordId)
+  getByRecord: (recordType, recordId) =>
+    api.get(`/tracking/record/${recordType}/${recordId}`),
+
+  // Update tracking record
+  update: (id, data) => api.patch(`/tracking/${id}`, data),
+
+  // Delete tracking record (soft delete)
+  delete: (id) => api.delete(`/tracking/${id}`),
+
+  // Add monthly update to tracking record
+  addMonthlyUpdate: (id, updateData) =>
+    api.post(`/tracking/${id}/monthly-update`, updateData),
+
+  // Mark tracking as completed
+  complete: (id, data) => api.post(`/tracking/${id}/complete`, data),
+
+  // Cancel tracking record
+  cancel: (id, data) => api.post(`/tracking/${id}/cancel`, data),
+
+  // Get overdue tracking records
+  getOverdue: () => api.get("/tracking/overdue"),
+
+  // Get upcoming tracking records (within specified days)
+  getUpcoming: (days = 7) =>
+    api.get("/tracking/upcoming", { params: { days } }),
+
+  // Get tracking statistics
+  getStats: (params) => api.get("/tracking/stats", { params }),
+
+  // Get monthly update history for a specific record
+  getHistory: (recordType, recordId) =>
+    api.get(`/tracking/history/${recordType}/${recordId}`),
 };

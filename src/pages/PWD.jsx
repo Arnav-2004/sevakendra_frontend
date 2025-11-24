@@ -86,7 +86,7 @@ const PWD = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     householdCode: "",
-    nameOfPwd: "",
+    name: "",
     uniqueId: "",
     gender: "",
     age: "",
@@ -95,19 +95,21 @@ const PWD = () => {
     wardNo: "",
     habitation: "",
     projectResponsible: "",
-    disabilityType: "",
-    disabilitySeverity: "",
+    district: "",
+    state: "",
+    typeOfDisability: "",
     percentageOfDisability: "",
     disabilityCertificate: "",
     dateOfReporting: "",
     reportedBy: "",
-    medicalAssessment: "",
-    functionalAssessment: "",
-    psychosocialAssessment: "",
-    rehabilitationNeeds: "",
+    dateOfAssessment: "",
+    assessmentResults: "",
     assistiveDevicesProvided: "",
-    servicesProvided: "",
-    referralsGiven: "",
+    therapyServices: "",
+    rehabilitationServices: "",
+    educationalSupport: "",
+    vocationalTraining: "",
+    beneficiaryOfGovernmentSchemes: "",
     progressReporting: {},
   });
 
@@ -176,7 +178,7 @@ const PWD = () => {
   const resetForm = () => {
     setFormData({
       householdCode: "",
-      nameOfPwd: "",
+      name: "",
       uniqueId: "",
       gender: "",
       age: "",
@@ -185,30 +187,34 @@ const PWD = () => {
       wardNo: "",
       habitation: "",
       projectResponsible: "",
-      disabilityType: "",
-      disabilitySeverity: "",
+      district: "",
+      state: "",
+      typeOfDisability: "",
       percentageOfDisability: "",
       disabilityCertificate: "",
       dateOfReporting: "",
       reportedBy: "",
-      medicalAssessment: "",
-      functionalAssessment: "",
-      psychosocialAssessment: "",
-      rehabilitationNeeds: "",
+      dateOfAssessment: "",
+      assessmentResults: "",
       assistiveDevicesProvided: "",
-      servicesProvided: "",
-      referralsGiven: "",
+      therapyServices: "",
+      rehabilitationServices: "",
+      educationalSupport: "",
+      vocationalTraining: "",
+      beneficiaryOfGovernmentSchemes: "",
       progressReporting: {},
     });
     setSelectedRecord(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Handle edit
   const handleEdit = (record) => {
     setSelectedRecord(record);
-    setFormData({
+    const formFields = {
       householdCode: record.householdCode || "",
-      nameOfPwd: record.nameOfPwd || "",
+      name: record.name || "",
       uniqueId: record.uniqueId || "",
       gender: record.gender || "",
       age: record.age || "",
@@ -217,23 +223,36 @@ const PWD = () => {
       wardNo: record.wardNo || "",
       habitation: record.habitation || "",
       projectResponsible: record.projectResponsible || "",
-      disabilityType: record.disabilityType || "",
-      disabilitySeverity: record.disabilitySeverity || "",
+      district: record.district || "",
+      state: record.state || "",
+      typeOfDisability: record.typeOfDisability || "",
       percentageOfDisability: record.percentageOfDisability || "",
       disabilityCertificate: record.disabilityCertificate || "",
       dateOfReporting: record.dateOfReporting
         ? new Date(record.dateOfReporting).toISOString().split("T")[0]
         : "",
       reportedBy: record.reportedBy || "",
-      medicalAssessment: record.medicalAssessment || "",
-      functionalAssessment: record.functionalAssessment || "",
-      psychosocialAssessment: record.psychosocialAssessment || "",
-      rehabilitationNeeds: record.rehabilitationNeeds || "",
+      dateOfAssessment: record.dateOfAssessment
+        ? new Date(record.dateOfAssessment).toISOString().split("T")[0]
+        : "",
+      assessmentResults: record.assessmentResults || "",
       assistiveDevicesProvided: record.assistiveDevicesProvided || "",
-      servicesProvided: record.servicesProvided || "",
-      referralsGiven: record.referralsGiven || "",
+      therapyServices: record.therapyServices || "",
+      rehabilitationServices: record.rehabilitationServices || "",
+      educationalSupport: record.educationalSupport || "",
+      vocationalTraining: record.vocationalTraining || "",
+      beneficiaryOfGovernmentSchemes:
+        record.beneficiaryOfGovernmentSchemes || "",
       progressReporting: record.progressReporting || {},
-    });
+    };
+    // Only include optional enum fields if they have values
+    if (record.employmentStatus) {
+      formFields.employmentStatus = record.employmentStatus;
+    }
+    if (record.pensionStatus) {
+      formFields.pensionStatus = record.pensionStatus;
+    }
+    setFormData(formFields);
     setIsEditModalOpen(true);
   };
 
@@ -440,27 +459,19 @@ const PWD = () => {
                       pwd.map((record) => (
                         <TableRow key={record._id}>
                           <TableCell className="font-medium">
-                            {record.nameOfPwd}
+                            {record.name}
                           </TableCell>
                           <TableCell>
                             {record.age}, {record.gender}
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline">
-                              {record.disabilityType}
+                              {record.typeOfDisability}
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Badge
-                              variant={
-                                record.disabilitySeverity === "Mild"
-                                  ? "default"
-                                  : record.disabilitySeverity === "Moderate"
-                                  ? "secondary"
-                                  : "destructive"
-                              }
-                            >
-                              {record.disabilitySeverity}
+                            <Badge variant="secondary">
+                              {record.percentageOfDisability}%
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -601,11 +612,11 @@ const PWD = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="nameOfPwd">Name *</Label>
+                <Label htmlFor="name">Name *</Label>
                 <Input
-                  id="nameOfPwd"
-                  name="nameOfPwd"
-                  value={formData.nameOfPwd}
+                  id="name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
                   required
                 />
@@ -674,13 +685,28 @@ const PWD = () => {
               </div>
               <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
-                <Input
-                  id="wardNo"
-                  name="wardNo"
+                <Select
                   value={formData.wardNo}
-                  onChange={handleInputChange}
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="wardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="habitation">Habitation *</Label>
@@ -705,46 +731,74 @@ const PWD = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="disabilityType">Disability Type *</Label>
+                <Label htmlFor="district">District *</Label>
+                <Input
+                  id="district"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                  placeholder="District name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="state">State *</Label>
+                <Input
+                  id="state"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  placeholder="State name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="typeOfDisability">Disability Type *</Label>
                 <Select
-                  value={formData.disabilityType}
+                  value={formData.typeOfDisability}
                   onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, disabilityType: value }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      typeOfDisability: value,
+                    }))
                   }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Physical">Physical</SelectItem>
-                    <SelectItem value="Visual">Visual</SelectItem>
-                    <SelectItem value="Hearing">Hearing</SelectItem>
-                    <SelectItem value="Speech">Speech</SelectItem>
-                    <SelectItem value="Intellectual">Intellectual</SelectItem>
-                    <SelectItem value="Mental">Mental</SelectItem>
-                    <SelectItem value="Multiple">Multiple</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="disabilitySeverity">Severity *</Label>
-                <Select
-                  value={formData.disabilitySeverity}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      disabilitySeverity: value,
-                    }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select severity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Mild">Mild</SelectItem>
-                    <SelectItem value="Moderate">Moderate</SelectItem>
-                    <SelectItem value="Severe">Severe</SelectItem>
-                    <SelectItem value="Profound">Profound</SelectItem>
+                    <SelectItem value="Visual Impairment">
+                      Visual Impairment
+                    </SelectItem>
+                    <SelectItem value="Hearing Impairment">
+                      Hearing Impairment
+                    </SelectItem>
+                    <SelectItem value="Speech and Language Disability">
+                      Speech and Language Disability
+                    </SelectItem>
+                    <SelectItem value="Locomotor Disability">
+                      Locomotor Disability
+                    </SelectItem>
+                    <SelectItem value="Mental Retardation">
+                      Mental Retardation
+                    </SelectItem>
+                    <SelectItem value="Mental Illness">
+                      Mental Illness
+                    </SelectItem>
+                    <SelectItem value="Multiple Disabilities">
+                      Multiple Disabilities
+                    </SelectItem>
+                    <SelectItem value="Autism">Autism</SelectItem>
+                    <SelectItem value="Cerebral Palsy">
+                      Cerebral Palsy
+                    </SelectItem>
+                    <SelectItem value="Muscular Dystrophy">
+                      Muscular Dystrophy
+                    </SelectItem>
+                    <SelectItem value="Chronic Neurological Conditions">
+                      Chronic Neurological Conditions
+                    </SelectItem>
+                    <SelectItem value="Others">Others</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -766,7 +820,7 @@ const PWD = () => {
               </div>
               <div>
                 <Label htmlFor="disabilityCertificate">
-                  Disability Certificate
+                  Disability Certificate *
                 </Label>
                 <Select
                   value={formData.disabilityCertificate}
@@ -783,8 +837,8 @@ const PWD = () => {
                   <SelectContent>
                     <SelectItem value="Available">Available</SelectItem>
                     <SelectItem value="Not Available">Not Available</SelectItem>
-                    <SelectItem value="Applied">Applied</SelectItem>
                     <SelectItem value="In Process">In Process</SelectItem>
+                    <SelectItem value="Expired">Expired</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -809,6 +863,136 @@ const PWD = () => {
                   required
                 />
               </div>
+              <div>
+                <Label htmlFor="dateOfAssessment">Date of Assessment</Label>
+                <Input
+                  id="dateOfAssessment"
+                  name="dateOfAssessment"
+                  type="date"
+                  value={formData.dateOfAssessment}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="assessmentResults">Assessment Results</Label>
+                <Textarea
+                  id="assessmentResults"
+                  name="assessmentResults"
+                  value={formData.assessmentResults}
+                  onChange={handleInputChange}
+                  placeholder="Details about assessment results"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="assistiveDevicesProvided">
+                  Assistive Devices Provided
+                </Label>
+                <Textarea
+                  id="assistiveDevicesProvided"
+                  name="assistiveDevicesProvided"
+                  value={formData.assistiveDevicesProvided}
+                  onChange={handleInputChange}
+                  placeholder="Details about assistive devices provided"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="therapyServices">Therapy Services</Label>
+                <Textarea
+                  id="therapyServices"
+                  name="therapyServices"
+                  value={formData.therapyServices}
+                  onChange={handleInputChange}
+                  placeholder="Details about therapy services"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="rehabilitationServices">
+                  Rehabilitation Services
+                </Label>
+                <Textarea
+                  id="rehabilitationServices"
+                  name="rehabilitationServices"
+                  value={formData.rehabilitationServices}
+                  onChange={handleInputChange}
+                  placeholder="Details about rehabilitation services"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="educationalSupport">Educational Support</Label>
+                <Textarea
+                  id="educationalSupport"
+                  name="educationalSupport"
+                  value={formData.educationalSupport}
+                  onChange={handleInputChange}
+                  placeholder="Details about educational support provided"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="vocationalTraining">Vocational Training</Label>
+                <Textarea
+                  id="vocationalTraining"
+                  name="vocationalTraining"
+                  value={formData.vocationalTraining}
+                  onChange={handleInputChange}
+                  placeholder="Details about vocational training"
+                />
+              </div>
+              <div>
+                <Label htmlFor="employmentStatus">Employment Status</Label>
+                <Select
+                  value={formData.employmentStatus || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      employmentStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select employment status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Employed">Employed</SelectItem>
+                    <SelectItem value="Unemployed">Unemployed</SelectItem>
+                    <SelectItem value="Self-Employed">Self-Employed</SelectItem>
+                    <SelectItem value="Student">Student</SelectItem>
+                    <SelectItem value="Retired">Retired</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="beneficiaryOfGovernmentSchemes">
+                  Beneficiary of Government Schemes
+                </Label>
+                <Textarea
+                  id="beneficiaryOfGovernmentSchemes"
+                  name="beneficiaryOfGovernmentSchemes"
+                  value={formData.beneficiaryOfGovernmentSchemes}
+                  onChange={handleInputChange}
+                  placeholder="Details about government schemes"
+                />
+              </div>
+              <div>
+                <Label htmlFor="pensionStatus">Pension Status</Label>
+                <Select
+                  value={formData.pensionStatus || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, pensionStatus: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select pension status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Receiving">Receiving</SelectItem>
+                    <SelectItem value="Not Receiving">Not Receiving</SelectItem>
+                    <SelectItem value="Applied">Applied</SelectItem>
+                    <SelectItem value="Rejected">Rejected</SelectItem>
+                    <SelectItem value="Unknown">Unknown</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <DialogFooter>
               <Button
@@ -830,9 +1014,414 @@ const PWD = () => {
           <DialogHeader>
             <DialogTitle>Edit PWD Record</DialogTitle>
           </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setIsEditModalOpen(false)}>Close</Button>
-          </DialogFooter>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="editHouseholdCode">Household Code *</Label>
+                <Input
+                  id="editHouseholdCode"
+                  name="householdCode"
+                  value={formData.householdCode}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editName">Name *</Label>
+                <Input
+                  id="editName"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editUniqueId">Unique ID *</Label>
+                <Input
+                  id="editUniqueId"
+                  name="uniqueId"
+                  value={formData.uniqueId}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editGender">Gender *</Label>
+                <Select
+                  value={formData.gender}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, gender: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editAge">Age *</Label>
+                <Input
+                  id="editAge"
+                  name="age"
+                  type="number"
+                  min="0"
+                  max="120"
+                  value={formData.age}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editContactNo">Contact Number *</Label>
+                <Input
+                  id="editContactNo"
+                  name="contactNo"
+                  value={formData.contactNo}
+                  onChange={handleInputChange}
+                  pattern="[6-9][0-9]{9}"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editHeadOfHousehold">Head of Household *</Label>
+                <Input
+                  id="editHeadOfHousehold"
+                  name="headOfHousehold"
+                  value={formData.headOfHousehold}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editWardNo">Ward No *</Label>
+                <Select
+                  value={formData.wardNo}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="editWardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editHabitation">Habitation *</Label>
+                <Input
+                  id="editHabitation"
+                  name="habitation"
+                  value={formData.habitation}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editProjectResponsible">
+                  Project Responsible *
+                </Label>
+                <Input
+                  id="editProjectResponsible"
+                  name="projectResponsible"
+                  value={formData.projectResponsible}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDistrict">District *</Label>
+                <Input
+                  id="editDistrict"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                  placeholder="District name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editState">State *</Label>
+                <Input
+                  id="editState"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  placeholder="State name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editTypeOfDisability">Disability Type *</Label>
+                <Select
+                  value={formData.typeOfDisability}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      typeOfDisability: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Visual Impairment">
+                      Visual Impairment
+                    </SelectItem>
+                    <SelectItem value="Hearing Impairment">
+                      Hearing Impairment
+                    </SelectItem>
+                    <SelectItem value="Speech and Language Disability">
+                      Speech and Language Disability
+                    </SelectItem>
+                    <SelectItem value="Locomotor Disability">
+                      Locomotor Disability
+                    </SelectItem>
+                    <SelectItem value="Mental Retardation">
+                      Mental Retardation
+                    </SelectItem>
+                    <SelectItem value="Mental Illness">
+                      Mental Illness
+                    </SelectItem>
+                    <SelectItem value="Multiple Disabilities">
+                      Multiple Disabilities
+                    </SelectItem>
+                    <SelectItem value="Autism">Autism</SelectItem>
+                    <SelectItem value="Cerebral Palsy">
+                      Cerebral Palsy
+                    </SelectItem>
+                    <SelectItem value="Muscular Dystrophy">
+                      Muscular Dystrophy
+                    </SelectItem>
+                    <SelectItem value="Chronic Neurological Conditions">
+                      Chronic Neurological Conditions
+                    </SelectItem>
+                    <SelectItem value="Others">Others</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editPercentageOfDisability">
+                  Percentage of Disability *
+                </Label>
+                <Input
+                  id="editPercentageOfDisability"
+                  name="percentageOfDisability"
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={formData.percentageOfDisability}
+                  onChange={handleInputChange}
+                  placeholder="Enter percentage (1-100)"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDisabilityCertificate">
+                  Disability Certificate *
+                </Label>
+                <Select
+                  value={formData.disabilityCertificate}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      disabilityCertificate: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Certificate status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Not Available">Not Available</SelectItem>
+                    <SelectItem value="In Process">In Process</SelectItem>
+                    <SelectItem value="Expired">Expired</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editDateOfReporting">Date of Reporting *</Label>
+                <Input
+                  id="editDateOfReporting"
+                  name="dateOfReporting"
+                  type="date"
+                  value={formData.dateOfReporting}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editReportedBy">Reported By *</Label>
+                <Input
+                  id="editReportedBy"
+                  name="reportedBy"
+                  value={formData.reportedBy}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDateOfAssessment">Date of Assessment</Label>
+                <Input
+                  id="editDateOfAssessment"
+                  name="dateOfAssessment"
+                  type="date"
+                  value={formData.dateOfAssessment}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="editAssessmentResults">
+                  Assessment Results
+                </Label>
+                <Textarea
+                  id="editAssessmentResults"
+                  name="assessmentResults"
+                  value={formData.assessmentResults}
+                  onChange={handleInputChange}
+                  placeholder="Details about assessment results"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="editAssistiveDevicesProvided">
+                  Assistive Devices Provided
+                </Label>
+                <Textarea
+                  id="editAssistiveDevicesProvided"
+                  name="assistiveDevicesProvided"
+                  value={formData.assistiveDevicesProvided}
+                  onChange={handleInputChange}
+                  placeholder="Details about assistive devices provided"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="editTherapyServices">Therapy Services</Label>
+                <Textarea
+                  id="editTherapyServices"
+                  name="therapyServices"
+                  value={formData.therapyServices}
+                  onChange={handleInputChange}
+                  placeholder="Details about therapy services"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="editRehabilitationServices">
+                  Rehabilitation Services
+                </Label>
+                <Textarea
+                  id="editRehabilitationServices"
+                  name="rehabilitationServices"
+                  value={formData.rehabilitationServices}
+                  onChange={handleInputChange}
+                  placeholder="Details about rehabilitation services"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="editEducationalSupport">
+                  Educational Support
+                </Label>
+                <Textarea
+                  id="editEducationalSupport"
+                  name="educationalSupport"
+                  value={formData.educationalSupport}
+                  onChange={handleInputChange}
+                  placeholder="Details about educational support provided"
+                />
+              </div>
+              <div className="md:col-span-3">
+                <Label htmlFor="editVocationalTraining">
+                  Vocational Training
+                </Label>
+                <Textarea
+                  id="editVocationalTraining"
+                  name="vocationalTraining"
+                  value={formData.vocationalTraining}
+                  onChange={handleInputChange}
+                  placeholder="Details about vocational training"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editEmploymentStatus">Employment Status</Label>
+                <Select
+                  value={formData.employmentStatus || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      employmentStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select employment status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Employed">Employed</SelectItem>
+                    <SelectItem value="Unemployed">Unemployed</SelectItem>
+                    <SelectItem value="Self-Employed">Self-Employed</SelectItem>
+                    <SelectItem value="Student">Student</SelectItem>
+                    <SelectItem value="Retired">Retired</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="editBeneficiaryOfGovernmentSchemes">
+                  Beneficiary of Government Schemes
+                </Label>
+                <Textarea
+                  id="editBeneficiaryOfGovernmentSchemes"
+                  name="beneficiaryOfGovernmentSchemes"
+                  value={formData.beneficiaryOfGovernmentSchemes}
+                  onChange={handleInputChange}
+                  placeholder="Details about government schemes"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editPensionStatus">Pension Status</Label>
+                <Select
+                  value={formData.pensionStatus || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, pensionStatus: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select pension status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Receiving">Receiving</SelectItem>
+                    <SelectItem value="Not Receiving">Not Receiving</SelectItem>
+                    <SelectItem value="Applied">Applied</SelectItem>
+                    <SelectItem value="Rejected">Rejected</SelectItem>
+                    <SelectItem value="Unknown">Unknown</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={resetForm}>
+                Cancel
+              </Button>
+              <Button type="submit">Update Record</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 
@@ -842,25 +1431,194 @@ const PWD = () => {
             <DialogTitle>PWD Record Details</DialogTitle>
           </DialogHeader>
           {selectedRecord && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="font-semibold">Name</Label>
-                  <p>{selectedRecord.nameOfPwd}</p>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  Basic Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Household Code</Label>
+                    <p>{selectedRecord.householdCode}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Name</Label>
+                    <p>{selectedRecord.name}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Unique ID</Label>
+                    <p>{selectedRecord.uniqueId}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Gender</Label>
+                    <p>{selectedRecord.gender}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Age</Label>
+                    <p>{selectedRecord.age}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Contact Number</Label>
+                    <p>{selectedRecord.contactNo}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Head of Household</Label>
+                    <p>{selectedRecord.headOfHousehold}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Ward No</Label>
+                    <p>{selectedRecord.wardNo}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Habitation</Label>
+                    <p>{selectedRecord.habitation}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Project Responsible</Label>
+                    <p>{selectedRecord.projectResponsible}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">District</Label>
+                    <p>{selectedRecord.district}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">State</Label>
+                    <p>{selectedRecord.state}</p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="font-semibold">Age/Gender</Label>
-                  <p>
-                    {selectedRecord.age}, {selectedRecord.gender}
-                  </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  Disability Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Type of Disability</Label>
+                    <Badge>{selectedRecord.typeOfDisability}</Badge>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">
+                      Percentage of Disability
+                    </Label>
+                    <Badge>{selectedRecord.percentageOfDisability}%</Badge>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">
+                      Disability Certificate
+                    </Label>
+                    <Badge
+                      variant={
+                        selectedRecord.disabilityCertificate === "Available"
+                          ? "default"
+                          : "secondary"
+                      }
+                    >
+                      {selectedRecord.disabilityCertificate}
+                    </Badge>
+                  </div>
                 </div>
-                <div>
-                  <Label className="font-semibold">Disability Type</Label>
-                  <Badge>{selectedRecord.disabilityType}</Badge>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  Reporting Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Date of Reporting</Label>
+                    <p>
+                      {selectedRecord.dateOfReporting
+                        ? new Date(
+                            selectedRecord.dateOfReporting
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Reported By</Label>
+                    <p>{selectedRecord.reportedBy}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Date of Assessment</Label>
+                    <p>
+                      {selectedRecord.dateOfAssessment
+                        ? new Date(
+                            selectedRecord.dateOfAssessment
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="font-semibold">Assessment Results</Label>
+                    <p>{selectedRecord.assessmentResults || "N/A"}</p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="font-semibold">Severity</Label>
-                  <Badge>{selectedRecord.disabilitySeverity}</Badge>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Support Services</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <Label className="font-semibold">
+                      Assistive Devices Provided
+                    </Label>
+                    <p>{selectedRecord.assistiveDevicesProvided || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Therapy Services</Label>
+                    <p>{selectedRecord.therapyServices || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">
+                      Rehabilitation Services
+                    </Label>
+                    <p>{selectedRecord.rehabilitationServices || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Educational Support</Label>
+                    <p>{selectedRecord.educationalSupport || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Vocational Training</Label>
+                    <p>{selectedRecord.vocationalTraining || "N/A"}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  Employment & Benefits
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Employment Status</Label>
+                    {selectedRecord.employmentStatus ? (
+                      <Badge variant="outline">
+                        {selectedRecord.employmentStatus}
+                      </Badge>
+                    ) : (
+                      <p>N/A</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Pension Status</Label>
+                    {selectedRecord.pensionStatus ? (
+                      <Badge variant="outline">
+                        {selectedRecord.pensionStatus}
+                      </Badge>
+                    ) : (
+                      <p>N/A</p>
+                    )}
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label className="font-semibold">
+                      Beneficiary of Government Schemes
+                    </Label>
+                    <p>
+                      {selectedRecord.beneficiaryOfGovernmentSchemes || "N/A"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

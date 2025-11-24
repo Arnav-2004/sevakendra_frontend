@@ -95,20 +95,27 @@ const MotherChild = () => {
     wardNo: "",
     habitation: "",
     projectResponsible: "",
+    district: "",
+    state: "",
     nameOfChild: "",
     ageOfChild: "",
     dateOfReporting: "",
     reportedBy: "",
+    pregnantOrLactatingMother: "",
     antenatalCareDetails: "",
     deliveryDetails: "",
+    deliveryArea: "",
+    birthCertificate: "",
     postnatalCareDetails: "",
     immunizationStatus: "",
     nutritionalStatus: "",
+    healthCheckups: "",
     childImmunizationStatus: "",
     childNutritionalStatus: "",
     childDevelopmentMilestones: "",
     servicesProvided: "",
     referralsGiven: "",
+    governmentSchemes: "",
     progressReporting: {},
   });
 
@@ -186,23 +193,32 @@ const MotherChild = () => {
       wardNo: "",
       habitation: "",
       projectResponsible: "",
+      district: "",
+      state: "",
       nameOfChild: "",
       ageOfChild: "",
       dateOfReporting: "",
       reportedBy: "",
+      pregnantOrLactatingMother: "",
       antenatalCareDetails: "",
       deliveryDetails: "",
+      deliveryArea: "",
+      birthCertificate: "",
       postnatalCareDetails: "",
       immunizationStatus: "",
       nutritionalStatus: "",
+      healthCheckups: "",
       childImmunizationStatus: "",
       childNutritionalStatus: "",
       childDevelopmentMilestones: "",
       servicesProvided: "",
       referralsGiven: "",
+      governmentSchemes: "",
       progressReporting: {},
     });
     setSelectedRecord(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Handle edit
@@ -219,22 +235,29 @@ const MotherChild = () => {
       wardNo: record.wardNo || "",
       habitation: record.habitation || "",
       projectResponsible: record.projectResponsible || "",
+      district: record.district || "",
+      state: record.state || "",
       nameOfChild: record.nameOfChild || "",
       ageOfChild: record.ageOfChild || "",
       dateOfReporting: record.dateOfReporting
         ? new Date(record.dateOfReporting).toISOString().split("T")[0]
         : "",
       reportedBy: record.reportedBy || "",
+      pregnantOrLactatingMother: record.pregnantOrLactatingMother || "",
       antenatalCareDetails: record.antenatalCareDetails || "",
       deliveryDetails: record.deliveryDetails || "",
+      deliveryArea: record.deliveryArea || "",
+      birthCertificate: record.birthCertificate || "",
       postnatalCareDetails: record.postnatalCareDetails || "",
       immunizationStatus: record.immunizationStatus || "",
       nutritionalStatus: record.nutritionalStatus || "",
+      healthCheckups: record.healthCheckups || "",
       childImmunizationStatus: record.childImmunizationStatus || "",
       childNutritionalStatus: record.childNutritionalStatus || "",
       childDevelopmentMilestones: record.childDevelopmentMilestones || "",
       servicesProvided: record.servicesProvided || "",
       referralsGiven: record.referralsGiven || "",
+      governmentSchemes: record.governmentSchemes || "",
       progressReporting: record.progressReporting || {},
     });
     setIsEditModalOpen(true);
@@ -699,13 +722,28 @@ const MotherChild = () => {
               </div>
               <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
-                <Input
-                  id="wardNo"
-                  name="wardNo"
+                <Select
                   value={formData.wardNo}
-                  onChange={handleInputChange}
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="wardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="habitation">Habitation *</Label>
@@ -730,6 +768,28 @@ const MotherChild = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="district">District *</Label>
+                <Input
+                  id="district"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                  placeholder="District name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="state">State *</Label>
+                <Input
+                  id="state"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  placeholder="State name"
+                  required
+                />
+              </div>
+              <div>
                 <Label htmlFor="dateOfReporting">Date of Reporting *</Label>
                 <Input
                   id="dateOfReporting"
@@ -748,6 +808,101 @@ const MotherChild = () => {
                   value={formData.reportedBy}
                   onChange={handleInputChange}
                   required
+                />
+              </div>
+              <div>
+                <Label htmlFor="pregnantOrLactatingMother">
+                  Pregnant or Lactating Mother *
+                </Label>
+                <Select
+                  value={formData.pregnantOrLactatingMother}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      pregnantOrLactatingMother: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Pregnant">Pregnant</SelectItem>
+                    <SelectItem value="Lactating">Lactating</SelectItem>
+                    <SelectItem value="Both">Both</SelectItem>
+                    <SelectItem value="Neither">Neither</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="deliveryArea">Delivery Area</Label>
+                <Select
+                  value={formData.deliveryArea}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      deliveryArea: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select delivery area" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Home">Home</SelectItem>
+                    <SelectItem value="Hospital">Hospital</SelectItem>
+                    <SelectItem value="Primary Health Center">
+                      Primary Health Center
+                    </SelectItem>
+                    <SelectItem value="Community Health Center">
+                      Community Health Center
+                    </SelectItem>
+                    <SelectItem value="Private Clinic">
+                      Private Clinic
+                    </SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="birthCertificate">Birth Certificate</Label>
+                <Select
+                  value={formData.birthCertificate}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      birthCertificate: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Not Available">Not Available</SelectItem>
+                    <SelectItem value="In Process">In Process</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="healthCheckups">Health Checkups</Label>
+                <Textarea
+                  id="healthCheckups"
+                  name="healthCheckups"
+                  value={formData.healthCheckups}
+                  onChange={handleInputChange}
+                  placeholder="Details about health checkups"
+                />
+              </div>
+              <div>
+                <Label htmlFor="governmentSchemes">Government Schemes</Label>
+                <Textarea
+                  id="governmentSchemes"
+                  name="governmentSchemes"
+                  value={formData.governmentSchemes}
+                  onChange={handleInputChange}
+                  placeholder="Details about government schemes enrolled"
                 />
               </div>
               <div>
@@ -844,8 +999,7 @@ const MotherChild = () => {
                     <SelectItem value="Normal">Normal</SelectItem>
                     <SelectItem value="Underweight">Underweight</SelectItem>
                     <SelectItem value="Overweight">Overweight</SelectItem>
-                    <SelectItem value="Stunted">Stunted</SelectItem>
-                    <SelectItem value="Wasted">Wasted</SelectItem>
+                    <SelectItem value="Malnourished">Malnourished</SelectItem>
                     <SelectItem value="Severely Malnourished">
                       Severely Malnourished
                     </SelectItem>
@@ -873,10 +1027,483 @@ const MotherChild = () => {
           <DialogHeader>
             <DialogTitle>Edit Mother & Child Record</DialogTitle>
           </DialogHeader>
-          {/* Form content similar to create modal */}
-          <DialogFooter>
-            <Button onClick={() => setIsEditModalOpen(false)}>Close</Button>
-          </DialogFooter>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Basic Information */}
+              <div>
+                <Label htmlFor="editHouseholdCode">Household Code *</Label>
+                <Input
+                  id="editHouseholdCode"
+                  name="householdCode"
+                  value={formData.householdCode}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editNameOfMother">Mother Name *</Label>
+                <Input
+                  id="editNameOfMother"
+                  name="nameOfMother"
+                  value={formData.nameOfMother}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editNameOfChild">Child Name *</Label>
+                <Input
+                  id="editNameOfChild"
+                  name="nameOfChild"
+                  value={formData.nameOfChild}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editAgeOfMother">Mother Age *</Label>
+                <Input
+                  id="editAgeOfMother"
+                  name="ageOfMother"
+                  type="number"
+                  min="15"
+                  max="50"
+                  value={formData.ageOfMother}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editAgeOfChild">Child Age *</Label>
+                <Input
+                  id="editAgeOfChild"
+                  name="ageOfChild"
+                  type="number"
+                  min="0"
+                  max="18"
+                  value={formData.ageOfChild}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editUniqueId">Unique ID *</Label>
+                <Input
+                  id="editUniqueId"
+                  name="uniqueId"
+                  value={formData.uniqueId}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editGender">Gender *</Label>
+                <Select
+                  value={formData.gender}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      gender: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editContactNo">Contact Number *</Label>
+                <Input
+                  id="editContactNo"
+                  name="contactNo"
+                  value={formData.contactNo}
+                  onChange={handleInputChange}
+                  pattern="[6-9][0-9]{9}"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editHeadOfHousehold">Head of Household *</Label>
+                <Input
+                  id="editHeadOfHousehold"
+                  name="headOfHousehold"
+                  value={formData.headOfHousehold}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editWardNo">Ward No *</Label>
+                <Select
+                  value={formData.wardNo}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="editWardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editHabitation">Habitation *</Label>
+                <Input
+                  id="editHabitation"
+                  name="habitation"
+                  value={formData.habitation}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editProjectResponsible">
+                  Project Responsible *
+                </Label>
+                <Input
+                  id="editProjectResponsible"
+                  name="projectResponsible"
+                  value={formData.projectResponsible}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDistrict">District *</Label>
+                <Input
+                  id="editDistrict"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleInputChange}
+                  placeholder="District name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editState">State *</Label>
+                <Input
+                  id="editState"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  placeholder="State name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDateOfReporting">Date of Reporting *</Label>
+                <Input
+                  id="editDateOfReporting"
+                  name="dateOfReporting"
+                  type="date"
+                  value={formData.dateOfReporting}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editReportedBy">Reported By *</Label>
+                <Input
+                  id="editReportedBy"
+                  name="reportedBy"
+                  value={formData.reportedBy}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="editPregnantOrLactatingMother">
+                  Pregnant or Lactating Mother *
+                </Label>
+                <Select
+                  value={formData.pregnantOrLactatingMother}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      pregnantOrLactatingMother: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Pregnant">Pregnant</SelectItem>
+                    <SelectItem value="Lactating">Lactating</SelectItem>
+                    <SelectItem value="Both">Both</SelectItem>
+                    <SelectItem value="Neither">Neither</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editAntenatalCareDetails">
+                  Antenatal Care Details
+                </Label>
+                <Textarea
+                  id="editAntenatalCareDetails"
+                  name="antenatalCareDetails"
+                  value={formData.antenatalCareDetails}
+                  onChange={handleInputChange}
+                  placeholder="Details about antenatal care"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDeliveryDetails">Delivery Details</Label>
+                <Textarea
+                  id="editDeliveryDetails"
+                  name="deliveryDetails"
+                  value={formData.deliveryDetails}
+                  onChange={handleInputChange}
+                  placeholder="Details about delivery"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editDeliveryArea">Delivery Area</Label>
+                <Select
+                  value={formData.deliveryArea}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      deliveryArea: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select delivery area" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Home">Home</SelectItem>
+                    <SelectItem value="Hospital">Hospital</SelectItem>
+                    <SelectItem value="Primary Health Center">
+                      Primary Health Center
+                    </SelectItem>
+                    <SelectItem value="Community Health Center">
+                      Community Health Center
+                    </SelectItem>
+                    <SelectItem value="Private Clinic">
+                      Private Clinic
+                    </SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editBirthCertificate">Birth Certificate</Label>
+                <Select
+                  value={formData.birthCertificate}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      birthCertificate: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Not Available">Not Available</SelectItem>
+                    <SelectItem value="In Process">In Process</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editPostnatalCareDetails">
+                  Postnatal Care Details
+                </Label>
+                <Textarea
+                  id="editPostnatalCareDetails"
+                  name="postnatalCareDetails"
+                  value={formData.postnatalCareDetails}
+                  onChange={handleInputChange}
+                  placeholder="Details about postnatal care"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editHealthCheckups">Health Checkups</Label>
+                <Textarea
+                  id="editHealthCheckups"
+                  name="healthCheckups"
+                  value={formData.healthCheckups}
+                  onChange={handleInputChange}
+                  placeholder="Details about health checkups"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editImmunizationStatus">
+                  Immunization Status
+                </Label>
+                <Select
+                  value={formData.immunizationStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      immunizationStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Complete">Complete</SelectItem>
+                    <SelectItem value="Incomplete">Incomplete</SelectItem>
+                    <SelectItem value="Not Started">Not Started</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editNutritionalStatus">
+                  Nutritional Status
+                </Label>
+                <Select
+                  value={formData.nutritionalStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      nutritionalStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="Underweight">Underweight</SelectItem>
+                    <SelectItem value="Overweight">Overweight</SelectItem>
+                    <SelectItem value="Malnourished">Malnourished</SelectItem>
+                    <SelectItem value="Severely Malnourished">
+                      Severely Malnourished
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editChildImmunizationStatus">
+                  Child Immunization Status
+                </Label>
+                <Select
+                  value={formData.childImmunizationStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      childImmunizationStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Complete">Complete</SelectItem>
+                    <SelectItem value="Incomplete">Incomplete</SelectItem>
+                    <SelectItem value="Not Started">Not Started</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                    <SelectItem value="Age Appropriate">
+                      Age Appropriate
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editChildNutritionalStatus">
+                  Child Nutritional Status
+                </Label>
+                <Select
+                  value={formData.childNutritionalStatus}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      childNutritionalStatus: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="Underweight">Underweight</SelectItem>
+                    <SelectItem value="Overweight">Overweight</SelectItem>
+                    <SelectItem value="Malnourished">Malnourished</SelectItem>
+                    <SelectItem value="Severely Malnourished">
+                      Severely Malnourished
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editChildDevelopmentMilestones">
+                  Child Development Milestones
+                </Label>
+                <Textarea
+                  id="editChildDevelopmentMilestones"
+                  name="childDevelopmentMilestones"
+                  value={formData.childDevelopmentMilestones}
+                  onChange={handleInputChange}
+                  placeholder="Details about child development milestones"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editServicesProvided">Services Provided</Label>
+                <Textarea
+                  id="editServicesProvided"
+                  name="servicesProvided"
+                  value={formData.servicesProvided}
+                  onChange={handleInputChange}
+                  placeholder="Details about services provided"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editReferralsGiven">Referrals Given</Label>
+                <Textarea
+                  id="editReferralsGiven"
+                  name="referralsGiven"
+                  value={formData.referralsGiven}
+                  onChange={handleInputChange}
+                  placeholder="Details about referrals given"
+                />
+              </div>
+              <div>
+                <Label htmlFor="editGovernmentSchemes">
+                  Government Schemes
+                </Label>
+                <Textarea
+                  id="editGovernmentSchemes"
+                  name="governmentSchemes"
+                  value={formData.governmentSchemes}
+                  onChange={handleInputChange}
+                  placeholder="Details about government schemes enrolled"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={resetForm}>
+                Cancel
+              </Button>
+              <Button type="submit">Update Record</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "sonner";
 
 // Create axios instance with default config
 const api = axios.create({
@@ -29,15 +30,49 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
-      window.location.href = "/signin";
+    // Extract error message from response
+    let errorMessage = "An error occurred";
+
+    if (error.response) {
+      // Server responded with error status
+      const { data, status } = error.response;
+
+      if (status === 401) {
+        // Handle unauthorized access
+        errorMessage = data?.message || "Session expired. Please login again.";
+        toast.error(errorMessage);
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+        window.location.href = "/signin";
+        return Promise.reject(new Error(errorMessage));
+      }
+
+      // Extract error message from various possible formats
+      if (data?.message) {
+        errorMessage = data.message;
+      } else if (data?.error) {
+        errorMessage =
+          typeof data.error === "string" ? data.error : data.error.message;
+      } else if (typeof data === "string") {
+        errorMessage = data;
+      } else if (status === 404) {
+        errorMessage = "Resource not found";
+      } else if (status === 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else if (status >= 400 && status < 500) {
+        errorMessage = "Request failed. Please check your input.";
+      }
+    } else if (error.request) {
+      // Request made but no response received
+      errorMessage = "Network error. Please check your connection.";
+    } else {
+      // Error in request setup
+      errorMessage = error.message || "Failed to make request";
     }
 
-    const errorMessage =
-      error.response?.data?.message || error.message || "An error occurred";
+    // Show error toast
+    toast.error(errorMessage);
+
     return Promise.reject(new Error(errorMessage));
   }
 );

@@ -74,8 +74,7 @@ const Workshops = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
-    status: "all",
-    category: "all",
+    groupType: "all",
   });
   const [pagination, setPagination] = useState({
     page: 1,
@@ -88,77 +87,30 @@ const Workshops = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    workshopTitle: "",
-    description: "",
-    category: "",
-    facilitator: "",
-    facilitatorContact: "",
-    venue: "",
+    groupId: "",
+    groupName: "",
+    groupType: "",
     wardNo: "",
     habitation: "",
-    dateScheduled: "",
-    timeScheduled: "",
-    duration: "",
-    maxParticipants: "",
-    targetAudience: "",
-    objectives: "",
-    materialsRequired: "",
+    projectResponsible: "",
+    topic: "",
+    dateOfTraining: "",
+    resourcePerson: "",
+    profileOfResourcePerson: "",
+    agenda: "",
     totalParticipants: "",
-    maleParticipants: "",
-    femaleParticipants: "",
-    childrenParticipants: "",
-    adultParticipants: "",
-    seniorParticipants: "",
-    status: "Scheduled",
-    feedback: "",
     outcome: "",
-    followUpRequired: false,
-    followUpDate: "",
-    cost: "",
-    fundingSource: "",
-    certificates: false,
-    photos: "",
-    resources: "",
-    remarks: "",
   });
 
-  const workshopCategories = [
-    "Health Awareness",
-    "Education",
-    "Legal Rights",
-    "Women Empowerment",
-    "Child Protection",
-    "Skill Development",
-    "Digital Literacy",
-    "Financial Literacy",
-    "Environmental Awareness",
-    "Social Justice",
-    "Community Development",
-    "Government Schemes",
-    "Hygiene & Sanitation",
-    "Nutrition",
+  const groupTypes = [
+    "CBUCBO",
+    "SHG",
+    "Youth Group",
+    "Women Group",
+    "Community Group",
+    "Farmer Group",
+    "Student Group",
     "Other",
-  ];
-
-  const statusOptions = [
-    "Scheduled",
-    "Ongoing",
-    "Completed",
-    "Cancelled",
-    "Postponed",
-  ];
-
-  const targetAudienceOptions = [
-    "Women",
-    "Children",
-    "Youth",
-    "Adults",
-    "Senior Citizens",
-    "Adolescents",
-    "Students",
-    "Community Leaders",
-    "Self Help Groups",
-    "General Public",
   ];
 
   // Fetch workshops
@@ -234,38 +186,19 @@ const Workshops = () => {
   // Reset form
   const resetForm = () => {
     setFormData({
-      workshopTitle: "",
-      description: "",
-      category: "",
-      facilitator: "",
-      facilitatorContact: "",
-      venue: "",
+      groupId: "",
+      groupName: "",
+      groupType: "",
       wardNo: "",
       habitation: "",
-      dateScheduled: "",
-      timeScheduled: "",
-      duration: "",
-      maxParticipants: "",
-      targetAudience: "",
-      objectives: "",
-      materialsRequired: "",
+      projectResponsible: "",
+      topic: "",
+      dateOfTraining: "",
+      resourcePerson: "",
+      profileOfResourcePerson: "",
+      agenda: "",
       totalParticipants: "",
-      maleParticipants: "",
-      femaleParticipants: "",
-      childrenParticipants: "",
-      adultParticipants: "",
-      seniorParticipants: "",
-      status: "Scheduled",
-      feedback: "",
       outcome: "",
-      followUpRequired: false,
-      followUpDate: "",
-      cost: "",
-      fundingSource: "",
-      certificates: false,
-      photos: "",
-      resources: "",
-      remarks: "",
     });
     setSelectedWorkshop(null);
   };
@@ -279,42 +212,6 @@ const Workshops = () => {
     } catch (error) {
       toast.error("Failed to delete workshop");
       console.error("Error deleting workshop:", error);
-    }
-  };
-
-  // Get status badge color
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Completed":
-        return "bg-green-100 text-green-800 hover:bg-green-200";
-      case "Ongoing":
-        return "bg-blue-100 text-blue-800 hover:bg-blue-200";
-      case "Scheduled":
-        return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
-      case "Cancelled":
-        return "bg-red-100 text-red-800 hover:bg-red-200";
-      case "Postponed":
-        return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-      default:
-        return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-    }
-  };
-
-  // Get status icon
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Completed":
-        return <CheckCircle className="h-3 w-3" />;
-      case "Ongoing":
-        return <Clock className="h-3 w-3" />;
-      case "Scheduled":
-        return <Calendar className="h-3 w-3" />;
-      case "Cancelled":
-        return <AlertCircle className="h-3 w-3" />;
-      case "Postponed":
-        return <Clock className="h-3 w-3" />;
-      default:
-        return <Clock className="h-3 w-3" />;
     }
   };
 
@@ -438,12 +335,12 @@ const Workshops = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Workshop Title</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Date & Time</TableHead>
-                        <TableHead>Facilitator</TableHead>
+                        <TableHead>Group Name</TableHead>
+                        <TableHead>Group Type</TableHead>
+                        <TableHead>Topic</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Resource Person</TableHead>
                         <TableHead>Participants</TableHead>
-                        <TableHead>Status</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -451,52 +348,39 @@ const Workshops = () => {
                       {workshops.map((workshop) => (
                         <TableRow key={workshop._id}>
                           <TableCell>
-                            <div>
-                              <div className="font-medium">
-                                {workshop.workshopTitle}
-                              </div>
-                              <div className="text-sm text-muted-foreground flex items-center">
-                                <MapPin className="mr-1 h-3 w-3" />
-                                {workshop.venue}
-                              </div>
+                            <div className="font-medium">
+                              {workshop.groupName}
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge variant="outline">{workshop.category}</Badge>
+                            <Badge variant="outline">
+                              {workshop.groupType}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">{workshop.topic}</div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center text-sm">
                               <Calendar className="mr-1 h-3 w-3" />
-                              {workshop.dateScheduled
+                              {workshop.dateOfTraining
                                 ? new Date(
-                                    workshop.dateScheduled
+                                    workshop.dateOfTraining
                                   ).toLocaleDateString()
                                 : "TBD"}
                             </div>
-                            {workshop.timeScheduled && (
-                              <div className="text-sm text-muted-foreground">
-                                {workshop.timeScheduled}
-                              </div>
-                            )}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center text-sm">
                               <User className="mr-1 h-3 w-3" />
-                              {workshop.facilitator || "TBA"}
+                              {workshop.resourcePerson || "TBA"}
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center text-sm">
                               <Users className="mr-1 h-3 w-3" />
-                              {workshop.totalParticipants || 0} /{" "}
-                              {workshop.maxParticipants || "∞"}
+                              {workshop.totalParticipants || 0}
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={getStatusColor(workshop.status)}>
-                              {getStatusIcon(workshop.status)}
-                              <span className="ml-1">{workshop.status}</span>
-                            </Badge>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-2">
@@ -516,54 +400,25 @@ const Workshops = () => {
                                 onClick={() => {
                                   setSelectedWorkshop(workshop);
                                   setFormData({
-                                    workshopTitle: workshop.workshopTitle || "",
-                                    description: workshop.description || "",
-                                    category: workshop.category || "",
-                                    facilitator: workshop.facilitator || "",
-                                    facilitatorContact:
-                                      workshop.facilitatorContact || "",
-                                    venue: workshop.venue || "",
+                                    groupId: workshop.groupId || "",
+                                    groupName: workshop.groupName || "",
+                                    groupType: workshop.groupType || "",
                                     wardNo: workshop.wardNo || "",
                                     habitation: workshop.habitation || "",
-                                    dateScheduled: workshop.dateScheduled
-                                      ? workshop.dateScheduled.split("T")[0]
+                                    projectResponsible:
+                                      workshop.projectResponsible || "",
+                                    topic: workshop.topic || "",
+                                    dateOfTraining: workshop.dateOfTraining
+                                      ? workshop.dateOfTraining.split("T")[0]
                                       : "",
-                                    timeScheduled: workshop.timeScheduled || "",
-                                    duration: workshop.duration || "",
-                                    maxParticipants:
-                                      workshop.maxParticipants || "",
-                                    targetAudience:
-                                      workshop.targetAudience || "",
-                                    objectives: workshop.objectives || "",
-                                    materialsRequired:
-                                      workshop.materialsRequired || "",
+                                    resourcePerson:
+                                      workshop.resourcePerson || "",
+                                    profileOfResourcePerson:
+                                      workshop.profileOfResourcePerson || "",
+                                    agenda: workshop.agenda || "",
                                     totalParticipants:
                                       workshop.totalParticipants || "",
-                                    maleParticipants:
-                                      workshop.maleParticipants || "",
-                                    femaleParticipants:
-                                      workshop.femaleParticipants || "",
-                                    childrenParticipants:
-                                      workshop.childrenParticipants || "",
-                                    adultParticipants:
-                                      workshop.adultParticipants || "",
-                                    seniorParticipants:
-                                      workshop.seniorParticipants || "",
-                                    status: workshop.status || "Scheduled",
-                                    feedback: workshop.feedback || "",
                                     outcome: workshop.outcome || "",
-                                    followUpRequired:
-                                      workshop.followUpRequired || false,
-                                    followUpDate: workshop.followUpDate
-                                      ? workshop.followUpDate.split("T")[0]
-                                      : "",
-                                    cost: workshop.cost || "",
-                                    fundingSource: workshop.fundingSource || "",
-                                    certificates:
-                                      workshop.certificates || false,
-                                    photos: workshop.photos || "",
-                                    resources: workshop.resources || "",
-                                    remarks: workshop.remarks || "",
                                   });
                                   setIsEditModalOpen(true);
                                 }}
@@ -666,110 +521,228 @@ const Workshops = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="workshopTitle">Workshop Title *</Label>
+                      <Label htmlFor="groupId">Group ID *</Label>
                       <Input
-                        id="workshopTitle"
-                        value={formData.workshopTitle}
+                        id="groupId"
+                        value={formData.groupId}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            workshopTitle: e.target.value,
+                            groupId: e.target.value,
                           })
                         }
-                        placeholder="Enter workshop title"
+                        placeholder="Enter group ID"
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="category">Category *</Label>
+                      <Label htmlFor="groupName">Group Name *</Label>
+                      <Input
+                        id="groupName"
+                        value={formData.groupName}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            groupName: e.target.value,
+                          })
+                        }
+                        placeholder="Enter group name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="groupType">Group Type *</Label>
                       <Select
-                        value={formData.category}
+                        value={formData.groupType}
                         onValueChange={(value) =>
-                          setFormData({ ...formData, category: value })
+                          setFormData({ ...formData, groupType: value })
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select category" />
+                          <SelectValue placeholder="Select group type" />
                         </SelectTrigger>
                         <SelectContent>
-                          {workshopCategories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
+                          {groupTypes.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="facilitator">Facilitator *</Label>
+                      <Label htmlFor="wardNo">Ward No *</Label>
+                      <Select
+                        value={formData.wardNo}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            wardNo: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="habitation">Habitation *</Label>
                       <Input
-                        id="facilitator"
-                        value={formData.facilitator}
+                        id="habitation"
+                        value={formData.habitation}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            facilitator: e.target.value,
+                            habitation: e.target.value,
                           })
                         }
-                        placeholder="Enter facilitator name"
+                        placeholder="Enter habitation"
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="venue">Venue *</Label>
+                      <Label htmlFor="projectResponsible">
+                        Project Responsible *
+                      </Label>
                       <Input
-                        id="venue"
-                        value={formData.venue}
+                        id="projectResponsible"
+                        value={formData.projectResponsible}
                         onChange={(e) =>
-                          setFormData({ ...formData, venue: e.target.value })
+                          setFormData({
+                            ...formData,
+                            projectResponsible: e.target.value,
+                          })
                         }
-                        placeholder="Enter venue"
+                        placeholder="Enter project responsible"
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="dateScheduled">Date Scheduled</Label>
+                      <Label htmlFor="topic">Topic *</Label>
                       <Input
-                        id="dateScheduled"
+                        id="topic"
+                        value={formData.topic}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            topic: e.target.value,
+                          })
+                        }
+                        placeholder="Enter training topic"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="dateOfTraining">Date of Training *</Label>
+                      <Input
+                        id="dateOfTraining"
                         type="date"
-                        value={formData.dateScheduled}
+                        value={formData.dateOfTraining}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            dateScheduled: e.target.value,
+                            dateOfTraining: e.target.value,
                           })
                         }
+                        required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="timeScheduled">Time Scheduled</Label>
+                      <Label htmlFor="resourcePerson">Resource Person *</Label>
                       <Input
-                        id="timeScheduled"
-                        type="time"
-                        value={formData.timeScheduled}
+                        id="resourcePerson"
+                        value={formData.resourcePerson}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            timeScheduled: e.target.value,
+                            resourcePerson: e.target.value,
                           })
                         }
+                        placeholder="Enter resource person name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="profileOfResourcePerson">
+                        Profile of Resource Person *
+                      </Label>
+                      <Input
+                        id="profileOfResourcePerson"
+                        value={formData.profileOfResourcePerson}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            profileOfResourcePerson: e.target.value,
+                          })
+                        }
+                        placeholder="Enter resource person profile"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="totalParticipants">
+                        Total Participants *
+                      </Label>
+                      <Input
+                        id="totalParticipants"
+                        type="number"
+                        value={formData.totalParticipants}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            totalParticipants: e.target.value,
+                          })
+                        }
+                        placeholder="Enter total participants"
+                        required
                       />
                     </div>
                   </div>
 
                   <div>
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="agenda">Agenda *</Label>
                     <Textarea
-                      id="description"
-                      value={formData.description}
+                      id="agenda"
+                      value={formData.agenda}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          description: e.target.value,
+                          agenda: e.target.value,
                         })
                       }
-                      placeholder="Enter workshop description"
+                      placeholder="Enter training agenda"
                       rows={3}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="outcome">Outcome *</Label>
+                    <Textarea
+                      id="outcome"
+                      value={formData.outcome}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          outcome: e.target.value,
+                        })
+                      }
+                      placeholder="Enter training outcome"
+                      rows={3}
+                      required
                     />
                   </div>
 
@@ -799,41 +772,103 @@ const Workshops = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="edit-workshopTitle">
-                        Workshop Title *
-                      </Label>
+                      <Label htmlFor="edit-groupId">Group ID *</Label>
                       <Input
-                        id="edit-workshopTitle"
-                        value={formData.workshopTitle}
+                        id="edit-groupId"
+                        value={formData.groupId}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            workshopTitle: e.target.value,
+                            groupId: e.target.value,
                           })
                         }
-                        placeholder="Enter workshop title"
+                        placeholder="Enter group ID"
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor="edit-status">Status</Label>
+                      <Label htmlFor="edit-groupName">Group Name *</Label>
+                      <Input
+                        id="edit-groupName"
+                        value={formData.groupName}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            groupName: e.target.value,
+                          })
+                        }
+                        placeholder="Enter group name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-groupType">Group Type *</Label>
                       <Select
-                        value={formData.status}
+                        value={formData.groupType}
                         onValueChange={(value) =>
-                          setFormData({ ...formData, status: value })
+                          setFormData({ ...formData, groupType: value })
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
+                          <SelectValue placeholder="Select group type" />
                         </SelectTrigger>
                         <SelectContent>
-                          {statusOptions.map((status) => (
-                            <SelectItem key={status} value={status}>
-                              {status}
+                          {groupTypes.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-topic">Topic *</Label>
+                      <Input
+                        id="edit-topic"
+                        value={formData.topic}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            topic: e.target.value,
+                          })
+                        }
+                        placeholder="Enter training topic"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-dateOfTraining">
+                        Date of Training *
+                      </Label>
+                      <Input
+                        id="edit-dateOfTraining"
+                        type="date"
+                        value={formData.dateOfTraining}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dateOfTraining: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-totalParticipants">
+                        Total Participants *
+                      </Label>
+                      <Input
+                        id="edit-totalParticipants"
+                        type="number"
+                        value={formData.totalParticipants}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            totalParticipants: e.target.value,
+                          })
+                        }
+                        required
+                      />
                     </div>
                   </div>
 
@@ -862,45 +897,103 @@ const Workshops = () => {
                 </DialogHeader>
                 {selectedWorkshop && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Workshop Title</Label>
-                        <p className="text-sm font-medium">
-                          {selectedWorkshop.workshopTitle}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Category</Label>
-                        <p className="text-sm font-medium">
-                          {selectedWorkshop.category}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Facilitator</Label>
-                        <p className="text-sm font-medium">
-                          {selectedWorkshop.facilitator}
-                        </p>
-                      </div>
-                      <div>
-                        <Label>Status</Label>
-                        <Badge
-                          className={getStatusColor(selectedWorkshop.status)}
-                        >
-                          {getStatusIcon(selectedWorkshop.status)}
-                          <span className="ml-1">
-                            {selectedWorkshop.status}
-                          </span>
-                        </Badge>
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">Group ID</Label>
+                          <p>{selectedWorkshop.groupId}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Group Name</Label>
+                          <p>{selectedWorkshop.groupName}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Group Type</Label>
+                          <Badge>{selectedWorkshop.groupType}</Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedWorkshop.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedWorkshop.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedWorkshop.projectResponsible}</p>
+                        </div>
                       </div>
                     </div>
-                    {selectedWorkshop.description && (
-                      <div>
-                        <Label>Description</Label>
-                        <p className="text-sm mt-1">
-                          {selectedWorkshop.description}
-                        </p>
+
+                    {/* Workshop Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Workshop Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">Topic</Label>
+                          <p>{selectedWorkshop.topic}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Training
+                          </Label>
+                          <p>
+                            {selectedWorkshop.dateOfTraining
+                              ? new Date(
+                                  selectedWorkshop.dateOfTraining
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Resource Person
+                          </Label>
+                          <p>{selectedWorkshop.resourcePerson}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Total Participants
+                          </Label>
+                          <p>{selectedWorkshop.totalParticipants}</p>
+                        </div>
                       </div>
-                    )}
+                      {selectedWorkshop.profileOfResourcePerson && (
+                        <div>
+                          <Label className="font-semibold">
+                            Profile of Resource Person
+                          </Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedWorkshop.profileOfResourcePerson}
+                          </p>
+                        </div>
+                      )}
+                      {selectedWorkshop.agenda && (
+                        <div>
+                          <Label className="font-semibold">Agenda</Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedWorkshop.agenda}
+                          </p>
+                        </div>
+                      )}
+                      {selectedWorkshop.outcome && (
+                        <div>
+                          <Label className="font-semibold">Outcome</Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedWorkshop.outcome}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
                 <DialogFooter>

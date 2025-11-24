@@ -89,10 +89,8 @@ const Entitlements = () => {
     householdCode: "",
     idCode: "",
     name: "",
-    beneficiaryId: "",
-    beneficiaryName: "",
-    age: "",
     gender: "",
+    age: "",
     headOfHousehold: "",
     contactNo: "",
     wardNo: "",
@@ -100,52 +98,36 @@ const Entitlements = () => {
     projectResponsible: "",
     dateOfReporting: "",
     reportedBy: "",
-    entitlementType: "",
-    entitlementDetails: "",
-    applicationDate: "",
-    documentsSubmitted: "",
-    verificationStatus: "",
-    approvalDate: "",
-    disbursementDate: "",
-    amountDisbursed: "",
-    status: "Applied",
+    idProofAndDomicile: {
+      typeOfDocument: "",
+      natureOfIssue: "",
+      status: "Pending",
+      dateOfReporting: "",
+    },
+    schemes: {
+      eligibleSchemes: "",
+      natureOfIssue: "",
+      status: "Pending",
+    },
+    progressReporting: {},
     remarks: "",
     followUpRequired: false,
-    nextFollowUpDate: "",
-    contactNumber: "",
-    address: "",
+    followUpDate: "",
   });
 
-  const entitlementTypes = [
-    "Pension Scheme",
-    "Housing Scheme",
-    "Health Insurance",
-    "Education Scholarship",
-    "Employment Guarantee",
-    "Food Security",
-    "Financial Assistance",
-    "Social Security",
-    "Disability Benefits",
-    "Senior Citizen Benefits",
-    "Women Welfare",
-    "Child Welfare",
+  const documentTypes = [
+    "Aadhar Card",
+    "Voter ID",
+    "Passport",
+    "Driving License",
+    "PAN Card",
+    "Ration Card",
+    "Birth Certificate",
+    "Domicile Certificate",
+    "Other",
   ];
 
-  const statusOptions = [
-    "Applied",
-    "Under Verification",
-    "Approved",
-    "Disbursed",
-    "Rejected",
-    "On Hold",
-  ];
-
-  const verificationStatuses = [
-    "Pending",
-    "In Progress",
-    "Completed",
-    "Additional Documents Required",
-  ];
+  const statusOptions = ["Pending", "In Progress", "Resolved", "Rejected"];
 
   const genderOptions = ["Male", "Female", "Other"];
 
@@ -230,10 +212,8 @@ const Entitlements = () => {
       householdCode: "",
       idCode: "",
       name: "",
-      beneficiaryId: "",
-      beneficiaryName: "",
-      age: "",
       gender: "",
+      age: "",
       headOfHousehold: "",
       contactNo: "",
       wardNo: "",
@@ -241,20 +221,21 @@ const Entitlements = () => {
       projectResponsible: "",
       dateOfReporting: "",
       reportedBy: "",
-      entitlementType: "",
-      entitlementDetails: "",
-      applicationDate: "",
-      documentsSubmitted: "",
-      verificationStatus: "",
-      approvalDate: "",
-      disbursementDate: "",
-      amountDisbursed: "",
-      status: "Applied",
+      idProofAndDomicile: {
+        typeOfDocument: "",
+        natureOfIssue: "",
+        status: "Pending",
+        dateOfReporting: "",
+      },
+      schemes: {
+        eligibleSchemes: "",
+        natureOfIssue: "",
+        status: "Pending",
+      },
+      progressReporting: {},
       remarks: "",
       followUpRequired: false,
-      nextFollowUpDate: "",
-      contactNumber: "",
-      address: "",
+      followUpDate: "",
     });
     setSelectedEntitlement(null);
   };
@@ -781,18 +762,31 @@ const Entitlements = () => {
                     </div>
                     <div>
                       <Label htmlFor="wardNo">Ward Number *</Label>
-                      <Input
-                        id="wardNo"
+                      <Select
                         value={formData.wardNo}
-                        onChange={(e) =>
+                        onValueChange={(value) =>
                           setFormData({
                             ...formData,
-                            wardNo: e.target.value,
+                            wardNo: value,
                           })
                         }
-                        placeholder="Enter ward number"
-                        required
-                      />
+                      >
+                        <SelectTrigger id="wardNo">
+                          <SelectValue placeholder="Select ward" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Ward 1">Ward 1</SelectItem>
+                          <SelectItem value="Ward 2">Ward 2</SelectItem>
+                          <SelectItem value="Ward 3">Ward 3</SelectItem>
+                          <SelectItem value="Ward 4">Ward 4</SelectItem>
+                          <SelectItem value="Ward 5">Ward 5</SelectItem>
+                          <SelectItem value="Ward 6">Ward 6</SelectItem>
+                          <SelectItem value="Ward 7">Ward 7</SelectItem>
+                          <SelectItem value="Ward 8">Ward 8</SelectItem>
+                          <SelectItem value="Ward 9">Ward 9</SelectItem>
+                          <SelectItem value="Ward 10">Ward 10</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div>
                       <Label htmlFor="habitation">Habitation *</Label>
@@ -1011,36 +1005,241 @@ const Entitlements = () => {
                 </DialogHeader>
                 {selectedEntitlement && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label>Beneficiary ID</Label>
-                        <p className="text-sm font-medium">
-                          {selectedEntitlement.beneficiaryId}
-                        </p>
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Basic Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Household Code
+                          </Label>
+                          <p>{selectedEntitlement.householdCode}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">ID Code</Label>
+                          <p>{selectedEntitlement.idCode}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Name</Label>
+                          <p>{selectedEntitlement.name}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Gender</Label>
+                          <Badge variant="outline">
+                            {selectedEntitlement.gender}
+                          </Badge>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Age</Label>
+                          <p>{selectedEntitlement.age} years</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Head of Household
+                          </Label>
+                          <p>{selectedEntitlement.headOfHousehold}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Contact Number
+                          </Label>
+                          <p>{selectedEntitlement.contactNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Ward No</Label>
+                          <p>{selectedEntitlement.wardNo}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Habitation</Label>
+                          <p>{selectedEntitlement.habitation}</p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">
+                            Project Responsible
+                          </Label>
+                          <p>{selectedEntitlement.projectResponsible}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Beneficiary Name</Label>
-                        <p className="text-sm font-medium">
-                          {selectedEntitlement.beneficiaryName}
-                        </p>
+                    </div>
+
+                    {/* Reporting Details */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Reporting Details
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Date of Reporting
+                          </Label>
+                          <p>
+                            {selectedEntitlement.dateOfReporting
+                              ? new Date(
+                                  selectedEntitlement.dateOfReporting
+                                ).toLocaleDateString()
+                              : "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="font-semibold">Reported By</Label>
+                          <p>{selectedEntitlement.reportedBy}</p>
+                        </div>
                       </div>
-                      <div>
-                        <Label>Entitlement Type</Label>
-                        <p className="text-sm font-medium">
-                          {selectedEntitlement.entitlementType}
-                        </p>
+                    </div>
+
+                    {/* ID Proof & Domicile */}
+                    {selectedEntitlement.idProofAndDomicile && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          ID Proof & Domicile
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="font-semibold">
+                              Type of Document
+                            </Label>
+                            <p>
+                              {selectedEntitlement.idProofAndDomicile
+                                .typeOfDocument || "N/A"}
+                            </p>
+                          </div>
+                          <div>
+                            <Label className="font-semibold">Status</Label>
+                            <Badge
+                              className={getStatusColor(
+                                selectedEntitlement.idProofAndDomicile.status
+                              )}
+                            >
+                              {getStatusIcon(
+                                selectedEntitlement.idProofAndDomicile.status
+                              )}
+                              <span className="ml-1">
+                                {selectedEntitlement.idProofAndDomicile.status}
+                              </span>
+                            </Badge>
+                          </div>
+                          {selectedEntitlement.idProofAndDomicile
+                            .dateOfReporting && (
+                            <div>
+                              <Label className="font-semibold">
+                                Date of Reporting
+                              </Label>
+                              <p>
+                                {new Date(
+                                  selectedEntitlement.idProofAndDomicile.dateOfReporting
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        {selectedEntitlement.idProofAndDomicile
+                          .natureOfIssue && (
+                          <div>
+                            <Label className="font-semibold">
+                              Nature of Issue
+                            </Label>
+                            <p className="mt-1 text-sm text-gray-600">
+                              {
+                                selectedEntitlement.idProofAndDomicile
+                                  .natureOfIssue
+                              }
+                            </p>
+                          </div>
+                        )}
                       </div>
-                      <div>
-                        <Label>Status</Label>
-                        <Badge
-                          className={getStatusColor(selectedEntitlement.status)}
-                        >
-                          {getStatusIcon(selectedEntitlement.status)}
-                          <span className="ml-1">
-                            {selectedEntitlement.status}
-                          </span>
-                        </Badge>
+                    )}
+
+                    {/* Schemes */}
+                    {selectedEntitlement.schemes && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold border-b pb-2">
+                          Schemes
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <Label className="font-semibold">Status</Label>
+                            <Badge
+                              className={getStatusColor(
+                                selectedEntitlement.schemes.status
+                              )}
+                            >
+                              {getStatusIcon(
+                                selectedEntitlement.schemes.status
+                              )}
+                              <span className="ml-1">
+                                {selectedEntitlement.schemes.status}
+                              </span>
+                            </Badge>
+                          </div>
+                        </div>
+                        {selectedEntitlement.schemes.eligibleSchemes && (
+                          <div>
+                            <Label className="font-semibold">
+                              Eligible Schemes
+                            </Label>
+                            <p className="mt-1 text-sm text-gray-600">
+                              {selectedEntitlement.schemes.eligibleSchemes}
+                            </p>
+                          </div>
+                        )}
+                        {selectedEntitlement.schemes.natureOfIssue && (
+                          <div>
+                            <Label className="font-semibold">
+                              Nature of Issue
+                            </Label>
+                            <p className="mt-1 text-sm text-gray-600">
+                              {selectedEntitlement.schemes.natureOfIssue}
+                            </p>
+                          </div>
+                        )}
                       </div>
+                    )}
+
+                    {/* Follow-up */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold border-b pb-2">
+                        Follow-up
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label className="font-semibold">
+                            Follow-up Required
+                          </Label>
+                          <Badge
+                            variant={
+                              selectedEntitlement.followUpRequired
+                                ? "default"
+                                : "secondary"
+                            }
+                          >
+                            {selectedEntitlement.followUpRequired
+                              ? "Yes"
+                              : "No"}
+                          </Badge>
+                        </div>
+                        {selectedEntitlement.followUpDate && (
+                          <div>
+                            <Label className="font-semibold">
+                              Follow-up Date
+                            </Label>
+                            <p>
+                              {new Date(
+                                selectedEntitlement.followUpDate
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                      {selectedEntitlement.remarks && (
+                        <div>
+                          <Label className="font-semibold">Remarks</Label>
+                          <p className="mt-1 text-sm text-gray-600">
+                            {selectedEntitlement.remarks}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

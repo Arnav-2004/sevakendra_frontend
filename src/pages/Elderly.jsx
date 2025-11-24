@@ -94,6 +94,7 @@ const Elderly = () => {
     wardNo: "",
     habitation: "",
     projectResponsible: "",
+    nameOfLocalSelfGovernment: "",
     dateOfReporting: "",
     reportedBy: "",
     dateOfMedicalScreening: "",
@@ -181,6 +182,7 @@ const Elderly = () => {
       wardNo: "",
       habitation: "",
       projectResponsible: "",
+      nameOfLocalSelfGovernment: "",
       dateOfReporting: "",
       reportedBy: "",
       dateOfMedicalScreening: "",
@@ -208,6 +210,7 @@ const Elderly = () => {
       wardNo: elderlyRecord.wardNo || "",
       habitation: elderlyRecord.habitation || "",
       projectResponsible: elderlyRecord.projectResponsible || "",
+      nameOfLocalSelfGovernment: elderlyRecord.nameOfLocalSelfGovernment || "",
       dateOfReporting: elderlyRecord.dateOfReporting
         ? new Date(elderlyRecord.dateOfReporting).toISOString().split("T")[0]
         : "",
@@ -661,14 +664,28 @@ const Elderly = () => {
               </div>
               <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
-                <Input
-                  id="wardNo"
-                  name="wardNo"
+                <Select
                   value={formData.wardNo}
-                  onChange={handleInputChange}
-                  placeholder="Ward number"
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="wardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="habitation">Habitation *</Label>
@@ -691,6 +708,19 @@ const Elderly = () => {
                   value={formData.projectResponsible}
                   onChange={handleInputChange}
                   placeholder="Person responsible for project"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="nameOfLocalSelfGovernment">
+                  Name of Local Self Government *
+                </Label>
+                <Input
+                  id="nameOfLocalSelfGovernment"
+                  name="nameOfLocalSelfGovernment"
+                  value={formData.nameOfLocalSelfGovernment}
+                  onChange={handleInputChange}
+                  placeholder="Local self government name"
                   required
                 />
               </div>
@@ -914,14 +944,28 @@ const Elderly = () => {
               </div>
               <div>
                 <Label htmlFor="edit-wardNo">Ward No *</Label>
-                <Input
-                  id="edit-wardNo"
-                  name="wardNo"
+                <Select
                   value={formData.wardNo}
-                  onChange={handleInputChange}
-                  placeholder="Ward number"
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="edit-wardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="edit-habitation">Habitation *</Label>
@@ -944,6 +988,19 @@ const Elderly = () => {
                   value={formData.projectResponsible}
                   onChange={handleInputChange}
                   placeholder="Person responsible for project"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-nameOfLocalSelfGovernment">
+                  Name of Local Self Government *
+                </Label>
+                <Input
+                  id="edit-nameOfLocalSelfGovernment"
+                  name="nameOfLocalSelfGovernment"
+                  value={formData.nameOfLocalSelfGovernment}
+                  onChange={handleInputChange}
+                  placeholder="Local self government name"
                   required
                 />
               </div>
@@ -1119,6 +1176,12 @@ const Elderly = () => {
                 <div>
                   <Label className="font-semibold">Project Responsible</Label>
                   <p>{selectedElderly.projectResponsible}</p>
+                </div>
+                <div>
+                  <Label className="font-semibold">
+                    Name of Local Self Government
+                  </Label>
+                  <p>{selectedElderly.nameOfLocalSelfGovernment}</p>
                 </div>
                 <div>
                   <Label className="font-semibold">Date of Reporting</Label>

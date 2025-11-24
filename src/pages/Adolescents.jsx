@@ -61,6 +61,7 @@ import {
 } from "lucide-react";
 import { adolescentsAPI } from "../services/api";
 import Sidebar from "../components/Sidebar";
+import AddFollowUpButton from "../components/AddFollowUpButton";
 
 const Adolescents = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -86,7 +87,7 @@ const Adolescents = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     householdCode: "",
-    nameOfAdolescent: "",
+    name: "",
     uniqueId: "",
     gender: "",
     age: "",
@@ -98,16 +99,15 @@ const Adolescents = () => {
     dateOfReporting: "",
     reportedBy: "",
     educationStatus: "",
+    currentClass: "",
     schoolName: "",
-    class: "",
-    healthStatus: "",
+    dateOfHealthScreening: "",
+    heightCm: "",
+    weightKg: "",
+    bmi: "",
     nutritionalStatus: "",
-    mentalHealthStatus: "",
-    riskBehaviors: "",
-    socialSkillsAssessment: "",
-    vocationalInterests: "",
-    servicesProvided: "",
-    referralsGiven: "",
+    vocationalSkills: "",
+    socialIssues: "",
     progressReporting: {},
   });
 
@@ -160,6 +160,21 @@ const Adolescents = () => {
     }
   };
 
+  // Handle update
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await adolescentsAPI.update(selectedRecord._id, formData);
+      toast.success("Adolescent record updated successfully");
+      setIsEditModalOpen(false);
+      fetchAdolescents();
+      resetForm();
+    } catch (error) {
+      toast.error("Failed to update record");
+      console.error("Error updating record:", error);
+    }
+  };
+
   // Handle delete
   const handleDelete = async (id) => {
     try {
@@ -176,7 +191,7 @@ const Adolescents = () => {
   const resetForm = () => {
     setFormData({
       householdCode: "",
-      nameOfAdolescent: "",
+      name: "",
       uniqueId: "",
       gender: "",
       age: "",
@@ -188,27 +203,28 @@ const Adolescents = () => {
       dateOfReporting: "",
       reportedBy: "",
       educationStatus: "",
+      currentClass: "",
       schoolName: "",
-      class: "",
-      healthStatus: "",
+      dateOfHealthScreening: "",
+      heightCm: "",
+      weightKg: "",
+      bmi: "",
       nutritionalStatus: "",
-      mentalHealthStatus: "",
-      riskBehaviors: "",
-      socialSkillsAssessment: "",
-      vocationalInterests: "",
-      servicesProvided: "",
-      referralsGiven: "",
+      vocationalSkills: "",
+      socialIssues: "",
       progressReporting: {},
     });
     setSelectedRecord(null);
+    setIsCreateModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   // Handle edit
   const handleEdit = (record) => {
     setSelectedRecord(record);
-    setFormData({
+    const editData = {
       householdCode: record.householdCode || "",
-      nameOfAdolescent: record.nameOfAdolescent || "",
+      name: record.name || "",
       uniqueId: record.uniqueId || "",
       gender: record.gender || "",
       age: record.age || "",
@@ -222,18 +238,34 @@ const Adolescents = () => {
         : "",
       reportedBy: record.reportedBy || "",
       educationStatus: record.educationStatus || "",
+      currentClass: record.currentClass || "",
       schoolName: record.schoolName || "",
-      class: record.class || "",
-      healthStatus: record.healthStatus || "",
+      dateOfHealthScreening: record.dateOfHealthScreening
+        ? new Date(record.dateOfHealthScreening).toISOString().split("T")[0]
+        : "",
+      heightCm: record.heightCm || "",
+      weightKg: record.weightKg || "",
+      bmi: record.bmi || "",
       nutritionalStatus: record.nutritionalStatus || "",
-      mentalHealthStatus: record.mentalHealthStatus || "",
-      riskBehaviors: record.riskBehaviors || "",
-      socialSkillsAssessment: record.socialSkillsAssessment || "",
-      vocationalInterests: record.vocationalInterests || "",
-      servicesProvided: record.servicesProvided || "",
-      referralsGiven: record.referralsGiven || "",
+      vocationalSkills: record.vocationalSkills || "",
+      socialIssues: record.socialIssues || "",
       progressReporting: record.progressReporting || {},
-    });
+    };
+    // Only include optional enum fields if they have values
+    if (record.menstrualHygiene)
+      editData.menstrualHygiene = record.menstrualHygiene;
+    if (record.reproductiveHealthEducation)
+      editData.reproductiveHealthEducation = record.reproductiveHealthEducation;
+    if (record.mentalHealthScreening)
+      editData.mentalHealthScreening = record.mentalHealthScreening;
+    if (record.counselingProvided)
+      editData.counselingProvided = record.counselingProvided;
+    if (record.lifeSkillsTraining)
+      editData.lifeSkillsTraining = record.lifeSkillsTraining;
+    if (record.peerEducatorRole)
+      editData.peerEducatorRole = record.peerEducatorRole;
+    if (record.substanceUse) editData.substanceUse = record.substanceUse;
+    setFormData(editData);
     setIsEditModalOpen(true);
   };
 
@@ -439,7 +471,7 @@ const Adolescents = () => {
                       adolescents.map((record) => (
                         <TableRow key={record._id}>
                           <TableCell className="font-medium">
-                            {record.nameOfAdolescent}
+                            {record.name}
                           </TableCell>
                           <TableCell>
                             {record.age}, {record.gender}
@@ -595,11 +627,11 @@ const Adolescents = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="nameOfAdolescent">Name *</Label>
+                <Label htmlFor="name">Name *</Label>
                 <Input
-                  id="nameOfAdolescent"
-                  name="nameOfAdolescent"
-                  value={formData.nameOfAdolescent}
+                  id="name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleInputChange}
                   required
                 />
@@ -668,13 +700,28 @@ const Adolescents = () => {
               </div>
               <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
-                <Input
-                  id="wardNo"
-                  name="wardNo"
+                <Select
                   value={formData.wardNo}
-                  onChange={handleInputChange}
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="wardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="habitation">Habitation *</Label>
@@ -750,11 +797,11 @@ const Adolescents = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="class">Class</Label>
+                <Label htmlFor="currentClass">Current Class</Label>
                 <Input
-                  id="class"
-                  name="class"
-                  value={formData.class}
+                  id="currentClass"
+                  name="currentClass"
+                  value={formData.currentClass}
                   onChange={handleInputChange}
                 />
               </div>
@@ -796,23 +843,84 @@ const Adolescents = () => {
                     <SelectItem value="Normal">Normal</SelectItem>
                     <SelectItem value="Underweight">Underweight</SelectItem>
                     <SelectItem value="Overweight">Overweight</SelectItem>
-                    <SelectItem value="Malnourished">Malnourished</SelectItem>
-                    <SelectItem value="Severely Malnourished">
-                      Severely Malnourished
+                    <SelectItem value="Obese">Obese</SelectItem>
+                    <SelectItem value="Severely Underweight">
+                      Severely Underweight
                     </SelectItem>
-                    <SelectItem value="Stunted">Stunted</SelectItem>
-                    <SelectItem value="Wasted">Wasted</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Health Assessment Section */}
+              <div className="col-span-3">
+                <h3 className="text-lg font-semibold mt-4 mb-2 border-b pb-2">
+                  Health Assessment
+                </h3>
+              </div>
               <div>
-                <Label htmlFor="mentalHealthStatus">Mental Health Status</Label>
+                <Label htmlFor="dateOfHealthScreening">
+                  Date of Health Screening
+                </Label>
+                <Input
+                  id="dateOfHealthScreening"
+                  name="dateOfHealthScreening"
+                  type="date"
+                  value={formData.dateOfHealthScreening}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="heightCm">Height (cm)</Label>
+                <Input
+                  id="heightCm"
+                  name="heightCm"
+                  type="number"
+                  min="50"
+                  max="250"
+                  value={formData.heightCm}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="weightKg">Weight (kg)</Label>
+                <Input
+                  id="weightKg"
+                  name="weightKg"
+                  type="number"
+                  min="10"
+                  max="200"
+                  value={formData.weightKg}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="bmi">BMI</Label>
+                <Input
+                  id="bmi"
+                  name="bmi"
+                  type="number"
+                  min="10"
+                  max="50"
+                  step="0.1"
+                  value={formData.bmi}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              {/* Sexual & Reproductive Health Section */}
+              <div className="col-span-3">
+                <h3 className="text-lg font-semibold mt-4 mb-2 border-b pb-2">
+                  Sexual & Reproductive Health
+                </h3>
+              </div>
+              <div>
+                <Label htmlFor="menstrualHygiene">Menstrual Hygiene</Label>
                 <Select
-                  value={formData.mentalHealthStatus}
+                  value={formData.menstrualHygiene || ""}
                   onValueChange={(value) =>
                     setFormData((prev) => ({
                       ...prev,
-                      mentalHealthStatus: value,
+                      menstrualHygiene: value,
                     }))
                   }
                 >
@@ -821,6 +929,66 @@ const Adolescents = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Good">Good</SelectItem>
+                    <SelectItem value="Needs Improvement">
+                      Needs Improvement
+                    </SelectItem>
+                    <SelectItem value="Poor">Poor</SelectItem>
+                    <SelectItem value="Not Applicable">
+                      Not Applicable
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="reproductiveHealthEducation">
+                  Reproductive Health Education
+                </Label>
+                <Select
+                  value={formData.reproductiveHealthEducation || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      reproductiveHealthEducation: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Provided">Provided</SelectItem>
+                    <SelectItem value="Not Provided">Not Provided</SelectItem>
+                    <SelectItem value="Partially Provided">
+                      Partially Provided
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Mental Health Section */}
+              <div className="col-span-3">
+                <h3 className="text-lg font-semibold mt-4 mb-2 border-b pb-2">
+                  Mental Health
+                </h3>
+              </div>
+              <div>
+                <Label htmlFor="mentalHealthScreening">
+                  Mental Health Screening
+                </Label>
+                <Select
+                  value={formData.mentalHealthScreening || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      mentalHealthScreening: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Normal">Normal</SelectItem>
                     <SelectItem value="At Risk">At Risk</SelectItem>
                     <SelectItem value="Needs Support">Needs Support</SelectItem>
                     <SelectItem value="Under Treatment">
@@ -828,6 +996,126 @@ const Adolescents = () => {
                     </SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label htmlFor="counselingProvided">Counseling Provided</Label>
+                <Select
+                  value={formData.counselingProvided || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      counselingProvided: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                    <SelectItem value="Referred">Referred</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Life Skills & Development Section */}
+              <div className="col-span-3">
+                <h3 className="text-lg font-semibold mt-4 mb-2 border-b pb-2">
+                  Life Skills & Development
+                </h3>
+              </div>
+              <div>
+                <Label htmlFor="lifeSkillsTraining">Life Skills Training</Label>
+                <Select
+                  value={formData.lifeSkillsTraining || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      lifeSkillsTraining: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Completed">Completed</SelectItem>
+                    <SelectItem value="Ongoing">Ongoing</SelectItem>
+                    <SelectItem value="Not Started">Not Started</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="vocationalSkills">Vocational Skills</Label>
+                <Input
+                  id="vocationalSkills"
+                  name="vocationalSkills"
+                  value={formData.vocationalSkills}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="peerEducatorRole">Peer Educator Role</Label>
+                <Select
+                  value={formData.peerEducatorRole || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      peerEducatorRole: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                    <SelectItem value="In Training">In Training</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Risk Factors Section */}
+              <div className="col-span-3">
+                <h3 className="text-lg font-semibold mt-4 mb-2 border-b pb-2">
+                  Risk Factors
+                </h3>
+              </div>
+              <div>
+                <Label htmlFor="substanceUse">Substance Use</Label>
+                <Select
+                  value={formData.substanceUse || ""}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      substanceUse: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="None">None</SelectItem>
+                    <SelectItem value="Tobacco">Tobacco</SelectItem>
+                    <SelectItem value="Alcohol">Alcohol</SelectItem>
+                    <SelectItem value="Drugs">Drugs</SelectItem>
+                    <SelectItem value="Multiple Substances">
+                      Multiple Substances
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="socialIssues">Social Issues</Label>
+                <Input
+                  id="socialIssues"
+                  name="socialIssues"
+                  value={formData.socialIssues}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
             <DialogFooter>
@@ -844,35 +1132,878 @@ const Adolescents = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit and View modals similar to create */}
+      {/* Edit Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Adolescent Record</DialogTitle>
           </DialogHeader>
-          <DialogFooter>
-            <Button onClick={() => setIsEditModalOpen(false)}>Close</Button>
-          </DialogFooter>
+          <form onSubmit={handleUpdate} className="space-y-6">
+            {/* Basic Information */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Basic Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-householdCode">Household Code</Label>
+                  <Input
+                    id="edit-householdCode"
+                    name="householdCode"
+                    value={formData.householdCode}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-name">Name *</Label>
+                  <Input
+                    id="edit-name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-uniqueId">Unique ID</Label>
+                  <Input
+                    id="edit-uniqueId"
+                    name="uniqueId"
+                    value={formData.uniqueId}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-gender">Gender</Label>
+                  <Select
+                    value={formData.gender}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, gender: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Male">Male</SelectItem>
+                      <SelectItem value="Female">Female</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-age">Age (10-19) *</Label>
+                  <Input
+                    id="edit-age"
+                    name="age"
+                    type="number"
+                    min="10"
+                    max="19"
+                    value={formData.age}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-contactNo">Contact Number</Label>
+                  <Input
+                    id="edit-contactNo"
+                    name="contactNo"
+                    value={formData.contactNo}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-headOfHousehold">
+                    Head of Household
+                  </Label>
+                  <Input
+                    id="edit-headOfHousehold"
+                    name="headOfHousehold"
+                    value={formData.headOfHousehold}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-wardNo">Ward Number</Label>
+                  <Input
+                    id="edit-wardNo"
+                    name="wardNo"
+                    value={formData.wardNo}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-habitation">Habitation</Label>
+                  <Input
+                    id="edit-habitation"
+                    name="habitation"
+                    value={formData.habitation}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-projectResponsible">
+                    Project Responsible
+                  </Label>
+                  <Input
+                    id="edit-projectResponsible"
+                    name="projectResponsible"
+                    value={formData.projectResponsible}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Education Details */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Education Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-educationStatus">
+                    Education Status *
+                  </Label>
+                  <Select
+                    value={formData.educationStatus}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        educationStatus: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="In School">In School</SelectItem>
+                      <SelectItem value="Dropped Out">Dropped Out</SelectItem>
+                      <SelectItem value="Never Enrolled">
+                        Never Enrolled
+                      </SelectItem>
+                      <SelectItem value="Completed Education">
+                        Completed Education
+                      </SelectItem>
+                      <SelectItem value="Vocational Training">
+                        Vocational Training
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-currentClass">Current Class</Label>
+                  <Input
+                    id="edit-currentClass"
+                    name="currentClass"
+                    value={formData.currentClass}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-schoolName">School Name</Label>
+                  <Input
+                    id="edit-schoolName"
+                    name="schoolName"
+                    value={formData.schoolName}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Health Assessment */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Health Assessment</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-dateOfHealthScreening">
+                    Date of Health Screening
+                  </Label>
+                  <Input
+                    id="edit-dateOfHealthScreening"
+                    name="dateOfHealthScreening"
+                    type="date"
+                    value={formData.dateOfHealthScreening}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-heightCm">Height (cm)</Label>
+                  <Input
+                    id="edit-heightCm"
+                    name="heightCm"
+                    type="number"
+                    min="50"
+                    max="250"
+                    value={formData.heightCm}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-weightKg">Weight (kg)</Label>
+                  <Input
+                    id="edit-weightKg"
+                    name="weightKg"
+                    type="number"
+                    min="10"
+                    max="200"
+                    value={formData.weightKg}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-bmi">BMI</Label>
+                  <Input
+                    id="edit-bmi"
+                    name="bmi"
+                    type="number"
+                    min="10"
+                    max="50"
+                    step="0.1"
+                    value={formData.bmi}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-nutritionalStatus">
+                    Nutritional Status
+                  </Label>
+                  <Select
+                    value={formData.nutritionalStatus}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        nutritionalStatus: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Normal">Normal</SelectItem>
+                      <SelectItem value="Underweight">Underweight</SelectItem>
+                      <SelectItem value="Overweight">Overweight</SelectItem>
+                      <SelectItem value="Obese">Obese</SelectItem>
+                      <SelectItem value="Severely Underweight">
+                        Severely Underweight
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Sexual & Reproductive Health */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">
+                Sexual & Reproductive Health
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-menstrualHygiene">
+                    Menstrual Hygiene
+                  </Label>
+                  <Select
+                    value={formData.menstrualHygiene}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        menstrualHygiene: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Good">Good</SelectItem>
+                      <SelectItem value="Needs Improvement">
+                        Needs Improvement
+                      </SelectItem>
+                      <SelectItem value="Poor">Poor</SelectItem>
+                      <SelectItem value="Not Applicable">
+                        Not Applicable
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-reproductiveHealthEducation">
+                    Reproductive Health Education
+                  </Label>
+                  <Select
+                    value={formData.reproductiveHealthEducation}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        reproductiveHealthEducation: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Provided">Provided</SelectItem>
+                      <SelectItem value="Not Provided">Not Provided</SelectItem>
+                      <SelectItem value="Partially Provided">
+                        Partially Provided
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Mental Health */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Mental Health</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-mentalHealthScreening">
+                    Mental Health Screening
+                  </Label>
+                  <Select
+                    value={formData.mentalHealthScreening}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        mentalHealthScreening: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Normal">Normal</SelectItem>
+                      <SelectItem value="At Risk">At Risk</SelectItem>
+                      <SelectItem value="Needs Support">
+                        Needs Support
+                      </SelectItem>
+                      <SelectItem value="Under Treatment">
+                        Under Treatment
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-counselingProvided">
+                    Counseling Provided
+                  </Label>
+                  <Select
+                    value={formData.counselingProvided}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        counselingProvided: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes">Yes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="Referred">Referred</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Life Skills & Development */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">
+                Life Skills & Development
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-lifeSkillsTraining">
+                    Life Skills Training
+                  </Label>
+                  <Select
+                    value={formData.lifeSkillsTraining}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        lifeSkillsTraining: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Completed">Completed</SelectItem>
+                      <SelectItem value="Ongoing">Ongoing</SelectItem>
+                      <SelectItem value="Not Started">Not Started</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-vocationalSkills">
+                    Vocational Skills
+                  </Label>
+                  <Input
+                    id="edit-vocationalSkills"
+                    name="vocationalSkills"
+                    value={formData.vocationalSkills}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-peerEducatorRole">
+                    Peer Educator Role
+                  </Label>
+                  <Select
+                    value={formData.peerEducatorRole}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        peerEducatorRole: value,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes">Yes</SelectItem>
+                      <SelectItem value="No">No</SelectItem>
+                      <SelectItem value="In Training">In Training</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Risk Factors */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Risk Factors</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-substanceUse">Substance Use</Label>
+                  <Select
+                    value={formData.substanceUse}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, substanceUse: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="None">None</SelectItem>
+                      <SelectItem value="Tobacco">Tobacco</SelectItem>
+                      <SelectItem value="Alcohol">Alcohol</SelectItem>
+                      <SelectItem value="Drugs">Drugs</SelectItem>
+                      <SelectItem value="Multiple Substances">
+                        Multiple Substances
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="edit-socialIssues">Social Issues</Label>
+                  <Input
+                    id="edit-socialIssues"
+                    name="socialIssues"
+                    value={formData.socialIssues}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Reporting Details */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Reporting Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-dateOfReporting">
+                    Date of Reporting *
+                  </Label>
+                  <Input
+                    id="edit-dateOfReporting"
+                    name="dateOfReporting"
+                    type="date"
+                    value={formData.dateOfReporting}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-reportedBy">Reported By *</Label>
+                  <Input
+                    id="edit-reportedBy"
+                    name="reportedBy"
+                    value={formData.reportedBy}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={resetForm}>
+                Cancel
+              </Button>
+              <Button type="submit">Update Record</Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
 
       <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Adolescent Record Details</DialogTitle>
           </DialogHeader>
           {selectedRecord && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="font-semibold">Name</Label>
-                  <p>{selectedRecord.nameOfAdolescent}</p>
+            <div className="space-y-6">
+              {/* Basic Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Basic Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Household Code</Label>
+                    <p>{selectedRecord.householdCode || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Name</Label>
+                    <p>{selectedRecord.name}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Unique ID</Label>
+                    <p>{selectedRecord.uniqueId || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Gender</Label>
+                    <p>{selectedRecord.gender || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Age</Label>
+                    <p>{selectedRecord.age}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Contact Number</Label>
+                    <p>{selectedRecord.contactNo || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Head of Household</Label>
+                    <p>{selectedRecord.headOfHousehold || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Ward Number</Label>
+                    <p>{selectedRecord.wardNo || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Habitation</Label>
+                    <p>{selectedRecord.habitation || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Project Responsible</Label>
+                    <p>{selectedRecord.projectResponsible || "N/A"}</p>
+                  </div>
                 </div>
-                <div>
-                  <Label className="font-semibold">Age/Gender</Label>
-                  <p>
-                    {selectedRecord.age}, {selectedRecord.gender}
-                  </p>
+              </div>
+
+              {/* Education Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Education Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Education Status</Label>
+                    <p>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {selectedRecord.educationStatus}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Current Class</Label>
+                    <p>{selectedRecord.currentClass || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">School Name</Label>
+                    <p>{selectedRecord.schoolName || "N/A"}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Health Assessment */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Health Assessment
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">
+                      Date of Health Screening
+                    </Label>
+                    <p>
+                      {selectedRecord.dateOfHealthScreening
+                        ? new Date(
+                            selectedRecord.dateOfHealthScreening
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Height (cm)</Label>
+                    <p>{selectedRecord.heightCm || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Weight (kg)</Label>
+                    <p>{selectedRecord.weightKg || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">BMI</Label>
+                    <p>{selectedRecord.bmi || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Nutritional Status</Label>
+                    <p>
+                      {selectedRecord.nutritionalStatus ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.nutritionalStatus === "Normal"
+                              ? "bg-green-100 text-green-800"
+                              : selectedRecord.nutritionalStatus ===
+                                "Severely Underweight"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {selectedRecord.nutritionalStatus}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sexual & Reproductive Health */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Sexual & Reproductive Health
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Menstrual Hygiene</Label>
+                    <p>
+                      {selectedRecord.menstrualHygiene ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.menstrualHygiene === "Good"
+                              ? "bg-green-100 text-green-800"
+                              : selectedRecord.menstrualHygiene === "Poor"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {selectedRecord.menstrualHygiene}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">
+                      Reproductive Health Education
+                    </Label>
+                    <p>
+                      {selectedRecord.reproductiveHealthEducation ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.reproductiveHealthEducation ===
+                            "Provided"
+                              ? "bg-green-100 text-green-800"
+                              : selectedRecord.reproductiveHealthEducation ===
+                                "Not Provided"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {selectedRecord.reproductiveHealthEducation}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mental Health */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Mental Health
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">
+                      Mental Health Screening
+                    </Label>
+                    <p>
+                      {selectedRecord.mentalHealthScreening ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.mentalHealthScreening === "Normal"
+                              ? "bg-green-100 text-green-800"
+                              : selectedRecord.mentalHealthScreening ===
+                                "Under Treatment"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }`}
+                        >
+                          {selectedRecord.mentalHealthScreening}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Counseling Provided</Label>
+                    <p>
+                      {selectedRecord.counselingProvided ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.counselingProvided === "Yes"
+                              ? "bg-green-100 text-green-800"
+                              : selectedRecord.counselingProvided === "No"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {selectedRecord.counselingProvided}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Life Skills & Development */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Life Skills & Development
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">
+                      Life Skills Training
+                    </Label>
+                    <p>
+                      {selectedRecord.lifeSkillsTraining ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.lifeSkillsTraining === "Completed"
+                              ? "bg-green-100 text-green-800"
+                              : selectedRecord.lifeSkillsTraining === "Ongoing"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {selectedRecord.lifeSkillsTraining}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Vocational Skills</Label>
+                    <p>{selectedRecord.vocationalSkills || "N/A"}</p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Peer Educator Role</Label>
+                    <p>
+                      {selectedRecord.peerEducatorRole ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.peerEducatorRole === "Yes"
+                              ? "bg-green-100 text-green-800"
+                              : selectedRecord.peerEducatorRole ===
+                                "In Training"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {selectedRecord.peerEducatorRole}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Risk Factors */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Risk Factors
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Substance Use</Label>
+                    <p>
+                      {selectedRecord.substanceUse ? (
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            selectedRecord.substanceUse === "None"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {selectedRecord.substanceUse}
+                        </span>
+                      ) : (
+                        "N/A"
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Social Issues</Label>
+                    <p>{selectedRecord.socialIssues || "N/A"}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Reporting Details */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">
+                  Reporting Details
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-semibold">Date of Reporting</Label>
+                    <p>
+                      {selectedRecord.dateOfReporting
+                        ? new Date(
+                            selectedRecord.dateOfReporting
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="font-semibold">Reported By</Label>
+                    <p>{selectedRecord.reportedBy || "N/A"}</p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -21,6 +21,11 @@ import {
   Gavel,
   Megaphone,
   ChevronRight,
+  Activity,
+  Syringe,
+  Pill,
+  Cross,
+  ClipboardCheck,
 } from "lucide-react";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, activeItem = null }) => {
@@ -80,7 +85,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeItem = null }) => {
         { name: "Mother & Child", icon: Baby, path: "/health/mother-child" },
         { name: "PwD", icon: User, path: "/health/pwd" },
         { name: "Adolescents", icon: Users, path: "/health/adolescents" },
-        { name: "TB/HIV/Addict", icon: Shield, path: "/health/tb-hiv-addict" },
+        { name: "Tuberculosis", icon: Activity, path: "/health/tuberculosis" },
+        { name: "HIV", icon: Shield, path: "/health/hiv" },
+        { name: "Leprosy", icon: Cross, path: "/health/leprosy" },
+        { name: "Addiction", icon: Pill, path: "/health/addiction" },
+        {
+          name: "Other Diseases",
+          icon: Syringe,
+          path: "/health/other-diseases",
+        },
       ],
     },
     socialJustice: {
@@ -143,6 +156,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeItem = null }) => {
             >
               <Home className="mr-3 h-5 w-5" />
               Dashboard
+            </Link>
+          </div>
+
+          {/* Tracking Link */}
+          <div className="px-4 mb-6">
+            <Link
+              to="/tracking"
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                location.pathname === "/tracking"
+                  ? "bg-blue-100 text-blue-700"
+                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              }`}
+            >
+              <ClipboardCheck className="mr-3 h-5 w-5" />
+              Follow-ups & Tracking
             </Link>
           </div>
 

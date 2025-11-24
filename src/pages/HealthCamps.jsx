@@ -73,6 +73,8 @@ const HealthCamps = () => {
     specialisation: "",
     wardNo: "",
     habitation: "",
+    village: "",
+    typeOfHealthCamp: "",
   });
   const [pagination, setPagination] = useState({
     page: 1,
@@ -89,7 +91,9 @@ const HealthCamps = () => {
     targetGroup: "",
     wardNo: "",
     habitation: "",
+    village: "",
     projectResponsible: "",
+    typeOfHealthCamp: "",
     medicineType: "",
     specialisation: "",
     organiser: "",
@@ -97,6 +101,7 @@ const HealthCamps = () => {
     numberOfGDA: "",
     totalBeneficiaries: "",
     majorFindings: "",
+    followUpDate: "",
     progressReporting: {},
   });
 
@@ -170,7 +175,9 @@ const HealthCamps = () => {
       targetGroup: "",
       wardNo: "",
       habitation: "",
+      village: "",
       projectResponsible: "",
+      typeOfHealthCamp: "",
       medicineType: "",
       specialisation: "",
       organiser: "",
@@ -178,6 +185,7 @@ const HealthCamps = () => {
       numberOfGDA: "",
       totalBeneficiaries: "",
       majorFindings: "",
+      followUpDate: "",
       progressReporting: {},
     });
     setSelectedCamp(null);
@@ -193,7 +201,9 @@ const HealthCamps = () => {
       targetGroup: camp.targetGroup || "",
       wardNo: camp.wardNo || "",
       habitation: camp.habitation || "",
+      village: camp.village || "",
       projectResponsible: camp.projectResponsible || "",
+      typeOfHealthCamp: camp.typeOfHealthCamp || "",
       medicineType: camp.medicineType || "",
       specialisation: camp.specialisation || "",
       organiser: camp.organiser || "",
@@ -201,6 +211,9 @@ const HealthCamps = () => {
       numberOfGDA: camp.numberOfGDA || "",
       totalBeneficiaries: camp.totalBeneficiaries || "",
       majorFindings: camp.majorFindings || "",
+      followUpDate: camp.followUpDate
+        ? new Date(camp.followUpDate).toISOString().split("T")[0]
+        : "",
       progressReporting: camp.progressReporting || {},
     });
     setIsEditModalOpen(true);
@@ -238,8 +251,11 @@ const HealthCamps = () => {
       specialisation: "",
       wardNo: "",
       habitation: "",
+      village: "",
+      typeOfHealthCamp: "",
     });
     setSearchTerm("");
+    setPagination((prev) => ({ ...prev, page: 1 }));
   };
 
   return (
@@ -284,7 +300,7 @@ const HealthCamps = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
                   <Label htmlFor="search">Search</Label>
                   <Input
@@ -295,26 +311,77 @@ const HealthCamps = () => {
                   />
                 </div>
                 <div>
-                  {/* <Label htmlFor="targetGroup">Target Group</Label>
-                  <Select value={filters.targetGroup} onValueChange={(value) => handleFilterChange("targetGroup", value)}>
+                  <Label htmlFor="targetGroup">Target Group</Label>
+                  <Select
+                    value={filters.targetGroup}
+                    onValueChange={(value) =>
+                      handleFilterChange("targetGroup", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="All Target Groups" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Target Groups</SelectItem>
-                      <SelectItem value="children">Children</SelectItem>
-                      <SelectItem value="adults">Adults</SelectItem>
-                      <SelectItem value="elderly">Elderly</SelectItem>
-                      <SelectItem value="women">Women</SelectItem>
-                      <SelectItem value="general">General</SelectItem>
+                      <SelectItem value="Children">Children</SelectItem>
+                      <SelectItem value="Women">Women</SelectItem>
+                      <SelectItem value="Elderly">Elderly</SelectItem>
+                      <SelectItem value="General">General</SelectItem>
+                      <SelectItem value="Pregnant Women">
+                        Pregnant Women
+                      </SelectItem>
+                      <SelectItem value="Adolescents">Adolescents</SelectItem>
+                      <SelectItem value="PwD">PwD</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
-                  </Select> */}
+                  </Select>
                 </div>
                 <div>
-                  {/* <Label htmlFor="medicineType">Medicine Type</Label>
-                  <Select value={filters.medicineType} onValueChange={(value) => handleFilterChange("medicineType", value)}>
+                  <Label htmlFor="typeOfHealthCamp">Type of Health Camp</Label>
+                  <Select
+                    value={filters.typeOfHealthCamp}
+                    onValueChange={(value) =>
+                      handleFilterChange("typeOfHealthCamp", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="All Types" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Types</SelectItem>
+                      <SelectItem value="General Health Checkup">
+                        General Health Checkup
+                      </SelectItem>
+                      <SelectItem value="Eye Checkup">Eye Checkup</SelectItem>
+                      <SelectItem value="Dental Checkup">
+                        Dental Checkup
+                      </SelectItem>
+                      <SelectItem value="Maternal Health">
+                        Maternal Health
+                      </SelectItem>
+                      <SelectItem value="Child Health">Child Health</SelectItem>
+                      <SelectItem value="Vaccination">Vaccination</SelectItem>
+                      <SelectItem value="Mental Health">
+                        Mental Health
+                      </SelectItem>
+                      <SelectItem value="Nutrition">Nutrition</SelectItem>
+                      <SelectItem value="Chronic Disease">
+                        Chronic Disease
+                      </SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="medicineType">Medicine Type</Label>
+                  <Select
+                    value={filters.medicineType}
+                    onValueChange={(value) =>
+                      handleFilterChange("medicineType", value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Medicine Types" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Types</SelectItem>
@@ -322,22 +389,23 @@ const HealthCamps = () => {
                       <SelectItem value="Ayurvedic">Ayurvedic</SelectItem>
                       <SelectItem value="Homeopathic">Homeopathic</SelectItem>
                       <SelectItem value="Unani">Unani</SelectItem>
+                      <SelectItem value="Others">Others</SelectItem>
                     </SelectContent>
-                  </Select> */}
+                  </Select>
                 </div>
                 <div>
-                  {/* <Label htmlFor="specialisation">Specialisation</Label>
+                  <Label htmlFor="village">Village</Label>
                   <Input
-                    id="specialisation"
-                    placeholder="Filter by specialisation"
-                    value={filters.specialisation}
+                    id="village"
+                    placeholder="Filter by village"
+                    value={filters.village}
                     onChange={(e) =>
-                      handleFilterChange("specialisation", e.target.value)
+                      handleFilterChange("village", e.target.value)
                     }
-                  /> */}
+                  />
                 </div>
                 <div>
-                  {/* <Label htmlFor="wardNo">Ward No</Label>
+                  <Label htmlFor="wardNo">Ward No</Label>
                   <Input
                     id="wardNo"
                     placeholder="Filter by ward"
@@ -345,16 +413,27 @@ const HealthCamps = () => {
                     onChange={(e) =>
                       handleFilterChange("wardNo", e.target.value)
                     }
-                  /> */}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="habitation">Habitation</Label>
+                  <Input
+                    id="habitation"
+                    placeholder="Filter by habitation"
+                    value={filters.habitation}
+                    onChange={(e) =>
+                      handleFilterChange("habitation", e.target.value)
+                    }
+                  />
                 </div>
                 <div className="flex items-end">
-                  {/* <Button
+                  <Button
                     variant="outline"
                     onClick={clearFilters}
                     className="w-full"
                   >
                     Clear Filters
-                  </Button> */}
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -386,10 +465,10 @@ const HealthCamps = () => {
                     <TableRow>
                       <TableHead>Date</TableHead>
                       <TableHead>Target Group</TableHead>
+                      <TableHead>Type of Camp</TableHead>
+                      <TableHead>Village</TableHead>
                       <TableHead>Ward/Habitation</TableHead>
                       <TableHead>Medicine Type</TableHead>
-                      <TableHead>Specialisation</TableHead>
-                      <TableHead>Organiser</TableHead>
                       <TableHead>Beneficiaries</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -418,13 +497,17 @@ const HealthCamps = () => {
                           </TableCell>
                           <TableCell>{camp.targetGroup}</TableCell>
                           <TableCell>
+                            <Badge variant="secondary">
+                              {camp.typeOfHealthCamp}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{camp.village}</TableCell>
+                          <TableCell>
                             Ward {camp.wardNo}, {camp.habitation}
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline">{camp.medicineType}</Badge>
                           </TableCell>
-                          <TableCell>{camp.specialisation}</TableCell>
-                          <TableCell>{camp.organiser}</TableCell>
                           <TableCell className="text-center">
                             {camp.totalBeneficiaries}
                           </TableCell>
@@ -556,25 +639,53 @@ const HealthCamps = () => {
               </div>
               <div>
                 <Label htmlFor="targetGroup">Target Group *</Label>
-                <Input
-                  id="targetGroup"
-                  name="targetGroup"
+                <Select
                   value={formData.targetGroup}
-                  onChange={handleInputChange}
-                  placeholder="e.g., Children, Adults, Elderly"
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, targetGroup: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select target group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Children">Children</SelectItem>
+                    <SelectItem value="Women">Women</SelectItem>
+                    <SelectItem value="Elderly">Elderly</SelectItem>
+                    <SelectItem value="General">General</SelectItem>
+                    <SelectItem value="Pregnant Women">
+                      Pregnant Women
+                    </SelectItem>
+                    <SelectItem value="Adolescents">Adolescents</SelectItem>
+                    <SelectItem value="PwD">PwD</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="wardNo">Ward No *</Label>
-                <Input
-                  id="wardNo"
-                  name="wardNo"
+                <Select
                   value={formData.wardNo}
-                  onChange={handleInputChange}
-                  placeholder="Ward number"
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="wardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="habitation">Habitation *</Label>
@@ -584,6 +695,17 @@ const HealthCamps = () => {
                   value={formData.habitation}
                   onChange={handleInputChange}
                   placeholder="Habitation name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="village">Village *</Label>
+                <Input
+                  id="village"
+                  name="village"
+                  value={formData.village}
+                  onChange={handleInputChange}
+                  placeholder="Village name"
                   required
                 />
               </div>
@@ -601,6 +723,42 @@ const HealthCamps = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="typeOfHealthCamp">Type of Health Camp *</Label>
+                <Select
+                  value={formData.typeOfHealthCamp}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      typeOfHealthCamp: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type of health camp" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="General Health Checkup">
+                      General Health Checkup
+                    </SelectItem>
+                    <SelectItem value="Eye Checkup">Eye Checkup</SelectItem>
+                    <SelectItem value="Dental Checkup">
+                      Dental Checkup
+                    </SelectItem>
+                    <SelectItem value="Maternal Health">
+                      Maternal Health
+                    </SelectItem>
+                    <SelectItem value="Child Health">Child Health</SelectItem>
+                    <SelectItem value="Vaccination">Vaccination</SelectItem>
+                    <SelectItem value="Mental Health">Mental Health</SelectItem>
+                    <SelectItem value="Nutrition">Nutrition</SelectItem>
+                    <SelectItem value="Chronic Disease">
+                      Chronic Disease
+                    </SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label htmlFor="medicineType">Medicine Type *</Label>
                 <Select
                   value={formData.medicineType}
@@ -616,6 +774,7 @@ const HealthCamps = () => {
                     <SelectItem value="Ayurvedic">Ayurvedic</SelectItem>
                     <SelectItem value="Homeopathic">Homeopathic</SelectItem>
                     <SelectItem value="Unani">Unani</SelectItem>
+                    <SelectItem value="Others">Others</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -690,6 +849,16 @@ const HealthCamps = () => {
                 placeholder="Describe major findings from the health camp"
               />
             </div>
+            <div>
+              <Label htmlFor="followUpDate">Follow Up Date</Label>
+              <Input
+                id="followUpDate"
+                name="followUpDate"
+                type="date"
+                value={formData.followUpDate}
+                onChange={handleInputChange}
+              />
+            </div>
             <DialogFooter>
               <Button
                 type="button"
@@ -728,25 +897,53 @@ const HealthCamps = () => {
               </div>
               <div>
                 <Label htmlFor="edit-targetGroup">Target Group *</Label>
-                <Input
-                  id="edit-targetGroup"
-                  name="targetGroup"
+                <Select
                   value={formData.targetGroup}
-                  onChange={handleInputChange}
-                  placeholder="e.g., Children, Adults, Elderly"
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, targetGroup: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select target group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Children">Children</SelectItem>
+                    <SelectItem value="Women">Women</SelectItem>
+                    <SelectItem value="Elderly">Elderly</SelectItem>
+                    <SelectItem value="General">General</SelectItem>
+                    <SelectItem value="Pregnant Women">
+                      Pregnant Women
+                    </SelectItem>
+                    <SelectItem value="Adolescents">Adolescents</SelectItem>
+                    <SelectItem value="PwD">PwD</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="edit-wardNo">Ward No *</Label>
-                <Input
-                  id="edit-wardNo"
-                  name="wardNo"
+                <Select
                   value={formData.wardNo}
-                  onChange={handleInputChange}
-                  placeholder="Ward number"
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, wardNo: value }))
+                  }
+                >
+                  <SelectTrigger id="edit-wardNo">
+                    <SelectValue placeholder="Select ward" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Ward 1">Ward 1</SelectItem>
+                    <SelectItem value="Ward 2">Ward 2</SelectItem>
+                    <SelectItem value="Ward 3">Ward 3</SelectItem>
+                    <SelectItem value="Ward 4">Ward 4</SelectItem>
+                    <SelectItem value="Ward 5">Ward 5</SelectItem>
+                    <SelectItem value="Ward 6">Ward 6</SelectItem>
+                    <SelectItem value="Ward 7">Ward 7</SelectItem>
+                    <SelectItem value="Ward 8">Ward 8</SelectItem>
+                    <SelectItem value="Ward 9">Ward 9</SelectItem>
+                    <SelectItem value="Ward 10">Ward 10</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label htmlFor="edit-habitation">Habitation *</Label>
@@ -756,6 +953,17 @@ const HealthCamps = () => {
                   value={formData.habitation}
                   onChange={handleInputChange}
                   placeholder="Habitation name"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-village">Village *</Label>
+                <Input
+                  id="edit-village"
+                  name="village"
+                  value={formData.village}
+                  onChange={handleInputChange}
+                  placeholder="Village name"
                   required
                 />
               </div>
@@ -773,6 +981,44 @@ const HealthCamps = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="edit-typeOfHealthCamp">
+                  Type of Health Camp *
+                </Label>
+                <Select
+                  value={formData.typeOfHealthCamp}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      typeOfHealthCamp: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type of health camp" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="General Health Checkup">
+                      General Health Checkup
+                    </SelectItem>
+                    <SelectItem value="Eye Checkup">Eye Checkup</SelectItem>
+                    <SelectItem value="Dental Checkup">
+                      Dental Checkup
+                    </SelectItem>
+                    <SelectItem value="Maternal Health">
+                      Maternal Health
+                    </SelectItem>
+                    <SelectItem value="Child Health">Child Health</SelectItem>
+                    <SelectItem value="Vaccination">Vaccination</SelectItem>
+                    <SelectItem value="Mental Health">Mental Health</SelectItem>
+                    <SelectItem value="Nutrition">Nutrition</SelectItem>
+                    <SelectItem value="Chronic Disease">
+                      Chronic Disease
+                    </SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label htmlFor="edit-medicineType">Medicine Type *</Label>
                 <Select
                   value={formData.medicineType}
@@ -788,6 +1034,7 @@ const HealthCamps = () => {
                     <SelectItem value="Ayurvedic">Ayurvedic</SelectItem>
                     <SelectItem value="Homeopathic">Homeopathic</SelectItem>
                     <SelectItem value="Unani">Unani</SelectItem>
+                    <SelectItem value="Others">Others</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -864,6 +1111,16 @@ const HealthCamps = () => {
                 placeholder="Describe major findings from the health camp"
               />
             </div>
+            <div>
+              <Label htmlFor="edit-followUpDate">Follow Up Date</Label>
+              <Input
+                id="edit-followUpDate"
+                name="followUpDate"
+                type="date"
+                value={formData.followUpDate}
+                onChange={handleInputChange}
+              />
+            </div>
             <DialogFooter>
               <Button
                 type="button"
@@ -906,8 +1163,18 @@ const HealthCamps = () => {
                   <p>{selectedCamp.habitation}</p>
                 </div>
                 <div>
+                  <Label className="font-semibold">Village</Label>
+                  <p>{selectedCamp.village}</p>
+                </div>
+                <div>
                   <Label className="font-semibold">Project Responsible</Label>
                   <p>{selectedCamp.projectResponsible}</p>
+                </div>
+                <div>
+                  <Label className="font-semibold">Type of Health Camp</Label>
+                  <Badge variant="outline">
+                    {selectedCamp.typeOfHealthCamp}
+                  </Badge>
                 </div>
                 <div>
                   <Label className="font-semibold">Medicine Type</Label>
@@ -939,6 +1206,14 @@ const HealthCamps = () => {
                   <Label className="font-semibold">Major Findings</Label>
                   <p className="mt-1 text-sm text-gray-600">
                     {selectedCamp.majorFindings}
+                  </p>
+                </div>
+              )}
+              {selectedCamp.followUpDate && (
+                <div>
+                  <Label className="font-semibold">Follow Up Date</Label>
+                  <p className="mt-1 text-sm text-gray-600">
+                    {new Date(selectedCamp.followUpDate).toLocaleDateString()}
                   </p>
                 </div>
               )}
