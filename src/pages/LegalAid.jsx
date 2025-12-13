@@ -109,6 +109,18 @@ const LegalAid = () => {
     followUpDate: "",
   });
 
+  const caseTypes = [
+    "Property Dispute",
+    "Family Dispute",
+    "Domestic Violence",
+    "Labor Rights",
+    "Consumer Rights",
+    "Land Rights",
+    "Government Benefits",
+    "Legal Documentation",
+    "Other",
+  ];
+
   const natureOfIssueOptions = [
     "Property Dispute",
     "Family Dispute",

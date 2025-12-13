@@ -64,6 +64,24 @@ import { cbucboDetailsAPI } from "../services/api";
 import Sidebar from "../components/Sidebar";
 
 const CBUCBODetails = () => {
+  const statusOptions = [
+    "Active",
+    "Inactive",
+    "Completed",
+    "Pending",
+    "In Progress",
+  ];
+
+  const groupTypeOptions = [
+    "CBU",
+    "CBO",
+    "SHG",
+    "Youth Group",
+    "Women Group",
+    "Farmer Group",
+    "Other",
+  ];
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cbucboDetails, setCbucboDetails] = useState([]);
   const [loading, setLoading] = useState(false);

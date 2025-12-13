@@ -67,6 +67,27 @@ import { entitlementsAPI } from "../services/api";
 import Sidebar from "../components/Sidebar";
 
 const Entitlements = () => {
+  const entitlementTypes = [
+    "Pension",
+    "Ration Card",
+    "Voter ID",
+    "Aadhaar Card",
+    "PAN Card",
+    "Disability Certificate",
+    "Caste Certificate",
+    "Income Certificate",
+    "Birth Certificate",
+    "Death Certificate",
+    "Widow Pension",
+    "Old Age Pension",
+    "Disability Pension",
+    "Labour Card",
+    "Health Insurance",
+    "Education Scholarship",
+    "Housing Scheme",
+    "Other",
+  ];
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [entitlements, setEntitlements] = useState([]);
   const [loading, setLoading] = useState(false);
