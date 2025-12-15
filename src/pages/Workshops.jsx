@@ -113,12 +113,7 @@ const Workshops = () => {
     "Other",
   ];
 
-  const statusOptions = [
-    "Planned",
-    "Completed",
-    "Cancelled",
-    "Postponed",
-  ];
+  const statusOptions = ["Planned", "Completed", "Cancelled", "Postponed"];
 
   // Fetch workshops
   const fetchWorkshops = async () => {
