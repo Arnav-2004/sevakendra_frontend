@@ -137,6 +137,14 @@ const LegalAid = () => {
 
   const genderOptions = ["Male", "Female", "Other"];
 
+  const statusOptions = [
+    "Pending",
+    "In Progress",
+    "Resolved",
+    "Closed",
+    "Referred",
+  ];
+
   // Fetch legal aid services
   const fetchLegalAidServices = async () => {
     setLoading(true);
