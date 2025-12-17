@@ -174,6 +174,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, activeItem = null }) => {
             </Link>
           </div>
 
+          {/* Module Reports Link */}
+          <div className="px-4 mb-6">
+            <Link
+              to="/module-reports"
+              className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                location.pathname === "/module-reports"
+                  ? "bg-blue-100 text-blue-700"
+                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              }`}
+            >
+              <FileText className="mr-3 h-5 w-5" />
+              Module Reports
+            </Link>
+          </div>
+
           {/* Tabbed Navigation */}
           <div className="px-4">
             {Object.entries(tabs).map(([tabKey, tab]) => (

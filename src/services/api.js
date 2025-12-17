@@ -1504,3 +1504,271 @@ export const trackingAPI = {
   getHistory: (recordType, recordId) =>
     api.get(`/tracking/history/${recordType}/${recordId}`),
 };
+
+// Education Reports API
+export const educationReportsAPI = {
+  // Generate education report with filters
+  generate: async (params) => {
+    const { category, startDate, endDate, ...filters } = params || {};
+
+    try {
+      let data = null;
+
+      switch (category) {
+        case "study-centers":
+          data = await studyCenterAPI.getAll({
+            startDate,
+            endDate,
+            ...filters,
+          });
+          break;
+        case "sc-students":
+          data = await scStudentAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "dropouts":
+          data = await dropoutAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "schools":
+          data = await schoolAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "competitive-exams":
+          data = await competitiveExamAPI.getAll({
+            startDate,
+            endDate,
+            ...filters,
+          });
+          break;
+        case "board-preparation":
+          data = await boardPreparationAPI.getAll({
+            startDate,
+            endDate,
+            ...filters,
+          });
+          break;
+        default:
+          throw new Error("Unknown category for report generation");
+      }
+
+      // Normalize records (some endpoints may return arrays or objects)
+      let records = [];
+      if (!data) records = [];
+      else if (Array.isArray(data)) records = data;
+      else if (data.records) records = data.records;
+      else if (data.data)
+        records = Array.isArray(data.data)
+          ? data.data
+          : data.data.records || [];
+      else records = [];
+
+      // Build simple summary
+      const totalRecords = records.length;
+      const active = records.filter((r) => r.status === "active").length;
+      const pending = records.filter((r) => r.status === "pending").length;
+      const completed = records.filter((r) => r.status === "completed").length;
+      const completionRate = totalRecords
+        ? Math.round((completed / totalRecords) * 100)
+        : 0;
+
+      // Build basic monthly chart data between startDate and endDate (if provided)
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const monthCounts = new Array(12).fill(0);
+      records.forEach((rec) => {
+        const d = new Date(rec.date || rec.createdAt || null);
+        if (!isNaN(d)) monthCounts[d.getMonth()] += 1;
+      });
+
+      const chartData = {
+        labels: months,
+        datasets: [{ label: "Records", data: monthCounts }],
+      };
+
+      return {
+        report: {
+          summary: { totalRecords, active, pending, completed, completionRate },
+          records,
+        },
+        chartData,
+      };
+    } catch (err) {
+      // Re-throw to be handled by caller
+      throw err;
+    }
+  },
+
+  // Export report as PDF
+  exportPDF: (params) =>
+    api.get("/education/reports/export/pdf", {
+      params,
+      responseType: "blob",
+    }),
+
+  // Export report as Excel
+  exportExcel: (params) =>
+    api.get("/education/reports/export/excel", {
+      params,
+      responseType: "blob",
+    }),
+
+  // Get report statistics
+  getStats: (category, params) =>
+    api.get(`/education/reports/${category}/stats`, { params }),
+
+  // Get historical data for charts
+  getHistoricalData: (category, params) =>
+    api.get(`/education/reports/${category}/historical`, { params }),
+};
+
+// Health Reports API
+export const healthReportsAPI = {
+  // Generate health report with filters
+  generate: async (params) => {
+    const { category, startDate, endDate, ...filters } = params || {};
+
+    try {
+      let data = null;
+
+      switch (category) {
+        case "health-camps":
+          data = await healthCampAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "elderly":
+          data = await elderlyAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "mother-child":
+          data = await motherChildAPI.getAll({
+            startDate,
+            endDate,
+            ...filters,
+          });
+          break;
+        case "pwd":
+          data = await pwdAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "adolescents":
+          data = await adolescentsAPI.getAll({
+            startDate,
+            endDate,
+            ...filters,
+          });
+          break;
+        case "tuberculosis":
+          data = await tuberculosisAPI.getAll({
+            startDate,
+            endDate,
+            ...filters,
+          });
+          break;
+        case "hiv":
+          data = await hivAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "leprosy":
+          data = await leprosyAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "addiction":
+          data = await addictionAPI.getAll({ startDate, endDate, ...filters });
+          break;
+        case "other-diseases":
+          data = await otherDiseasesAPI.getAll({
+            startDate,
+            endDate,
+            ...filters,
+          });
+          break;
+        default:
+          throw new Error("Unknown category for report generation");
+      }
+
+      // Normalize records (some endpoints may return arrays or objects)
+      let records = [];
+      if (!data) records = [];
+      else if (Array.isArray(data)) records = data;
+      else if (data.records) records = data.records;
+      else if (data.data)
+        records = Array.isArray(data.data)
+          ? data.data
+          : data.data.records || [];
+      else records = [];
+
+      // Build simple summary
+      const totalRecords = records.length;
+      const active = records.filter((r) => r.status === "active").length;
+      const pending = records.filter((r) => r.status === "pending").length;
+      const completed = records.filter((r) => r.status === "completed").length;
+      const completionRate = totalRecords
+        ? Math.round((completed / totalRecords) * 100)
+        : 0;
+
+      // Build basic monthly chart data between startDate and endDate (if provided)
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const monthCounts = new Array(12).fill(0);
+      records.forEach((rec) => {
+        const d = new Date(rec.date || rec.createdAt || null);
+        if (!isNaN(d)) monthCounts[d.getMonth()] += 1;
+      });
+
+      const chartData = {
+        labels: months,
+        datasets: [{ label: "Records", data: monthCounts }],
+      };
+
+      return {
+        report: {
+          summary: { totalRecords, active, pending, completed, completionRate },
+          records,
+        },
+        chartData,
+      };
+    } catch (err) {
+      // Re-throw to be handled by caller
+      throw err;
+    }
+  },
+
+  // Export report as PDF
+  exportPDF: (params) =>
+    api.get("/health/reports/export/pdf", {
+      params,
+      responseType: "blob",
+    }),
+
+  // Export report as Excel
+  exportExcel: (params) =>
+    api.get("/health/reports/export/excel", {
+      params,
+      responseType: "blob",
+    }),
+
+  // Get report statistics
+  getStats: (category, params) =>
+    api.get(`/health/reports/${category}/stats`, { params }),
+
+  // Get historical data for charts
+  getHistoricalData: (category, params) =>
+    api.get(`/health/reports/${category}/historical`, { params }),
+};

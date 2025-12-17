@@ -20,6 +20,7 @@ import Dropouts from "./pages/Dropouts";
 import Schools from "./pages/Schools";
 import CompetitiveExams from "./pages/CompetitiveExams";
 import BoardPreparation from "./pages/BoardPreparation";
+import ModuleReports from "./pages/ModuleReports";
 import HealthCamps from "./pages/HealthCamps";
 import Elderly from "./pages/Elderly";
 import MotherChild from "./pages/MotherChild";
@@ -134,6 +135,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <BoardPreparation />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/module-reports"
+            element={
+              <ProtectedRoute>
+                <ModuleReports />
               </ProtectedRoute>
             }
           />
